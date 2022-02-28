@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import create from "zustand";
 
 import Checklist from "./Checklist";
+import Arbitrage from "./Arbitrage";
 
 import logo from "./logo.svg";
 // import "./App.css";
@@ -46,6 +47,7 @@ const defaultValues = {
     adv: false,
     cal: false,
     chaosgate: false,
+    anguishedisle: false,
     rapportsong1: false,
     rapportsong2: false,
     rapportsong3: false,
@@ -187,11 +189,52 @@ const useStore = create((set, get) => ({
   rosterStatus: defaultValues.rosterStatus,
 }));
 
+const defaultGoldPrices = {
+  crystal: 598, // per 95
+  royal: 596, // per 238 royal
+  destructionStoneFragment: 6,
+  destructionStone: 7,
+  destructionStoneCrystal: 131,
+  guardianStoneFragment: 4,
+  guardianStone: 15,
+  guardianStoneCrystal: 68,
+  harmonyLeapstone: 15,
+  lifeLeapstone: 125,
+  honorLeapstone: 224,
+  starsBreath: 23,
+  moonsBreath: 75,
+  solarGrace: 69,
+  solarBlessing: 240,
+  solarProtection: 600,
+  healingBattleChest: 29, // Elemental HP Potion taken from chest
+  buffBattleChestAwakening: 29,
+  t2gem: 18,
+  t3gem: 85,
+};
+
+const arbitrageStore = create((set, get) => ({
+  goldValues: {
+    ...defaultGoldPrices,
+  },
+  setPrice: (event) => {
+    // console.log(event.target.id);
+    set((state) => ({
+      goldValues: {
+        ...state.goldValues,
+        [event.target.id]: event.target.value,
+      },
+    }));
+    localStorage.setItem("goldValues", JSON.stringify(get().goldValues));
+  },
+  updateGV: (goldValues) => set((state) => ({ goldValues })),
+}));
+
 const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
       main: "#90caf9",
+      success: "#4ade80",
     },
     secondary: {
       main: "#f48fb1",
@@ -213,15 +256,20 @@ const theme = createTheme({
 function App() {
   const updateRS = useStore((state) => state.updateRS);
   const updateTS = useStore((state) => state.updateTS);
+  const updateGV = arbitrageStore((state) => state.updateGV);
 
   const localTaskStatus = localStorage.getItem("taskStatus");
   const localRosterStatus = localStorage.getItem("rosterStatus");
+  const localGoldValues = localStorage.getItem("goldValues");
 
   if (localTaskStatus) {
     updateTS(JSON.parse(localTaskStatus));
   }
   if (localRosterStatus) {
     updateRS(JSON.parse(localRosterStatus));
+  }
+  if (localGoldValues) {
+    updateGV(JSON.parse(localGoldValues));
   }
 
   // console.log(JSON.parse(localTaskStatus), JSON.parse(localRosterStatus));
@@ -234,10 +282,13 @@ function App() {
           variant="outlined"
           sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
         >
-          <Typography component="h1" variant="h4" align="center">
-            Lost Ark Dailies/Weeklies Checklist
-          </Typography>
           <Checklist useStore={useStore} theme={theme} />
+        </Paper>
+        <Paper
+          variant="outlined"
+          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+        >
+          <Arbitrage useStore={arbitrageStore} theme={theme} />
         </Paper>
       </Container>
     </ThemeProvider>

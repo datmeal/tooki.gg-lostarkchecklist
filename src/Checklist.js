@@ -49,6 +49,7 @@ const accountDailies = [
   createData(`Adventure Island`, "adv"),
   createData(`Calendar Boss`, "cal"),
   createData(`Chaos Gate`, "chaosgate"),
+  createData(`Anguished Isle?`, "anguishedisle"),
   createData(`Rapport Song 1`, "rapportsong1"),
   createData(`Rapport Song 2`, "rapportsong2"),
   createData(`Rapport Song 3`, "rapportsong3"),
@@ -116,6 +117,9 @@ export default function Checklist(props) {
 
   return (
     <>
+      <Typography component="h1" variant="h4" align="center">
+        Lost Ark Dailies/Weeklies Checklist
+      </Typography>
       <TableContainer>
         <Table size="small">
           <TableHead>
