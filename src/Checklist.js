@@ -49,7 +49,7 @@ const accountDailies = [
   createData(`Adventure Island`, "adv"),
   createData(`Calendar Boss`, "cal"),
   createData(`Chaos Gate`, "chaosgate"),
-  createData(`Anguished Isle?`, "anguishedisle"),
+  createData(`Anguished Isle`, "anguishedisle"),
   createData(`Rapport Song 1`, "rapportsong1"),
   createData(`Rapport Song 2`, "rapportsong2"),
   createData(`Rapport Song 3`, "rapportsong3"),
@@ -85,6 +85,13 @@ const weeklies = [
   createData(`Abyss Raid - Argos`, "abyssraidargos"),
 ];
 
+const weeklyVendors = [
+  createData(`Guild`, "vendorGuild"),
+  createData(`Pirate`, "vendorPirate"),
+  createData(`Rift Piece`, "vendorRift"),
+  createData(`Endless Chaos`, "vendorChaos"),
+];
+
 export default function Checklist(props) {
   const { useStore } = props;
 
@@ -97,6 +104,9 @@ export default function Checklist(props) {
   const toggleAccountDaily = useStore((state) => state.toggleAccountDaily);
   const toggleDailyStatus = useStore((state) => state.toggleDailyStatus);
   const toggleWeeklyStatus = useStore((state) => state.toggleWeeklyStatus);
+  const toggleWeeklyVendorStatus = useStore(
+    (state) => state.toggleWeeklyVendorStatus
+  );
 
   function handleChangeName(event, id) {
     const name = event.target.value;
@@ -109,6 +119,10 @@ export default function Checklist(props) {
 
   function handleWeeklyStatus(taskName, id) {
     toggleWeeklyStatus(taskName, id);
+  }
+
+  function handleWeeklyVendorStatus(taskName, id) {
+    toggleWeeklyVendorStatus(taskName, id);
   }
 
   function handleAccountDaily(event, id) {
@@ -239,6 +253,41 @@ export default function Checklist(props) {
                         handleWeeklyStatus(row.id, charData.id)
                       }
                       checked={taskStatus[charData.id].weeklies[row.id]}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+            <TableRow>
+              <TableCell colSpan={taskStatus.length + 1}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography variant="h6" component="p" sx={{ padding: 2 }}>
+                    Weekly Vendors
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+            {weeklyVendors.map((row) => (
+              <TableRow
+                hover
+                role="checkbox"
+                key={row.id}
+                sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
+              >
+                <TableCell>
+                  <Typography>{row.name}</Typography>
+                </TableCell>
+                {taskStatus.map((charData) => (
+                  <TableCell
+                    padding="checkbox"
+                    key={`weeklyVendors-${charData.id}`}
+                  >
+                    <Checkbox
+                      color="primary"
+                      onChange={(event) =>
+                        handleWeeklyVendorStatus(row.id, charData.id)
+                      }
+                      checked={taskStatus[charData.id].weeklyVendors[row.id]}
                     />
                   </TableCell>
                 ))}

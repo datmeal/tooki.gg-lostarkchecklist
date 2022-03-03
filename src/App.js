@@ -43,6 +43,12 @@ const defaultValues = {
     abyssrottingglade: false,
     abyssraidargos: false,
   },
+  weeklyVendors: {
+    vendorGuild: false,
+    vendorPirate: false,
+    vendorRift: false,
+    vendorChaos: false,
+  },
   rosterStatus: {
     adv: false,
     cal: false,
@@ -80,6 +86,7 @@ const useStore = create((set, get) => ({
       taskStatus: state.taskStatus.map((item) => ({
         ...item,
         weeklies: defaultValues.weeklies,
+        weeklyVendors: defaultValues.weeklyVendors,
       })),
     }));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
@@ -129,6 +136,23 @@ const useStore = create((set, get) => ({
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
+  toggleWeeklyVendorStatus: (task, id) => {
+    set((state) => ({
+      taskStatus: state.taskStatus.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              weeklyVendors: {
+                ...item.weeklyVendors,
+                [task]: !item.weeklyVendors[task],
+              },
+            }
+          : item
+      ),
+    }));
+    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+  },
   updateRS: (rosterStatus) => set((state) => ({ rosterStatus })),
   updateTS: (taskStatus) => set((state) => ({ taskStatus })),
   updateName: (id, name) =>
@@ -149,6 +173,7 @@ const useStore = create((set, get) => ({
       class: "",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
+      weeklyVendors: defaultValues.weeklyVendors,
     },
     {
       id: 1,
@@ -156,6 +181,7 @@ const useStore = create((set, get) => ({
       class: "",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
+      weeklyVendors: defaultValues.weeklyVendors,
     },
     {
       id: 2,
@@ -163,6 +189,7 @@ const useStore = create((set, get) => ({
       class: "",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
+      weeklyVendors: defaultValues.weeklyVendors,
     },
     {
       id: 3,
@@ -170,6 +197,7 @@ const useStore = create((set, get) => ({
       class: "",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
+      weeklyVendors: defaultValues.weeklyVendors,
     },
     {
       id: 4,
@@ -177,6 +205,7 @@ const useStore = create((set, get) => ({
       class: "",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
+      weeklyVendors: defaultValues.weeklyVendors,
     },
     {
       id: 5,
@@ -184,6 +213,7 @@ const useStore = create((set, get) => ({
       class: "",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
+      weeklyVendors: defaultValues.weeklyVendors,
     },
   ],
   rosterStatus: defaultValues.rosterStatus,
