@@ -1,4 +1,5 @@
 import * as React from "react";
+import _ from "lodash";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
@@ -289,11 +290,19 @@ function App() {
   const updateGV = arbitrageStore((state) => state.updateGV);
 
   const localTaskStatus = localStorage.getItem("taskStatus");
+  const parsedLocalTasks = JSON.parse(localTaskStatus);
   const localRosterStatus = localStorage.getItem("rosterStatus");
   const localGoldValues = localStorage.getItem("goldValues");
 
   if (localTaskStatus) {
-    updateTS(JSON.parse(localTaskStatus));
+    if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
+      updateTS(parsedLocalTasks);
+    } else {
+      _.each(parsedLocalTasks, (char) => {
+        char.weeklyVendors = defaultValues.weeklyVendors;
+      });
+      updateTS(parsedLocalTasks);
+    }
   }
   if (localRosterStatus) {
     updateRS(JSON.parse(localRosterStatus));
