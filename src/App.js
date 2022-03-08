@@ -23,6 +23,7 @@ const defaultValues = {
     guardian1: false,
     guardian2: false,
     kalthertz: false,
+    guildDonation: false,
   },
   weeklies: {
     una1: false,

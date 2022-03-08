@@ -43,6 +43,7 @@ const dailies = [
   createData(`Guardian Raid 1`, "guardian1"),
   createData(`Guardian Raid 2`, "guardian2"),
   createData(`Kalthertz`, "kalthertz"),
+  createData(`Guild Donation`, "guildDonation"),
 ];
 
 const accountDailies = [
@@ -68,20 +69,20 @@ const weeklies = [
   createData(`Una's Task 1`, "una1"),
   createData(`Una's Task 2`, "una2"),
   createData(`Una's Task 3`, "una3"),
-  createData(`Guardian 1`, "guardian1"),
-  createData(`Guardian 2`, "guardian2"),
-  createData(`Guardian 3`, "guardian3"),
+  // createData(`Guardian 1`, "guardian1"),
+  // createData(`Guardian 2`, "guardian2"),
+  // createData(`Guardian 3`, "guardian3"),
   createData(`Abyss - Demon Beast Canyon`, "abyssdemonbeastcanyon"),
   createData(`Abyss - Necromancer's Origin`, "abyssnecromancer"),
   createData(`Abyss - Hall of the Twisted Warlord`, "abysstwistedwarlord"),
   createData(`Abyss - Hildebrandt Palace`, "abysshildebrandt"),
-  createData(`Abyss - Road of Sorrow`, "abyssroadofsorrow"),
-  createData(`Abyss - Forgotten Forge`, "abyssforgottenforge"),
-  createData(`Abyss - Oblivion Sea`, "abyssoblivionsea"),
-  createData(`Abyss - Perilous Abyss`, "abyssperilousabyss"),
-  createData(`Abyss - Underwater Sanctuary`, "abyssunderwatersanctuary"),
-  createData(`Abyss - Distraught Forest`, "abyssdistraughtforest"),
-  createData(`Abyss - Rotting Glade`, "abyssrottingglade"),
+  createData(`Abyss - Road of Lament`, "abyssroadofsorrow"),
+  createData(`Abyss - Forge of Fallen Pride`, "abyssforgottenforge"),
+  createData(`Abyss - Sea of Indolence`, "abyssoblivionsea"),
+  createData(`Abyss - Tranquil Karkosa`, "abyssperilousabyss"),
+  createData(`Abyss - Alaric's Sanctuary`, "abyssunderwatersanctuary"),
+  createData(`Abyss - Aira's Oculus`, "abyssdistraughtforest"),
+  createData(`Abyss - Oreha Preveza`, "abyssrottingglade"),
   createData(`Abyss Raid - Argos`, "abyssraidargos"),
 ];
 
