@@ -44,6 +44,7 @@ const defaultValues = {
     abyssdistraughtforest: false,
     abyssrottingglade: false,
     abyssraidargos: false,
+    ghostship1: false,
   },
   weeklyVendors: {
     vendorGuild: false,
@@ -157,6 +158,19 @@ const useStore = create((set, get) => ({
   },
   updateRS: (rosterStatus) => set((state) => ({ rosterStatus })),
   updateTS: (taskStatus) => set((state) => ({ taskStatus })),
+  updateClass: (id, charclass) => {
+    set((state) => ({
+      taskStatus: state.taskStatus.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              class: charclass,
+            }
+          : item
+      ),
+    }));
+    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+  },
   updateName: (id, name) =>
     set((state) => ({
       taskStatus: state.taskStatus.map((item) =>

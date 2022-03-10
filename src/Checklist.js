@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
 import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import InfoIcon from "@mui/icons-material/Info";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,11 +15,13 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -30,8 +33,8 @@ import Select from "@mui/material/Select";
 // import create from "zustand";
 import CharacterSelect from "./CharacterSelect";
 
-function createData(name, id) {
-  return { name, id };
+function createData(name, id, info) {
+  return { name, id, info };
 }
 
 const dailies = [
@@ -42,7 +45,11 @@ const dailies = [
   createData(`Chaos Dungeon 2`, "chaos2"),
   createData(`Guardian Raid 1`, "guardian1"),
   createData(`Guardian Raid 2`, "guardian2"),
-  createData(`Kalthertz`, "kalthertz"),
+  createData(
+    `Kalthertz`,
+    "kalthertz",
+    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
+  ),
   createData(`Guild Donation`, "guildDonation"),
 ];
 
@@ -69,6 +76,11 @@ const weeklies = [
   createData(`Una's Task 1`, "una1"),
   createData(`Una's Task 2`, "una2"),
   createData(`Una's Task 3`, "una3"),
+  createData(
+    `Ghostship`,
+    "ghostship1",
+    "Starts Tuesday 11AM, Thursday 11AM, Saturday 11AM and occurs once per hour until reset"
+  ),
   // createData(`Guardian 1`, "guardian1"),
   // createData(`Guardian 2`, "guardian2"),
   // createData(`Guardian 3`, "guardian3"),
@@ -109,6 +121,13 @@ export default function Checklist(props) {
     (state) => state.toggleWeeklyVendorStatus
   );
 
+  // normal hooks
+
+  const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
+  const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
+  const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
+  const [openWeeklyVendors, setOpenWeeklyVendors] = React.useState(false);
+
   function handleChangeName(event, id) {
     const name = event.target.value;
     updateName(id, name);
@@ -139,6 +158,7 @@ export default function Checklist(props) {
         <Table size="small">
           <TableHead>
             <TableRow>
+              <TableCell />
               <TableCell>
                 {/* <Checkbox /> */}
                 Characters
@@ -156,9 +176,26 @@ export default function Checklist(props) {
           <TableBody>
             {/* <CharacterNameRow useStore={props.useStore} /> */}
             <TableRow>
-              <TableCell colSpan={taskStatus.length + 1}>
+              <TableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => setOpenDailyTasks(!openDailyTasks)}
+                >
+                  {openDailyTasks ? (
+                    <KeyboardArrowUpIcon />
+                  ) : (
+                    <KeyboardArrowDownIcon />
+                  )}
+                </IconButton>
+              </TableCell>
+              <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography variant="h6" component="p" sx={{ padding: 2 }}>
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
                     Daily Tasks
                   </Typography>
                   <Box>
@@ -173,26 +210,48 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {dailies.map((row) => (
-              <TableRow hover role="checkbox" key={row.id}>
-                <TableCell>
-                  <Typography>{row.name}</Typography>
-                </TableCell>
-                {taskStatus.map((charData) => (
-                  <TableCell padding="checkbox" key={`dailies-${charData.id}`}>
-                    <Checkbox
-                      color="primary"
-                      onChange={(event) =>
-                        handleDailyStatus(row.id, charData.id)
-                      }
-                      checked={taskStatus[charData.id].dailies[row.id]}
-                    />
+            {openDailyTasks &&
+              dailies.map((row) => (
+                <TableRow hover role="checkbox" key={row.id}>
+                  <TableCell>
+                    <Tooltip title={row.info}>
+                      <IconButton size="small">
+                        {row.info && <InfoIcon />}
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                  <TableCell>
+                    <Typography>{row.name}</Typography>
+                  </TableCell>
+                  {taskStatus.map((charData) => (
+                    <TableCell
+                      padding="checkbox"
+                      key={`dailies-${charData.id}`}
+                    >
+                      <Checkbox
+                        color="primary"
+                        onChange={() => handleDailyStatus(row.id, charData.id)}
+                        checked={taskStatus[charData.id].dailies[row.id]}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
             <TableRow>
-              <TableCell colSpan={taskStatus.length + 1}>
+              <TableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => setOpenDailyAccount(!openDailyAccount)}
+                >
+                  {openDailyAccount ? (
+                    <KeyboardArrowUpIcon />
+                  ) : (
+                    <KeyboardArrowDownIcon />
+                  )}
+                </IconButton>
+              </TableCell>
+              <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography variant="h6" component="p" sx={{ padding: 2 }}>
                     Account Dailies
@@ -200,31 +259,46 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {accountDailies.map((row) => (
-              <TableRow
-                hover
-                role="checkbox"
-                key={row.id}
-                sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
-              >
-                <TableCell>
-                  <Typography>{row.name}</Typography>
-                </TableCell>
-                <TableCell
-                  padding="checkbox"
-                  key={`${row.id}`}
-                  colSpan={taskStatus.length}
+            {openDailyAccount &&
+              accountDailies.map((row) => (
+                <TableRow
+                  hover
+                  role="checkbox"
+                  key={row.id}
+                  sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
                 >
-                  <Checkbox
-                    color="primary"
-                    onChange={(event) => handleAccountDaily(event, row.id)}
-                    checked={rosterStatus[row.id]}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell />
+                  <TableCell>
+                    <Typography>{row.name}</Typography>
+                  </TableCell>
+                  <TableCell
+                    padding="checkbox"
+                    key={`${row.id}`}
+                    colSpan={taskStatus.length}
+                  >
+                    <Checkbox
+                      color="primary"
+                      onChange={(event) => handleAccountDaily(event, row.id)}
+                      checked={rosterStatus[row.id]}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
             <TableRow>
-              <TableCell colSpan={taskStatus.length + 1}>
+              <TableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => setOpenWeeklyTasks(!openWeeklyTasks)}
+                >
+                  {openWeeklyTasks ? (
+                    <KeyboardArrowUpIcon />
+                  ) : (
+                    <KeyboardArrowDownIcon />
+                  )}
+                </IconButton>
+              </TableCell>
+              <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography variant="h6" component="p" sx={{ padding: 2 }}>
                     Weekly Tasks
@@ -241,26 +315,50 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {weeklies.map((row) => (
-              <TableRow hover role="checkbox" key={row.id}>
-                <TableCell>
-                  <Typography>{row.name}</Typography>
-                </TableCell>
-                {taskStatus.map((charData) => (
-                  <TableCell padding="checkbox" key={`weeklies-${charData.id}`}>
-                    <Checkbox
-                      color="primary"
-                      onChange={(event) =>
-                        handleWeeklyStatus(row.id, charData.id)
-                      }
-                      checked={taskStatus[charData.id].weeklies[row.id]}
-                    />
+            {openWeeklyTasks &&
+              weeklies.map((row) => (
+                <TableRow hover role="checkbox" key={row.id}>
+                  <TableCell>
+                    <Tooltip title={row.info}>
+                      <IconButton size="small">
+                        {row.info && <InfoIcon />}
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                  <TableCell>
+                    <Typography>{row.name}</Typography>
+                  </TableCell>
+                  {taskStatus.map((charData) => (
+                    <TableCell
+                      padding="checkbox"
+                      key={`weeklies-${charData.id}`}
+                    >
+                      <Checkbox
+                        color="primary"
+                        onChange={(event) =>
+                          handleWeeklyStatus(row.id, charData.id)
+                        }
+                        checked={taskStatus[charData.id].weeklies[row.id]}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
             <TableRow>
-              <TableCell colSpan={taskStatus.length + 1}>
+              <TableCell>
+                <IconButton
+                  aria-label="expand row"
+                  size="small"
+                  onClick={() => setOpenWeeklyVendors(!openWeeklyVendors)}
+                >
+                  {openWeeklyVendors ? (
+                    <KeyboardArrowUpIcon />
+                  ) : (
+                    <KeyboardArrowDownIcon />
+                  )}
+                </IconButton>
+              </TableCell>
+              <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography variant="h6" component="p" sx={{ padding: 2 }}>
                     Weekly Vendors
@@ -268,32 +366,34 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {weeklyVendors.map((row) => (
-              <TableRow
-                hover
-                role="checkbox"
-                key={row.id}
-                sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
-              >
-                <TableCell>
-                  <Typography>{row.name}</Typography>
-                </TableCell>
-                {taskStatus.map((charData) => (
-                  <TableCell
-                    padding="checkbox"
-                    key={`weeklyVendors-${charData.id}`}
-                  >
-                    <Checkbox
-                      color="primary"
-                      onChange={(event) =>
-                        handleWeeklyVendorStatus(row.id, charData.id)
-                      }
-                      checked={taskStatus[charData.id].weeklyVendors[row.id]}
-                    />
+            {openWeeklyVendors &&
+              weeklyVendors.map((row) => (
+                <TableRow
+                  hover
+                  role="checkbox"
+                  key={row.id}
+                  sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
+                >
+                  <TableCell />
+                  <TableCell>
+                    <Typography>{row.name}</Typography>
                   </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                  {taskStatus.map((charData) => (
+                    <TableCell
+                      padding="checkbox"
+                      key={`weeklyVendors-${charData.id}`}
+                    >
+                      <Checkbox
+                        color="primary"
+                        onChange={(event) =>
+                          handleWeeklyVendorStatus(row.id, charData.id)
+                        }
+                        checked={taskStatus[charData.id].weeklyVendors[row.id]}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

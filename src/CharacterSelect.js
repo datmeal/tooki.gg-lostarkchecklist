@@ -8,18 +8,10 @@ import { ChromeReaderModeSharp } from "@mui/icons-material";
 export default function CharacterSelect(props) {
   const { charData } = props;
   const useStore = props.useStore;
-  const taskStatus = useStore((state) => state.taskStatus);
-  const updateTS = useStore((state) => state.updateTS);
+  const updateClass = useStore((state) => state.updateClass);
 
   function handleChangeClass(event) {
-    const updated = taskStatus.map((item, i) => {
-      if (charData.id === i) {
-        return { ...item, class: event.target.value };
-      } else {
-        return item;
-      }
-    });
-    updateTS(updated);
+    updateClass(charData.id, event.target.value);
   }
 
   function renderMenuItems() {
