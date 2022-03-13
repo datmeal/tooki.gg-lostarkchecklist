@@ -74,6 +74,20 @@ export default function Checklist(props) {
       10,
       true
     ),
+    createData(
+      "Time Stop Potion (Utility Battle Item Chest [5]",
+      "utilityBattleChestTimeStop",
+      1,
+      15,
+      true
+    ),
+    createData(
+      "Flare (Utility Battle Item Chest [5])",
+      "utilityBattleChestFlare",
+      1,
+      25,
+      true
+    ),
     createData(`T2 Gem Chest (Lv. 1-2)`, "t2gem", 1, 10),
     createData(`T3 Gem Chest (Lv. 1-2)`, "t3gem", 1, 20),
   ];
@@ -96,6 +110,8 @@ export default function Checklist(props) {
     solarProtection: 150 / 3,
     healingBattleChest: 25 / 15,
     buffBattleChestAwakening: 25 / 10,
+    utilityBattleChestTimeStop: 25 / 15,
+    utilityBattleChestFlare: 25 / 25,
     t2gem: 56 / 10,
     t3gem: 73 / 20,
   };

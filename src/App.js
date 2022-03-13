@@ -1,19 +1,39 @@
 import * as React from "react";
 import _ from "lodash";
 import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  amber,
+  blue,
+  indigo,
+  lightGreen,
+  pink,
+  purple,
+  deepPurple,
+  red,
+} from "@mui/material/colors";
 import create from "zustand";
 
 import Checklist from "./Checklist";
+import Events from "./Events";
 import Arbitrage from "./Arbitrage";
 
 import logo from "./logo.svg";
 // import "./App.css";
 
 const defaultValues = {
+  siteSettings: {
+    dailyTasksOpen: false,
+    accountDailiesOpen: false,
+    weeklyTasksOpen: false,
+    weeklyVendorsOpen: false,
+  },
   dailies: {
     una1: false,
     una2: false,
@@ -24,6 +44,7 @@ const defaultValues = {
     guardian2: false,
     kalthertz: false,
     guildDonation: false,
+    grandprix: false,
   },
   weeklies: {
     una1: false,
@@ -73,6 +94,15 @@ const defaultValues = {
 };
 
 const useStore = create((set, get) => ({
+  toggleSiteSetting: (id) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        [id]: !state.siteSettings[id],
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
   resetDailyTasks: () => {
     set((state) => ({
       taskStatus: state.taskStatus.map((item) => ({
@@ -156,6 +186,9 @@ const useStore = create((set, get) => ({
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
+  updateSiteSettings: (siteSettings) => {
+    set(() => ({ siteSettings }));
+  },
   updateRS: (rosterStatus) => set((state) => ({ rosterStatus })),
   updateTS: (taskStatus) => set((state) => ({ taskStatus })),
   updateClass: (id, charclass) => {
@@ -182,6 +215,7 @@ const useStore = create((set, get) => ({
           : item
       ),
     })),
+  siteSettings: defaultValues.siteSettings,
   taskStatus: [
     {
       id: 0,
@@ -289,6 +323,39 @@ const theme = createTheme({
       default: "#212121",
       paper: "#424242",
     },
+    una: {
+      main: lightGreen[500],
+    },
+    unaW: {
+      main: indigo["A100"],
+    },
+    chaos: {
+      main: amber[500],
+    },
+    guardian: {
+      main: red[300],
+    },
+    adventure: {
+      main: purple[200],
+    },
+    boss: {
+      main: red["A700"],
+    },
+    chaosGate: {
+      main: deepPurple["A100"],
+    },
+    ghost: {
+      main: deepPurple[200],
+    },
+    rapport: {
+      main: pink[200],
+    },
+    abyssD: {
+      main: blue[200],
+    },
+    abyssR: {
+      main: blue[400],
+    },
   },
 });
 
@@ -300,15 +367,20 @@ const theme = createTheme({
 // }
 
 function App() {
+  const updateSiteSettings = useStore((state) => state.updateSiteSettings);
   const updateRS = useStore((state) => state.updateRS);
   const updateTS = useStore((state) => state.updateTS);
   const updateGV = arbitrageStore((state) => state.updateGV);
 
+  const localSiteSettings = localStorage.getItem("siteSettings");
   const localTaskStatus = localStorage.getItem("taskStatus");
   const parsedLocalTasks = JSON.parse(localTaskStatus);
   const localRosterStatus = localStorage.getItem("rosterStatus");
   const localGoldValues = localStorage.getItem("goldValues");
 
+  if (localSiteSettings) {
+    updateSiteSettings(JSON.parse(localSiteSettings));
+  }
   if (localTaskStatus) {
     if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
       updateTS(parsedLocalTasks);
@@ -328,22 +400,67 @@ function App() {
 
   // console.log(JSON.parse(localTaskStatus), JSON.parse(localRosterStatus));
 
+  const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`tabpanel-${index}`}
+        aria-labelledby={`tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Paper
+            variant="outlined"
+            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+          >
+            {children}
+          </Paper>
+        )}
+      </div>
+    );
+  };
+
+  function tabProps(index) {
+    return {
+      id: `tab-${index}`,
+      "aria-controls": `tabpanel-${index}`,
+    };
+  }
+
+  const [tabValue, setTabValue] = React.useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container component="main">
-        <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-        >
+        <Box>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            aria-label="Navigation"
+            centered
+          >
+            <Tab label="Checklist" {...tabProps(0)} />
+            <Tab label="Events" {...tabProps(1)} />
+            <Tab label="Mari's Shop" {...tabProps(2)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={tabValue} index={0}>
           <Checklist useStore={useStore} theme={theme} />
-        </Paper>
-        <Paper
-          variant="outlined"
-          sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-        >
+        </TabPanel>
+        <TabPanel value={tabValue} index={1}>
+          <Events useStore={useStore} theme={theme} />
+        </TabPanel>
+        <TabPanel value={tabValue} index={2}>
           <Arbitrage useStore={arbitrageStore} theme={theme} />
-        </Paper>
+        </TabPanel>
       </Container>
     </ThemeProvider>
   );

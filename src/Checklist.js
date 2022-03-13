@@ -1,8 +1,10 @@
 import * as React from "react";
 import _ from "lodash";
 import PropTypes from "prop-types";
+import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
 import { alpha } from "@mui/material/styles";
+import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import InfoIcon from "@mui/icons-material/Info";
 import Table from "@mui/material/Table";
@@ -14,6 +16,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
+import { ThemeProvider } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
@@ -33,69 +36,171 @@ import Select from "@mui/material/Select";
 // import create from "zustand";
 import CharacterSelect from "./CharacterSelect";
 
-function createData(name, id, info) {
-  return { name, id, info };
+// Image / Color Stuff
+import icon_una_daily from "./img/icon_una_daily.png";
+import icon_una_weekly from "./img/icon_una_weekly.png";
+import icon_chaos_dungeon from "./img/icon_chaos_dungeon.png";
+import icon_guardian from "./img/icon_guardian.png";
+import icon_adventure_island from "./img/icon_adventure_island.png";
+import icon_chaos_gate from "./img/icon_chaos_gate.png";
+import icon_field_boss from "./img/icon_field_boss.png";
+import icon_ghost_ship from "./img/icon_ghost_ship.png";
+import icon_rapport from "./img/icon_rapport.png";
+import icon_tower from "./img/icon_tower.png";
+import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
+import icon_abyss_raid from "./img/icon_abyss_raid.png";
+
+function createData(name, id, info, icon, color) {
+  return { name, id, info, icon, color };
 }
 
+// const dailies = {
+//   name: `Una's Task 1`,
+//   id: 'una1',
+//   info: 'Tooltip information',
+//   icon: 'icon_una_daily.png'
+// }
+
 const dailies = [
-  createData(`Una's Task 1`, "una1"),
-  createData(`Una's Task 2`, "una2"),
-  createData(`Una's Task 3`, "una3"),
-  createData(`Chaos Dungeon 1`, "chaos1"),
-  createData(`Chaos Dungeon 2`, "chaos2"),
-  createData(`Guardian Raid 1`, "guardian1"),
-  createData(`Guardian Raid 2`, "guardian2"),
+  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
+  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
+  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
+  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
+  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
+  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
+  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
   createData(
     `Kalthertz`,
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
   ),
   createData(`Guild Donation`, "guildDonation"),
+  createData(`Grand Prix`, "grandprix"),
 ];
 
 const accountDailies = [
-  createData(`Adventure Island`, "adv"),
-  createData(`Calendar Boss`, "cal"),
-  createData(`Chaos Gate`, "chaosgate"),
+  createData(
+    `Adventure Island`,
+    "adv",
+    null,
+    icon_adventure_island,
+    "adventure"
+  ),
+  createData(`Calendar Boss`, "cal", null, icon_field_boss, "boss"),
+  createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle"),
-  createData(`Rapport Song 1`, "rapportsong1"),
-  createData(`Rapport Song 2`, "rapportsong2"),
-  createData(`Rapport Song 3`, "rapportsong3"),
-  createData(`Rapport Song 4`, "rapportsong4"),
-  createData(`Rapport Song 5`, "rapportsong5"),
-  createData(`Rapport Song 6`, "rapportsong6"),
-  createData(`Rapport Emote 1`, "rapportemote1"),
-  createData(`Rapport Emote 2`, "rapportemote2"),
-  createData(`Rapport Emote 3`, "rapportemote3"),
-  createData(`Rapport Emote 4`, "rapportemote4"),
-  createData(`Rapport Emote 5`, "rapportemote5"),
-  createData(`Rapport Emote 6`, "rapportemote6"),
+  createData(`Rapport Song 1`, "rapportsong1", null, icon_rapport, "rapport"),
+  createData(`Rapport Song 2`, "rapportsong2", null, icon_rapport, "rapport"),
+  createData(`Rapport Song 3`, "rapportsong3", null, icon_rapport, "rapport"),
+  createData(`Rapport Song 4`, "rapportsong4", null, icon_rapport, "rapport"),
+  createData(`Rapport Song 5`, "rapportsong5", null, icon_rapport, "rapport"),
+  createData(`Rapport Song 6`, "rapportsong6", null, icon_rapport, "rapport"),
+  createData(`Rapport Emote 1`, "rapportemote1", null, icon_rapport, "rapport"),
+  createData(`Rapport Emote 2`, "rapportemote2", null, icon_rapport, "rapport"),
+  createData(`Rapport Emote 3`, "rapportemote3", null, icon_rapport, "rapport"),
+  createData(`Rapport Emote 4`, "rapportemote4", null, icon_rapport, "rapport"),
+  createData(`Rapport Emote 5`, "rapportemote5", null, icon_rapport, "rapport"),
+  createData(`Rapport Emote 6`, "rapportemote6", null, icon_rapport, "rapport"),
 ];
 
 const weeklies = [
-  createData(`Una's Task 1`, "una1"),
-  createData(`Una's Task 2`, "una2"),
-  createData(`Una's Task 3`, "una3"),
+  createData(`Una's Task 1`, "una1", null, icon_una_weekly, "unaW"),
+  createData(`Una's Task 2`, "una2", null, icon_una_weekly, "unaW"),
+  createData(`Una's Task 3`, "una3", null, icon_una_weekly, "unaW"),
   createData(
     `Ghostship`,
     "ghostship1",
-    "Starts Tuesday 11AM, Thursday 11AM, Saturday 11AM and occurs once per hour until reset"
+    "Starts Tuesday 11AM, Thursday 11AM, Saturday 11AM and occurs once per hour until reset",
+    icon_ghost_ship,
+    "ghost"
   ),
   // createData(`Guardian 1`, "guardian1"),
   // createData(`Guardian 2`, "guardian2"),
   // createData(`Guardian 3`, "guardian3"),
-  createData(`Abyss - Demon Beast Canyon`, "abyssdemonbeastcanyon"),
-  createData(`Abyss - Necromancer's Origin`, "abyssnecromancer"),
-  createData(`Abyss - Hall of the Twisted Warlord`, "abysstwistedwarlord"),
-  createData(`Abyss - Hildebrandt Palace`, "abysshildebrandt"),
-  createData(`Abyss - Road of Lament`, "abyssroadofsorrow"),
-  createData(`Abyss - Forge of Fallen Pride`, "abyssforgottenforge"),
-  createData(`Abyss - Sea of Indolence`, "abyssoblivionsea"),
-  createData(`Abyss - Tranquil Karkosa`, "abyssperilousabyss"),
-  createData(`Abyss - Alaric's Sanctuary`, "abyssunderwatersanctuary"),
-  createData(`Abyss - Aira's Oculus`, "abyssdistraughtforest"),
-  createData(`Abyss - Oreha Preveza`, "abyssrottingglade"),
-  createData(`Abyss Raid - Argos`, "abyssraidargos"),
+  createData(
+    `Abyss - Demon Beast Canyon`,
+    "abyssdemonbeastcanyon",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Necromancer's Origin`,
+    "abyssnecromancer",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Hall of the Twisted Warlord`,
+    "abysstwistedwarlord",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Hildebrandt Palace`,
+    "abysshildebrandt",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Road of Lament`,
+    "abyssroadofsorrow",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Forge of Fallen Pride`,
+    "abyssforgottenforge",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Sea of Indolence`,
+    "abyssoblivionsea",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Tranquil Karkosa`,
+    "abyssperilousabyss",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Alaric's Sanctuary`,
+    "abyssunderwatersanctuary",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Aira's Oculus`,
+    "abyssdistraughtforest",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss - Oreha Preveza`,
+    "abyssrottingglade",
+    null,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `Abyss Raid - Argos`,
+    "abyssraidargos",
+    null,
+    icon_abyss_raid,
+    "abyssR"
+  ),
 ];
 
 const weeklyVendors = [
@@ -106,14 +211,14 @@ const weeklyVendors = [
 ];
 
 export default function Checklist(props) {
-  const { useStore } = props;
+  const { theme, useStore } = props;
 
   const resetDailyTasks = useStore((state) => state.resetDailyTasks);
   const resetWeeklyTasks = useStore((state) => state.resetWeeklyTasks);
+  const siteSettings = useStore((state) => state.siteSettings);
+  const toggleSiteSetting = useStore((state) => state.toggleSiteSetting);
   const taskStatus = useStore((state) => state.taskStatus);
   const rosterStatus = useStore((state) => state.rosterStatus);
-  const updateTS = useStore((state) => state.updateTS);
-  const updateName = useStore((state) => state.updateName);
   const toggleAccountDaily = useStore((state) => state.toggleAccountDaily);
   const toggleDailyStatus = useStore((state) => state.toggleDailyStatus);
   const toggleWeeklyStatus = useStore((state) => state.toggleWeeklyStatus);
@@ -122,16 +227,10 @@ export default function Checklist(props) {
   );
 
   // normal hooks
-
-  const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
+  // const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
   const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
   const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
   const [openWeeklyVendors, setOpenWeeklyVendors] = React.useState(false);
-
-  function handleChangeName(event, id) {
-    const name = event.target.value;
-    updateName(id, name);
-  }
 
   function handleDailyStatus(taskName, id) {
     toggleDailyStatus(taskName, id);
@@ -149,8 +248,14 @@ export default function Checklist(props) {
     toggleAccountDaily(id);
   }
 
+  const IconImage = styled.img`
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+  `;
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Typography component="h1" variant="h4" align="center">
         Lost Ark Dailies/Weeklies Checklist
       </Typography>
@@ -180,9 +285,9 @@ export default function Checklist(props) {
                 <IconButton
                   aria-label="expand row"
                   size="small"
-                  onClick={() => setOpenDailyTasks(!openDailyTasks)}
+                  onClick={() => toggleSiteSetting("dailyTasksOpen")}
                 >
-                  {openDailyTasks ? (
+                  {siteSettings.dailyTasksOpen ? (
                     <KeyboardArrowUpIcon />
                   ) : (
                     <KeyboardArrowDownIcon />
@@ -210,18 +315,29 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {openDailyTasks &&
+            {siteSettings.dailyTasksOpen &&
               dailies.map((row) => (
                 <TableRow hover role="checkbox" key={row.id}>
                   <TableCell>
-                    <Tooltip title={row.info}>
+                    {row.info && (
+                      <Tooltip title={row.info}>
+                        <IconButton size="small">
+                          {row.info && <InfoIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {row.icon && (
                       <IconButton size="small">
-                        {row.info && <InfoIcon />}
+                        <IconImage src={row.icon} alt={row.name} />
                       </IconButton>
-                    </Tooltip>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Typography>{row.name}</Typography>
+                    <Typography
+                      color={row.color && theme.palette[row.color]["main"]}
+                    >
+                      {row.name}
+                    </Typography>
                   </TableCell>
                   {taskStatus.map((charData) => (
                     <TableCell
@@ -229,9 +345,17 @@ export default function Checklist(props) {
                       key={`dailies-${charData.id}`}
                     >
                       <Checkbox
-                        color="primary"
+                        // color={row.color ? row.color : "primary"}
                         onChange={() => handleDailyStatus(row.id, charData.id)}
                         checked={taskStatus[charData.id].dailies[row.id]}
+                        sx={
+                          row.color && {
+                            color: theme.palette[row.color]["main"],
+                            "&.Mui-checked": {
+                              color: theme.palette[row.color]["main"],
+                            },
+                          }
+                        }
                       />
                     </TableCell>
                   ))}
@@ -242,9 +366,9 @@ export default function Checklist(props) {
                 <IconButton
                   aria-label="expand row"
                   size="small"
-                  onClick={() => setOpenDailyAccount(!openDailyAccount)}
+                  onClick={() => toggleSiteSetting("accountDailiesOpen")}
                 >
-                  {openDailyAccount ? (
+                  {siteSettings.accountDailiesOpen ? (
                     <KeyboardArrowUpIcon />
                   ) : (
                     <KeyboardArrowDownIcon />
@@ -253,23 +377,39 @@ export default function Checklist(props) {
               </TableCell>
               <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography variant="h6" component="p" sx={{ padding: 2 }}>
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
                     Account Dailies
                   </Typography>
                 </Box>
               </TableCell>
             </TableRow>
-            {openDailyAccount &&
+            {siteSettings.accountDailiesOpen &&
               accountDailies.map((row) => (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  key={row.id}
-                  sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
-                >
-                  <TableCell />
+                <TableRow hover role="checkbox" key={row.id}>
                   <TableCell>
-                    <Typography>{row.name}</Typography>
+                    {row.info && (
+                      <Tooltip title={row.info}>
+                        <IconButton size="small">
+                          {row.info && <InfoIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {row.icon && (
+                      <IconButton size="small">
+                        <IconImage src={row.icon} alt={row.name} />
+                      </IconButton>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      color={row.color && theme.palette[row.color]["main"]}
+                    >
+                      {row.name}
+                    </Typography>
                   </TableCell>
                   <TableCell
                     padding="checkbox"
@@ -280,6 +420,14 @@ export default function Checklist(props) {
                       color="primary"
                       onChange={(event) => handleAccountDaily(event, row.id)}
                       checked={rosterStatus[row.id]}
+                      sx={
+                        row.color && {
+                          color: theme.palette[row.color]["main"],
+                          "&.Mui-checked": {
+                            color: theme.palette[row.color]["main"],
+                          },
+                        }
+                      }
                     />
                   </TableCell>
                 </TableRow>
@@ -289,9 +437,9 @@ export default function Checklist(props) {
                 <IconButton
                   aria-label="expand row"
                   size="small"
-                  onClick={() => setOpenWeeklyTasks(!openWeeklyTasks)}
+                  onClick={() => toggleSiteSetting("weeklyTasksOpen")}
                 >
-                  {openWeeklyTasks ? (
+                  {siteSettings.weeklyTasksOpen ? (
                     <KeyboardArrowUpIcon />
                   ) : (
                     <KeyboardArrowDownIcon />
@@ -300,7 +448,11 @@ export default function Checklist(props) {
               </TableCell>
               <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography variant="h6" component="p" sx={{ padding: 2 }}>
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
                     Weekly Tasks
                   </Typography>
                   <Box>
@@ -315,18 +467,29 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {openWeeklyTasks &&
+            {siteSettings.weeklyTasksOpen &&
               weeklies.map((row) => (
                 <TableRow hover role="checkbox" key={row.id}>
                   <TableCell>
-                    <Tooltip title={row.info}>
+                    {row.icon && (
                       <IconButton size="small">
-                        {row.info && <InfoIcon />}
+                        <IconImage src={row.icon} alt={row.name} />
                       </IconButton>
-                    </Tooltip>
+                    )}
+                    {row.info && (
+                      <Tooltip title={row.info}>
+                        <IconButton size="small">
+                          {row.info && <InfoIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Typography>{row.name}</Typography>
+                    <Typography
+                      color={row.color && theme.palette[row.color]["main"]}
+                    >
+                      {row.name}
+                    </Typography>
                   </TableCell>
                   {taskStatus.map((charData) => (
                     <TableCell
@@ -335,10 +498,16 @@ export default function Checklist(props) {
                     >
                       <Checkbox
                         color="primary"
-                        onChange={(event) =>
-                          handleWeeklyStatus(row.id, charData.id)
-                        }
+                        onChange={() => handleWeeklyStatus(row.id, charData.id)}
                         checked={taskStatus[charData.id].weeklies[row.id]}
+                        sx={
+                          row.color && {
+                            color: theme.palette[row.color]["main"],
+                            "&.Mui-checked": {
+                              color: theme.palette[row.color]["main"],
+                            },
+                          }
+                        }
                       />
                     </TableCell>
                   ))}
@@ -349,9 +518,9 @@ export default function Checklist(props) {
                 <IconButton
                   aria-label="expand row"
                   size="small"
-                  onClick={() => setOpenWeeklyVendors(!openWeeklyVendors)}
+                  onClick={() => toggleSiteSetting("weeklyVendorsOpen")}
                 >
-                  {openWeeklyVendors ? (
+                  {siteSettings.weeklyVendorsOpen ? (
                     <KeyboardArrowUpIcon />
                   ) : (
                     <KeyboardArrowDownIcon />
@@ -360,20 +529,19 @@ export default function Checklist(props) {
               </TableCell>
               <TableCell colSpan={taskStatus.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography variant="h6" component="p" sx={{ padding: 2 }}>
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
                     Weekly Vendors
                   </Typography>
                 </Box>
               </TableCell>
             </TableRow>
-            {openWeeklyVendors &&
+            {siteSettings.weeklyVendorsOpen &&
               weeklyVendors.map((row) => (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  key={row.id}
-                  sx={{ backgroundColor: `rgba(0,0,0,.3)` }}
-                >
+                <TableRow hover role="checkbox" key={row.id}>
                   <TableCell />
                   <TableCell>
                     <Typography>{row.name}</Typography>
@@ -397,7 +565,7 @@ export default function Checklist(props) {
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </ThemeProvider>
   );
 }
 
