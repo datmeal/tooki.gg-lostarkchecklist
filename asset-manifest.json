@@ -1,13 +1,26 @@
 {
   "files": {
-    "main.js": "/lostarkchecklist/static/js/main.e1393537.js",
+    "main.js": "/lostarkchecklist/static/js/main.b2931793.js",
     "static/js/787.8d6bb516.chunk.js": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js",
+    "static/media/moake.png": "/lostarkchecklist/static/media/moake.fc4e652f9a54ec87dc0c.png",
+    "static/media/deathshold.png": "/lostarkchecklist/static/media/deathshold.1f8507f0d6ecdc6e68c7.png",
+    "static/media/tooki.png": "/lostarkchecklist/static/media/tooki.f087d65205a503c3271f.png",
+    "static/media/shangra.png": "/lostarkchecklist/static/media/shangra.867a8d15e8896fbeff3f.png",
+    "static/media/lullaby.png": "/lostarkchecklist/static/media/lullaby.186950af38184ba39ba8.png",
+    "static/media/unknown.png": "/lostarkchecklist/static/media/unknown.9515bc2399344228b363.png",
+    "static/media/chaos.webp": "/lostarkchecklist/static/media/chaos.b24f1d30327777967ade.webp",
     "static/media/logo.svg": "/lostarkchecklist/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "static/media/grandprix.webp": "/lostarkchecklist/static/media/grandprix.f146b305cc3f9b8e5007.webp",
+    "static/media/phantomwing.webp": "/lostarkchecklist/static/media/phantomwing.5949adc5f724fd9446d4.webp",
+    "static/media/gesbroy.webp": "/lostarkchecklist/static/media/gesbroy.f21800d68a0a44b7d69f.webp",
+    "static/media/illusion.webp": "/lostarkchecklist/static/media/illusion.9e32ac2eb8c18647654f.webp",
+    "static/media/monte.webp": "/lostarkchecklist/static/media/monte.ff3d457a0f49996dfa7e.webp",
+    "static/media/forpe.webp": "/lostarkchecklist/static/media/forpe.3af697edf39f82c1a454.webp",
     "index.html": "/lostarkchecklist/index.html",
-    "main.e1393537.js.map": "/lostarkchecklist/static/js/main.e1393537.js.map",
+    "main.b2931793.js.map": "/lostarkchecklist/static/js/main.b2931793.js.map",
     "787.8d6bb516.chunk.js.map": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.e1393537.js"
+    "static/js/main.b2931793.js"
   ]
 }
