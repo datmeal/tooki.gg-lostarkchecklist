@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/lostarkchecklist/static/js/main.b2931793.js",
+    "main.js": "/lostarkchecklist/static/js/main.9a22a24a.js",
     "static/js/787.8d6bb516.chunk.js": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js",
     "static/media/moake.png": "/lostarkchecklist/static/media/moake.fc4e652f9a54ec87dc0c.png",
     "static/media/deathshold.png": "/lostarkchecklist/static/media/deathshold.1f8507f0d6ecdc6e68c7.png",
@@ -17,10 +17,10 @@
     "static/media/monte.webp": "/lostarkchecklist/static/media/monte.ff3d457a0f49996dfa7e.webp",
     "static/media/forpe.webp": "/lostarkchecklist/static/media/forpe.3af697edf39f82c1a454.webp",
     "index.html": "/lostarkchecklist/index.html",
-    "main.b2931793.js.map": "/lostarkchecklist/static/js/main.b2931793.js.map",
+    "main.9a22a24a.js.map": "/lostarkchecklist/static/js/main.9a22a24a.js.map",
     "787.8d6bb516.chunk.js.map": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.b2931793.js"
+    "static/js/main.9a22a24a.js"
   ]
 }
