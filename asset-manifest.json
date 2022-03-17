@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/lostarkchecklist/static/js/main.9a22a24a.js",
+    "main.js": "/lostarkchecklist/static/js/main.532c4c2f.js",
     "static/js/787.8d6bb516.chunk.js": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js",
     "static/media/moake.png": "/lostarkchecklist/static/media/moake.fc4e652f9a54ec87dc0c.png",
     "static/media/deathshold.png": "/lostarkchecklist/static/media/deathshold.1f8507f0d6ecdc6e68c7.png",
@@ -15,12 +15,16 @@
     "static/media/gesbroy.webp": "/lostarkchecklist/static/media/gesbroy.f21800d68a0a44b7d69f.webp",
     "static/media/illusion.webp": "/lostarkchecklist/static/media/illusion.9e32ac2eb8c18647654f.webp",
     "static/media/monte.webp": "/lostarkchecklist/static/media/monte.ff3d457a0f49996dfa7e.webp",
+    "static/media/volare.webp": "/lostarkchecklist/static/media/volare.95ea8ee183e5a0849a55.webp",
+    "static/media/spida.webp": "/lostarkchecklist/static/media/spida.b63d9af59b4eb3ca9f6f.webp",
+    "static/media/medeia.webp": "/lostarkchecklist/static/media/medeia.c682ca1b758f4a5d9834.webp",
+    "static/media/tranquil.webp": "/lostarkchecklist/static/media/tranquil.da9b01782ae558f6f383.webp",
     "static/media/forpe.webp": "/lostarkchecklist/static/media/forpe.3af697edf39f82c1a454.webp",
     "index.html": "/lostarkchecklist/index.html",
-    "main.9a22a24a.js.map": "/lostarkchecklist/static/js/main.9a22a24a.js.map",
+    "main.532c4c2f.js.map": "/lostarkchecklist/static/js/main.532c4c2f.js.map",
     "787.8d6bb516.chunk.js.map": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.9a22a24a.js"
+    "static/js/main.532c4c2f.js"
   ]
 }
