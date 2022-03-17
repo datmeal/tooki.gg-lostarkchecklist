@@ -62,6 +62,7 @@ export default function Events(props) {
               return {
                 days: event.days,
                 ilvl: event.ilvl,
+                id: event.id,
                 image: event.image,
                 location: event.location,
                 name: event.name,

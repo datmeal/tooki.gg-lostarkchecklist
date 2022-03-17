@@ -395,7 +395,6 @@ const eventsStore = create((set, get) => ({
     set((state) => ({ currentDay }));
   },
   toggleFilter: (selectedCategory, selectedId) => {
-    console.log("toggleFilter", selectedCategory, selectedId);
     set((state) => ({
       eventSettings: {
         ...state.eventSettings,
