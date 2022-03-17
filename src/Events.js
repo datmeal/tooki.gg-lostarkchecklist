@@ -19,13 +19,16 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
 import { timerData, days } from "./timerData";
-import { Timer } from "@mui/icons-material";
+import { Javascript, Pause, Timer } from "@mui/icons-material";
 
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
   const currentTime = useStore((state) => state.currentTime);
   const currentDay = useStore((state) => state.currentDay);
   const rosterStatus = taskStore((state) => state.rosterStatus);
+  const filter = useStore((state) => state.eventSettings.filter);
+  const offset = 1; // add to offset AGS shenanigans
+  // console.log("filter:", filter);
   // hooks
   //   const [interval, setInterval] = useState(0);
 
@@ -46,22 +49,28 @@ export default function Events(props) {
       } else if (rosterStatus.grandprix && name === "fever") {
         return [];
       } else {
+        // console.log(category, name);
+        // console.log(filter[name]);
         return _.flatMap(category, (event) => {
-          return _.flatMap(event.time, (item, index) => {
-            const remainingTimeAsSeconds =
-              moment.duration(event.time[index]).asSeconds() -
-              moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
-            return {
-              days: event.days,
-              ilvl: event.ilvl,
-              image: event.image,
-              location: event.location,
-              name: event.name,
-              remainingTime: remainingTimeAsSeconds,
-              time: item,
-            };
-            // return { ...timerData[category][event] };
-          });
+          // if event is filtered, skip it
+          return (
+            filter[name][event.id] &&
+            _.flatMap(event.time, (item, index) => {
+              const remainingTimeAsSeconds =
+                moment.duration(event.time[index]).asSeconds() -
+                moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
+              return {
+                days: event.days,
+                ilvl: event.ilvl,
+                image: event.image,
+                location: event.location,
+                name: event.name,
+                remainingTime: remainingTimeAsSeconds,
+                time: item,
+              };
+              // return { ...timerData[category][event] };
+            })
+          );
         });
       }
     }),
@@ -72,6 +81,12 @@ export default function Events(props) {
 
   return (
     <ThemeProvider theme={theme}>
+      <Typography variant="h4" component="h1" align="center">
+        {moment(currentTime, "HH:mm:ss")
+          .add(offset, "hours")
+          .format("HH:mm:ss")}
+        (EST)
+      </Typography>
       <Typography align="center">Warning: Heavily under development</Typography>
       <Paper sx={{ my: 1, p: { xs: 1, md: 1 } }}>
         <Typography component="h1" variant="h6" align="center">
@@ -99,7 +114,7 @@ export default function Events(props) {
         <Grid item xs={6}>
           <Paper sx={{ my: 1, p: { xs: 1, md: 1 } }}>
             <Typography component="h1" variant="h6" align="center">
-              Filter (UNDER CONSTRUCTION LOL)
+              Filter
             </Typography>
           </Paper>
           <FilterList
@@ -165,10 +180,13 @@ function Timeline(props) {
   const [indicatorPosition, setIndicatorPosition] = useState(0);
 
   // Clock math
-  const currentTimeAsMilli = moment.duration(currentTime).asMilliseconds();
+  const offset = 1; // add to time for AGS shenanigans
+  const currentTimeAsMilli = moment
+    .duration(currentTime, "HH:mm:ss")
+    .add(offset, "hours")
+    .asMilliseconds();
   const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
-  const offset = 1; // add to time for AGS shenanigans
   //   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
   //   console.log(currentTimeAsMilli, startTimeAsMilli, endTimeAsMilli);
   //   console.log("currentTime%", (currentTimeAsMilli / endTimeAsMilli) * 100);
@@ -198,11 +216,6 @@ function Timeline(props) {
 
   return (
     <Paper sx={{ my: { xs: 3, md: 1 }, p: { xs: 1, md: 1 } }}>
-      <Typography>
-        {moment(currentTime, "HH:mm:ss")
-          .add(offset, "hours")
-          .format("HH:mm:ss")}
-      </Typography>
       <Hours>
         <Indicator position={indicatorPosition} />
         <Hour label="12A" position={0} />
@@ -241,6 +254,7 @@ function Timers(props) {
   const currentTime = useStore((state) => state.currentTime);
   const setCurrentTime = useStore((state) => state.setCurrentTime);
   const offset = moment.duration("-1:00").asSeconds();
+  const filter = useStore((state) => state.eventSettings.filter);
   //   const remainingTimeText = moment
   //     .duration(remainingTimeAsSeconds, "seconds")
   //     .humanize();
@@ -323,7 +337,7 @@ function TimerItem(props) {
 
 const FilterList = React.memo((props) => {
   const { currentDay, useStore } = props;
-  console.log("renderList");
+  // console.log("renderList");
   return (
     <List sx={{ p: 0 }}>
       <FilterCategory
@@ -345,8 +359,32 @@ const FilterList = React.memo((props) => {
         useStore={useStore}
       />
       <FilterCategory
+        category="ghostship"
+        title="Ghostship"
+        currentDay={currentDay}
+        useStore={useStore}
+      />
+      <FilterCategory
+        category="fieldboss"
+        title="Field Boss"
+        currentDay={currentDay}
+        useStore={useStore}
+      />
+      <FilterCategory
+        category="islands"
+        title="Islands"
+        currentDay={currentDay}
+        useStore={useStore}
+      />
+      <FilterCategory
         category="sailing"
         title="Sailing Co-op"
+        currentDay={currentDay}
+        useStore={useStore}
+      />
+      <FilterCategory
+        category="pvp"
+        title="Proving Grounds"
         currentDay={currentDay}
         useStore={useStore}
       />
@@ -356,6 +394,8 @@ const FilterList = React.memo((props) => {
 
 function FilterCategory(props) {
   const { category, title, currentDay, useStore } = props;
+  const toggleFilter = useStore((state) => state.toggleFilter);
+  const eventSettings = useStore((state) => state.eventSettings);
   return (
     <Accordion>
       <AccordionSummary id="fever" expandIcon={<ExpandMoreIcon />}>
@@ -370,12 +410,19 @@ function FilterCategory(props) {
                 key={event.name}
                 role="listitem"
                 button
-                onClick={() =>
-                  useStore.toggleFilter(category, event.name, event.id)
-                }
+                onClick={() => {
+                  toggleFilter(category, event.id);
+                }}
               >
                 <ListItemIcon>
-                  <Checkbox disableRipple />
+                  <Checkbox
+                    disableRipple
+                    checked={
+                      _.has(eventSettings, `filter.${category}.${event.id}`)
+                        ? eventSettings["filter"][category][event.id]
+                        : false
+                    }
+                  />
                 </ListItemIcon>
                 <ListItemText primary={event.name} />
               </ListItem>

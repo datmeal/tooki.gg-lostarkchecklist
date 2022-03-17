@@ -318,33 +318,97 @@ const arbitrageStore = create((set, get) => ({
   updateGV: (goldValues) => set((state) => ({ goldValues })),
 }));
 
+const defaultEventSettings = {
+  filter: {
+    fever: {
+      grandprix: true,
+    },
+    adventure: {
+      forpe: true,
+      harmony: true,
+      lagoon: true,
+      lushreed: true,
+      medeia: true,
+      monte: true,
+      oblivion: true,
+      phantomwing: true,
+      snowpang: true,
+      tranquil: true,
+      volare: true,
+    },
+    chaos: {
+      chaos_twisting_302: true,
+      chaos_plague_302: true,
+      chaos_phantom_460: true,
+      chaos_plague_802: true,
+      chaos_darkness_960: true,
+      chaos_chaos_1302: true,
+      chaos_phantom_302: true,
+      chaos_darkness_302: true,
+    },
+    fieldboss: {
+      moake: true,
+    },
+    ghostship: {
+      ghostship_460: true,
+      ghostship_960: true,
+      ghostship_1370: true,
+    },
+    islands: {
+      alakkir: true,
+      deathshold: true,
+      erasmo: true,
+      gesbroy: true,
+      illusion: true,
+      lullaby: true,
+      shangra: true,
+      spida: true,
+      tooki: true,
+      unknown: true,
+    },
+    sailing: {
+      sailingcoop_harmony_wed: true,
+      sailingcoop_vern_wed: true,
+      sailingcoop_arthetine_wed: true,
+      sailingcoop_anikka_302: true,
+      sailingcoop_arthetine_thu: true,
+      sailingcoop_anikka_thu: true,
+      sailingcoop_vern_thu: true,
+      sailingcoop_rohendel_thu: true,
+      sailingcoop_feiton_thu: true,
+      sailingcoop_punika_thu: true,
+    },
+    pvp: {
+      coopbattle: true,
+    },
+  },
+};
+
 const eventsStore = create((set, get) => ({
   currentDay: moment().utc().subtract(5, "hours").day(),
   currentTime: moment().utc().subtract(5, "hours").format("HH:mm:ss"),
-  filter: [],
+  eventSettings: defaultEventSettings,
   setCurrentTime: (currentTime) => {
     set((state) => ({ currentTime }));
   },
   setCurrentDay: (currentDay) => {
     set((state) => ({ currentDay }));
   },
-  toggleFilter: (event, id) => {
-    console.log("toggleFilter", event, id);
+  toggleFilter: (selectedCategory, selectedId) => {
+    console.log("toggleFilter", selectedCategory, selectedId);
+    set((state) => ({
+      eventSettings: {
+        ...state.eventSettings,
+        filter: _.set(
+          state.eventSettings.filter,
+          `${selectedCategory}.${selectedId}`,
+          !state.eventSettings["filter"][selectedCategory][selectedId]
+        ),
+      },
+    }));
+    localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
   },
-  // toggleFilter: (event, id) => set((state) => ({
-  //   filter: state.filter.map((item) =>
-  //     item.id === id
-  //       ? {
-  //           ...item,
-  //           dailies: {
-  //             ...item.dailies,
-  //             [event]: !item.dailies[event],
-  //           },
-  //         }
-  //       : item
-  //   ),
-  // }));
-  // localStorage.setItem("filter", JSON.stringify(get().filter));
+  updateES: (eventSettings) => set((state) => ({ eventSettings })),
 }));
 
 const theme = createTheme({
@@ -408,6 +472,7 @@ function App() {
   const updateRS = useStore((state) => state.updateRS);
   const updateTS = useStore((state) => state.updateTS);
   const updateGV = arbitrageStore((state) => state.updateGV);
+  const updateES = eventsStore((state) => state.updateES);
   // const setTabValue = useStore((state) => state.setTabValue);
   // const siteSettings = useStore((state) => state.siteSettings);
   const updateSiteSettings = useStore((state) => state.updateSiteSettings);
@@ -417,6 +482,7 @@ function App() {
   const parsedLocalTasks = JSON.parse(localTaskStatus);
   const localRosterStatus = localStorage.getItem("rosterStatus");
   const localGoldValues = localStorage.getItem("goldValues");
+  const localEventSettings = localStorage.getItem("eventSettings");
 
   if (localSiteSettings) {
     updateSiteSettings(JSON.parse(localSiteSettings));
@@ -436,6 +502,9 @@ function App() {
   }
   if (localGoldValues) {
     updateGV(JSON.parse(localGoldValues));
+  }
+  if (localEventSettings) {
+    updateES(JSON.parse(localEventSettings));
   }
 
   // console.log(JSON.parse(localTaskStatus), JSON.parse(localRosterStatus));
