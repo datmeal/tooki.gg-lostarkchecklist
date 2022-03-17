@@ -37,6 +37,7 @@ import Select from "@mui/material/Select";
 import CharacterSelect from "./CharacterSelect";
 
 // Image / Color Stuff
+import icon_guild from "./img/icon_guild.png";
 import icon_una_daily from "./img/icon_una_daily.png";
 import icon_una_weekly from "./img/icon_una_weekly.png";
 import icon_chaos_dungeon from "./img/icon_chaos_dungeon.png";
@@ -49,6 +50,7 @@ import icon_rapport from "./img/icon_rapport.png";
 import icon_tower from "./img/icon_tower.png";
 import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
 import icon_abyss_raid from "./img/icon_abyss_raid.png";
+import icon_grandprix from "./img/events/grandprix.webp";
 
 function createData(name, id, info, icon, color) {
   return { name, id, info, icon, color };
@@ -62,6 +64,7 @@ function createData(name, id, info, icon, color) {
 // }
 
 const dailies = [
+  createData(`Guild Donation`, "guildDonation", null, icon_guild),
   createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
   createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
   createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
@@ -74,11 +77,10 @@ const dailies = [
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
   ),
-  createData(`Guild Donation`, "guildDonation"),
-  createData(`Grand Prix`, "grandprix"),
 ];
 
 const accountDailies = [
+  createData(`Grand Prix`, "grandprix", null, icon_grandprix),
   createData(
     `Adventure Island`,
     "adv",
@@ -86,7 +88,7 @@ const accountDailies = [
     icon_adventure_island,
     "adventure"
   ),
-  createData(`Calendar Boss`, "cal", null, icon_field_boss, "boss"),
+  createData(`Field Boss`, "cal", null, icon_field_boss, "boss"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle"),
   createData(`Rapport Song 1`, "rapportsong1", null, icon_rapport, "rapport"),
@@ -118,77 +120,77 @@ const weeklies = [
   // createData(`Guardian 2`, "guardian2"),
   // createData(`Guardian 3`, "guardian3"),
   createData(
-    `Abyss - Demon Beast Canyon`,
+    `[340] Vern 1-1`,
     "abyssdemonbeastcanyon",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Necromancer's Origin`,
+    `[340] Vern 1-2`,
     "abyssnecromancer",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Hall of the Twisted Warlord`,
+    `[460] Rohendel 2-1`,
     "abysstwistedwarlord",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Hildebrandt Palace`,
+    `[460] Rohendel 2-2`,
     "abysshildebrandt",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Road of Lament`,
+    `[840] Yorn 3-1`,
     "abyssroadofsorrow",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Forge of Fallen Pride`,
+    `[840] Yorn 3-2`,
     "abyssforgottenforge",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Sea of Indolence`,
+    `[960] Feiton 4-1`,
     "abyssoblivionsea",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Tranquil Karkosa`,
+    `[960] Feiton 4-2`,
     "abyssperilousabyss",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Alaric's Sanctuary`,
+    `[960] Feiton 4-3`,
     "abyssunderwatersanctuary",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Aira's Oculus`,
+    `[1325] Punika 5-1`,
     "abyssdistraughtforest",
     null,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss - Oreha Preveza`,
+    `[1340] Punika 5-2`,
     "abyssrottingglade",
     null,
     icon_abyss_dungeon,

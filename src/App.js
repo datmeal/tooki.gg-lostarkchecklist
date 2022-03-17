@@ -1,5 +1,6 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import _ from "lodash";
+import moment from "moment";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -29,6 +30,7 @@ import logo from "./logo.svg";
 
 const defaultValues = {
   siteSettings: {
+    tabValue: 0,
     dailyTasksOpen: false,
     accountDailiesOpen: false,
     weeklyTasksOpen: false,
@@ -44,7 +46,6 @@ const defaultValues = {
     guardian2: false,
     kalthertz: false,
     guildDonation: false,
-    grandprix: false,
   },
   weeklies: {
     una1: false,
@@ -74,6 +75,7 @@ const defaultValues = {
     vendorChaos: false,
   },
   rosterStatus: {
+    grandprix: false,
     adv: false,
     cal: false,
     chaosgate: false,
@@ -125,6 +127,13 @@ const useStore = create((set, get) => ({
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
+  setTabValue: (value) =>
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        tabValue: value,
+      },
+    })),
   toggleAccountDaily: (id) => {
     set((state) => ({
       rosterStatus: {
@@ -187,7 +196,7 @@ const useStore = create((set, get) => ({
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
   updateSiteSettings: (siteSettings) => {
-    set(() => ({ siteSettings }));
+    set((state) => ({ siteSettings }));
   },
   updateRS: (rosterStatus) => set((state) => ({ rosterStatus })),
   updateTS: (taskStatus) => set((state) => ({ taskStatus })),
@@ -309,6 +318,17 @@ const arbitrageStore = create((set, get) => ({
   updateGV: (goldValues) => set((state) => ({ goldValues })),
 }));
 
+const eventsStore = create((set, get) => ({
+  currentDay: moment().utc().subtract(5, "hours").day(),
+  currentTime: moment().utc().subtract(5, "hours").format("HH:mm:ss"),
+  setCurrentTime: (currentTime) => {
+    set((state) => ({ currentTime }));
+  },
+  setCurrentDay: (currentDay) => {
+    set((state) => ({ currentDay }));
+  },
+}));
+
 const theme = createTheme({
   palette: {
     mode: "dark",
@@ -367,10 +387,12 @@ const theme = createTheme({
 // }
 
 function App() {
-  const updateSiteSettings = useStore((state) => state.updateSiteSettings);
   const updateRS = useStore((state) => state.updateRS);
   const updateTS = useStore((state) => state.updateTS);
   const updateGV = arbitrageStore((state) => state.updateGV);
+  // const setTabValue = useStore((state) => state.setTabValue);
+  // const siteSettings = useStore((state) => state.siteSettings);
+  const updateSiteSettings = useStore((state) => state.updateSiteSettings);
 
   const localSiteSettings = localStorage.getItem("siteSettings");
   const localTaskStatus = localStorage.getItem("taskStatus");
@@ -439,7 +461,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container component="main">
+      <Container component="main" sx={{ my: 0 }}>
         <Box>
           <Tabs
             value={tabValue}
@@ -452,11 +474,14 @@ function App() {
             <Tab label="Mari's Shop" {...tabProps(2)} />
           </Tabs>
         </Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography>Azena Server Status: 🤷</Typography>
+        </Box>
         <TabPanel value={tabValue} index={0}>
           <Checklist useStore={useStore} theme={theme} />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <Events useStore={useStore} theme={theme} />
+          <Events useStore={eventsStore} taskStore={useStore} theme={theme} />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
           <Arbitrage useStore={arbitrageStore} theme={theme} />

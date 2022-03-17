@@ -5,6 +5,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { ChromeReaderModeSharp } from "@mui/icons-material";
 
+import icon_deathblade from "./img/icon_deathblade.png";
+
 export default function CharacterSelect(props) {
   const { charData } = props;
   const useStore = props.useStore;
