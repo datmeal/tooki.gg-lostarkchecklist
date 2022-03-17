@@ -321,12 +321,30 @@ const arbitrageStore = create((set, get) => ({
 const eventsStore = create((set, get) => ({
   currentDay: moment().utc().subtract(5, "hours").day(),
   currentTime: moment().utc().subtract(5, "hours").format("HH:mm:ss"),
+  filter: [],
   setCurrentTime: (currentTime) => {
     set((state) => ({ currentTime }));
   },
   setCurrentDay: (currentDay) => {
     set((state) => ({ currentDay }));
   },
+  toggleFilter: (event, id) => {
+    console.log("toggleFilter", event, id);
+  },
+  // toggleFilter: (event, id) => set((state) => ({
+  //   filter: state.filter.map((item) =>
+  //     item.id === id
+  //       ? {
+  //           ...item,
+  //           dailies: {
+  //             ...item.dailies,
+  //             [event]: !item.dailies[event],
+  //           },
+  //         }
+  //       : item
+  //   ),
+  // }));
+  // localStorage.setItem("filter", JSON.stringify(get().filter));
 }));
 
 const theme = createTheme({
@@ -436,7 +454,7 @@ function App() {
         {value === index && (
           <Paper
             variant="outlined"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+            sx={{ my: { xs: 2, md: 4 }, p: { xs: 1, md: 3 } }}
           >
             {children}
           </Paper>
@@ -461,7 +479,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container component="main" sx={{ my: 0 }}>
+      <Container component="main" sx={{ my: 0 }} maxWidth="xl">
         <Box>
           <Tabs
             value={tabValue}
@@ -473,9 +491,6 @@ function App() {
             <Tab label="Events" {...tabProps(1)} />
             <Tab label="Mari's Shop" {...tabProps(2)} />
           </Tabs>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography>Azena Server Status: 🤷</Typography>
         </Box>
         <TabPanel value={tabValue} index={0}>
           <Checklist useStore={useStore} theme={theme} />

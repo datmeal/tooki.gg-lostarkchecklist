@@ -1,10 +1,6 @@
 import * as React from "react";
-import _ from "lodash";
-import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import Button from "@mui/material/Button";
-import { alpha } from "@mui/material/styles";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import InfoIcon from "@mui/icons-material/Info";
 import Table from "@mui/material/Table";
@@ -12,27 +8,15 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
 import TextField from "@mui/material/TextField";
 import { ThemeProvider } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import { visuallyHidden } from "@mui/utils";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 // import create from "zustand";
 import CharacterSelect from "./CharacterSelect";
 
@@ -112,7 +96,7 @@ const weeklies = [
   createData(
     `Ghostship`,
     "ghostship1",
-    "Starts Tuesday 11AM, Thursday 11AM, Saturday 11AM and occurs once per hour until reset",
+    "Account Weekly - once per roster",
     icon_ghost_ship,
     "ghost"
   ),
@@ -258,9 +242,6 @@ export default function Checklist(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Typography component="h1" variant="h4" align="center">
-        Lost Ark Dailies/Weeklies Checklist
-      </Typography>
       <TableContainer>
         <Table size="small">
           <TableHead>

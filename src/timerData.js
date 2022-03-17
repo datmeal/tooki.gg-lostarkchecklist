@@ -2,10 +2,12 @@ import alakkir from "./img/events/alakkir.webp";
 import chaos from "./img/events/chaos.webp";
 import deathshold from "./img/events/deathshold.png";
 import erasmo from "./img/events/erasmo.png";
+import fieldboss from "./img/events/fieldboss.webp";
 import forpe from "./img/events/forpe.webp";
 import gesbroy from "./img/events/gesbroy.webp";
 import ghostship from "./img/events/ghostship.png";
 import grandprix from "./img/events/grandprix.webp";
+import harmony from "./img/events/harmony.webp";
 import illusion from "./img/events/illusion.webp";
 import lagoon from "./img/events/lagoon.webp";
 import lullaby from "./img/events/lullaby.png";
@@ -15,6 +17,7 @@ import moake from "./img/events/moake.png";
 import monte from "./img/events/monte.webp";
 import phantomwing from "./img/events/phantomwing.webp";
 import coopbattle from "./img/events/coopbattle.png";
+import oblivion from "./img/events/oblivion.webp";
 import sailingcoop from "./img/events/sailingcoop.webp";
 import sailinggate from "./img/events/sailinggate.webp";
 import shangra from "./img/events/shangra.png";
@@ -43,6 +46,7 @@ export const timerData = {
         "22:00",
         "24:00",
       ],
+      id: "grandprix",
       ilvl: 0,
       image: grandprix,
       location: "Main Cities",
@@ -53,6 +57,7 @@ export const timerData = {
     {
       name: "Forpe",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "forpe",
       ilvl: 250,
       image: forpe,
       location: "Forpe",
@@ -61,13 +66,16 @@ export const timerData = {
     {
       name: "Harmony Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "harmony",
       ilvl: 250,
+      image: harmony,
       location: "Harmony Island",
       days: ["mon"],
     },
     {
       name: "Lagoon Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "lagoon",
       ilvl: 250,
       image: lagoon,
       location: "Lagoon Island",
@@ -76,6 +84,7 @@ export const timerData = {
     {
       name: "Lush Reed Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "lushreed",
       ilvl: 250,
       image: lushreed,
       location: "Lush Reed Island",
@@ -84,6 +93,7 @@ export const timerData = {
     {
       name: "Medeia",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "medeia",
       ilvl: 250,
       image: medeia,
       location: "Medeia",
@@ -92,6 +102,7 @@ export const timerData = {
     {
       name: "Monte Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "monte",
       ilvl: 250,
       image: monte,
       location: "Monte Island",
@@ -100,13 +111,16 @@ export const timerData = {
     {
       name: "Oblivion Isle",
       time: ["18:50", "20:50", "22:50"],
+      id: "oblivion",
       ilvl: 250,
+      image: oblivion,
       location: "Oblivion Isle",
       days: ["mon"],
     },
     {
       name: "Phantomwing Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "phantomwing",
       ilvl: 250,
       image: phantomwing,
       location: "Phantomwing Island",
@@ -115,6 +129,7 @@ export const timerData = {
     {
       name: "Snowpang Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "snowpang",
       ilvl: 250,
       image: snowpang,
       location: "Snowpang Island",
@@ -123,6 +138,7 @@ export const timerData = {
     {
       name: "Tranquil Isle",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "tranquil",
       ilvl: 250,
       image: tranquil,
       location: "Tranquil Isle",
@@ -131,6 +147,7 @@ export const timerData = {
     {
       name: "Volare Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
+      id: "volare",
       ilvl: 250,
       image: volare,
       location: "Volare Island",
@@ -153,6 +170,7 @@ export const timerData = {
         "27:00",
         "29:00",
       ],
+      id: "chaos-twisting-302",
       ilvl: 302,
       image: chaos,
       location: "Rattan Hill",
@@ -171,6 +189,7 @@ export const timerData = {
         "26:00",
         "28:00",
       ],
+      id: "chaos-plague-302",
       ilvl: 302,
       image: chaos,
       location: "???",
@@ -199,6 +218,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "chaos-phantom-460",
       ilvl: 460,
       image: chaos,
       location: "???",
@@ -227,6 +247,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "chaos-plague-802",
       ilvl: 802,
       image: chaos,
       location: "???",
@@ -255,6 +276,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "chaos-darkness-960",
       ilvl: 960,
       image: chaos,
       location: "???",
@@ -283,6 +305,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "chaos-chaos-1302",
       ilvl: 1302,
       image: chaos,
       location: "???",
@@ -302,6 +325,7 @@ export const timerData = {
         "26:00",
         "28:00",
       ],
+      id: "chaos-phantom-302",
       ilvl: 302,
       image: chaos,
       location: "???",
@@ -321,6 +345,7 @@ export const timerData = {
         "27:00",
         "29:00",
       ],
+      id: "chaos-darkness-302",
       ilvl: 302,
       image: chaos,
       location: "Rattan Hill",
@@ -329,7 +354,7 @@ export const timerData = {
   ],
   fieldboss: [
     {
-      name: "Moake",
+      name: "Field Boss",
       time: [
         "11:00",
         "12:00",
@@ -351,10 +376,11 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "moake",
       ilvl: 1415,
-      image: moake,
+      image: fieldboss,
       location: "Tikatika Colony",
-      days: ["tue"],
+      days: ["tue", "fri"],
     },
   ],
   ghostship: [
@@ -381,6 +407,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "ghostship-460",
       ilvl: 460,
       image: ghostship,
       location: "",
@@ -409,6 +436,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "ghostship-960",
       ilvl: 960,
       image: ghostship,
       location: "",
@@ -437,6 +465,7 @@ export const timerData = {
         "28:00",
         "29:00",
       ],
+      id: "ghostship-1370",
       ilvl: 1370,
       image: ghostship,
       location: "",
@@ -447,6 +476,7 @@ export const timerData = {
     {
       name: "Alakkir",
       time: ["1:50", "7:50", "13:50", "16:50", "19:50", "22:50"],
+      id: "alakkir",
       ilvl: 250,
       image: alakkir,
       location: "Alakkir",
@@ -455,6 +485,7 @@ export const timerData = {
     {
       name: "Death's Hold Island",
       time: ["1:20", "7:20", "13:20", "15:20", "19:20", "22:20"],
+      id: "deathshold",
       ilvl: 250,
       image: deathshold,
       location: "Death's Hold Island",
@@ -463,6 +494,7 @@ export const timerData = {
     {
       name: "Erasmo",
       time: ["6:00", "14:00", "20:00"],
+      id: "erasmo",
       ilvl: 460,
       image: erasmo,
       location: "Erasmo",
@@ -496,6 +528,7 @@ export const timerData = {
         "22:20",
         "23:20",
       ],
+      id: "gesbroy",
       ilvl: 600,
       image: gesbroy,
       location: "Gesbroy",
@@ -517,6 +550,7 @@ export const timerData = {
         "22:00",
         "24:00",
       ],
+      id: "illusion",
       ilvl: 250,
       image: illusion,
       location: "Illusion Isle",
@@ -538,6 +572,7 @@ export const timerData = {
         "20:20",
         "22:20",
       ],
+      id: "lullaby",
       ilvl: 250,
       image: lullaby,
       location: "Lullaby Island",
@@ -546,6 +581,7 @@ export const timerData = {
     {
       name: "Shangra",
       time: ["6:00", "12:00", "16:00", "18:00", "22:00", "24:00"],
+      id: "shangra",
       ilvl: 460,
       image: shangra,
       location: "Shangra",
@@ -554,6 +590,7 @@ export const timerData = {
     {
       name: "Spida Island",
       time: ["1:30", "7:30", "13:30", "19:30", "22:30"],
+      id: "spida",
       ilvl: 250,
       image: spida,
       location: "Spida Island",
@@ -562,6 +599,7 @@ export const timerData = {
     {
       name: "Tooki Island",
       time: ["0:50", "4:50", "8:50", "12:50", "16:50", "20:50"],
+      id: "tooki",
       ilvl: 250,
       image: tooki,
       location: "Tooki Island",
@@ -570,6 +608,7 @@ export const timerData = {
     {
       name: "Unknown Island",
       time: ["0:20", "4:20", "10:20", "13:20", "16:20", "22:20"],
+      id: "unknown",
       ilvl: 460,
       image: unknown,
       location: "Unknown Island",
@@ -581,6 +620,7 @@ export const timerData = {
     {
       name: "Gate of Harmony",
       time: ["17:50", "21:50"],
+      id: "sailingcoop-harmony-wed",
       ilvl: 302,
       image: sailingcoop,
       location: "",
@@ -589,6 +629,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Vern",
       time: ["19:30"],
+      id: "sailingcoop-vern-wed",
       ilvl: 302,
       image: sailingcoop,
       location: "Vern",
@@ -597,6 +638,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Arthetine",
       time: ["21:30"],
+      id: "sailingcoop-arthetine-wed",
       ilvl: 302,
       image: sailingcoop,
       location: "Arthetine",
@@ -605,6 +647,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Anikka",
       time: ["23:30"],
+      id: "sailingcoop-anikka-302",
       ilvl: 302,
       image: sailingcoop,
       location: "Anikka",
@@ -614,6 +657,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Arthetine",
       time: ["19:30"],
+      id: "sailingcoop-arthetine-thu",
       ilvl: 302,
       image: sailingcoop,
       location: "Arthetine",
@@ -622,6 +666,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Anikka",
       time: ["21:30"],
+      id: "sailingcoop",
       ilvl: 302,
       image: sailingcoop,
       location: "Anikka",
@@ -630,6 +675,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Vern",
       time: ["23:30"],
+      id: "sailingcoop",
       ilvl: 302,
       image: sailingcoop,
       location: "Vern",
@@ -638,6 +684,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Rohendel",
       time: ["19:30"],
+      id: "sailingcoop",
       ilvl: 460,
       image: sailingcoop,
       location: "Rohendel",
@@ -646,6 +693,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Feiton",
       time: ["23:30"],
+      id: "sailingcoop",
       ilvl: 960,
       image: sailingcoop,
       location: "Feiton",
@@ -654,6 +702,7 @@ export const timerData = {
     {
       name: "Sailing Co-op: Punika",
       time: ["21:30"],
+      id: "sailingcoop",
       ilvl: 1302,
       image: sailingcoop,
       location: "Punika",
@@ -664,6 +713,7 @@ export const timerData = {
     {
       name: "Proving Grounds Co-op Battle",
       time: ["19:00"],
+      id: "coopbattle",
       ilvl: 250,
       image: coopbattle,
       location: "",

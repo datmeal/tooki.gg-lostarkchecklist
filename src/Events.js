@@ -8,10 +8,6 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Checkbox from "@mui/material/Checkbox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Grid from "@mui/material/Grid";
@@ -28,6 +24,7 @@ import { Timer } from "@mui/icons-material";
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
   const currentTime = useStore((state) => state.currentTime);
+  const currentDay = useStore((state) => state.currentDay);
   const rosterStatus = taskStore((state) => state.rosterStatus);
   // hooks
   //   const [interval, setInterval] = useState(0);
@@ -75,9 +72,7 @@ export default function Events(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <Typography>
-        Coming soon. This is going to be my greatest work.
-      </Typography>
+      <Typography align="center">Warning: Heavily under development</Typography>
       <Paper sx={{ my: 1, p: { xs: 1, md: 1 } }}>
         <Typography component="h1" variant="h6" align="center">
           Timeline
@@ -107,7 +102,11 @@ export default function Events(props) {
               Filter (UNDER CONSTRUCTION LOL)
             </Typography>
           </Paper>
-          <FilterList events={sortedEvents} theme={theme} useStore={useStore} />
+          <FilterList
+            theme={theme}
+            currentDay={currentDay}
+            useStore={useStore}
+          />
         </Grid>
       </Grid>
     </ThemeProvider>
@@ -169,6 +168,7 @@ function Timeline(props) {
   const currentTimeAsMilli = moment.duration(currentTime).asMilliseconds();
   const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
+  const offset = 1; // add to time for AGS shenanigans
   //   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
   //   console.log(currentTimeAsMilli, startTimeAsMilli, endTimeAsMilli);
   //   console.log("currentTime%", (currentTimeAsMilli / endTimeAsMilli) * 100);
@@ -198,7 +198,11 @@ function Timeline(props) {
 
   return (
     <Paper sx={{ my: { xs: 3, md: 1 }, p: { xs: 1, md: 1 } }}>
-      <Typography>{currentTime}</Typography>
+      <Typography>
+        {moment(currentTime, "HH:mm:ss")
+          .add(offset, "hours")
+          .format("HH:mm:ss")}
+      </Typography>
       <Hours>
         <Indicator position={indicatorPosition} />
         <Hour label="12A" position={0} />
@@ -236,6 +240,7 @@ function Timers(props) {
   const currentDay = useStore((state) => state.currentDay);
   const currentTime = useStore((state) => state.currentTime);
   const setCurrentTime = useStore((state) => state.setCurrentTime);
+  const offset = moment.duration("-1:00").asSeconds();
   //   const remainingTimeText = moment
   //     .duration(remainingTimeAsSeconds, "seconds")
   //     .humanize();
@@ -263,19 +268,20 @@ function Timers(props) {
       <Paper sx={{ my: { xs: 3, md: 1 }, p: { xs: 1, md: 1 } }}>
         <Grid container spacing={1}>
           {_.map(events, (event, index) => {
-            // if "day" is today OR yesterday and time > 24:00
+            // TODO: if "day" is today OR yesterday and time > 24:00
             const isToday = _.includes(event.days, days[currentDay]);
             const isDone = false;
-            // console.log(event);
             return (
-              event.remainingTime > 0 &&
+              event.remainingTime + offset > 0 &&
               isToday &&
               !isDone && (
                 <Grid item xs={6} key={`${event.name}-${index}`}>
                   <TimerItem
-                    currentTime={currentTime}
                     event={event}
-                    index={index}
+                    eventImage={event.image}
+                    eventName={event.name}
+                    eventRemainingTime={event.remainingTime}
+                    eventTime={event.time}
                   />
                 </Grid>
               )
@@ -288,11 +294,10 @@ function Timers(props) {
 }
 
 function TimerItem(props) {
-  const { currentTime, event, index, theme, useStore } = props;
-
-  //   console.log("data:", data);
+  const { eventImage, eventName, eventRemainingTime, eventTime } = props;
+  const offset = moment.duration("-1:00").asSeconds();
   const remainingTimeText = moment
-    .duration(event.remainingTime, "seconds")
+    .duration(eventRemainingTime + offset, "seconds")
     .humanize();
 
   return (
@@ -301,53 +306,62 @@ function TimerItem(props) {
       variant="outlined"
     >
       <img
-        src={event.image}
-        alt={event.name}
+        src={eventImage}
+        alt={eventName}
         style={{ width: 32, height: 32, marginRight: 8 }}
       ></img>
       <Box sx={{ width: "100%" }}>
-        <Typography>{event.name}</Typography>
+        <Typography>{eventName}</Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography>{remainingTimeText}</Typography>
-          <Typography sx={{ opacity: 0.5 }}>{event.time}</Typography>
+          <Typography sx={{ opacity: 0.5 }}>{eventTime}</Typography>
         </Box>
       </Box>
     </Paper>
   );
 }
 
-function FilterList(props) {
-  const { useStore } = props;
-  const currentDay = useStore((state) => state.currentDay);
-
+const FilterList = React.memo((props) => {
+  const { currentDay, useStore } = props;
+  console.log("renderList");
   return (
     <List sx={{ p: 0 }}>
-      <FilterCategory category="fever" title="Fever" useStore={useStore} />
+      <FilterCategory
+        category="fever"
+        title="Fever"
+        currentDay={currentDay}
+        useStore={useStore}
+      />
       <FilterCategory
         category="adventure"
         title="Adventure Island"
+        currentDay={currentDay}
         useStore={useStore}
       />
-      <FilterCategory category="chaos" title="Chaos Gate" useStore={useStore} />
+      <FilterCategory
+        category="chaos"
+        title="Chaos Gate"
+        currentDay={currentDay}
+        useStore={useStore}
+      />
       <FilterCategory
         category="sailing"
         title="Sailing Co-op"
+        currentDay={currentDay}
         useStore={useStore}
       />
     </List>
   );
-}
+});
 
 function FilterCategory(props) {
-  const { category, title, useStore } = props;
-  const currentDay = useStore((state) => state.currentDay);
-
+  const { category, title, currentDay, useStore } = props;
   return (
     <Accordion>
       <AccordionSummary id="fever" expandIcon={<ExpandMoreIcon />}>
         <Typography>{title}</Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails style={{ padding: 0 }}>
         {_.map(timerData[category], (event) => {
           const isToday = _.includes(event.days, days[currentDay]);
           return (
@@ -356,9 +370,9 @@ function FilterCategory(props) {
                 key={event.name}
                 role="listitem"
                 button
-                onClick={() => {
-                  console.log("clicked!");
-                }}
+                onClick={() =>
+                  useStore.toggleFilter(category, event.name, event.id)
+                }
               >
                 <ListItemIcon>
                   <Checkbox disableRipple />
