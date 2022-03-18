@@ -1,15 +1,23 @@
 {
   "files": {
-    "main.js": "/lostarkchecklist/static/js/main.3bf5cd12.js",
+    "main.js": "/lostarkchecklist/static/js/main.9f74890b.js",
     "static/js/787.8d6bb516.chunk.js": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/lostarkchecklist/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/lostarkchecklist/static/media/moake.fc4e652f9a54ec87dc0c.png",
     "static/media/deathshold.png": "/lostarkchecklist/static/media/deathshold.1f8507f0d6ecdc6e68c7.png",
+    "static/media/harvestlordincarnate.png": "/lostarkchecklist/static/media/harvestlordincarnate.2e8541a3dc857949726b.png",
+    "static/media/brealeos.png": "/lostarkchecklist/static/media/brealeos.6208ece23b41251b2db5.png",
     "static/media/tooki.png": "/lostarkchecklist/static/media/tooki.f087d65205a503c3271f.png",
     "static/media/shangra.png": "/lostarkchecklist/static/media/shangra.867a8d15e8896fbeff3f.png",
     "static/media/lullaby.png": "/lostarkchecklist/static/media/lullaby.186950af38184ba39ba8.png",
     "static/media/coopbattle.png": "/lostarkchecklist/static/media/coopbattle.14642aa59b82be1627d4.png",
     "static/media/erasmo.png": "/lostarkchecklist/static/media/erasmo.5ed97bfe6661c03a046c.png",
+    "static/media/kohinorr.png": "/lostarkchecklist/static/media/kohinorr.556f1a4a437bc06dea52.png",
+    "static/media/chaoticchuo.png": "/lostarkchecklist/static/media/chaoticchuo.bbf53201299f4ba7368d.png",
+    "static/media/solgrande.png": "/lostarkchecklist/static/media/solgrande.5274752487801cfeddd7.png",
+    "static/media/aurion.png": "/lostarkchecklist/static/media/aurion.2c60027e96239f686258.png",
+    "static/media/proxima.png": "/lostarkchecklist/static/media/proxima.715c3c90a95dafc760ed.png",
+    "static/media/ancheladus.png": "/lostarkchecklist/static/media/ancheladus.9a928f5ed8b4b542e9c4.png",
     "static/media/unknown.png": "/lostarkchecklist/static/media/unknown.9515bc2399344228b363.png",
     "static/media/fieldboss.webp": "/lostarkchecklist/static/media/fieldboss.5f83ffab61c2592b4f56.webp",
     "static/media/chaos.webp": "/lostarkchecklist/static/media/chaos.b24f1d30327777967ade.webp",
@@ -34,10 +42,10 @@
     "static/media/forpe.webp": "/lostarkchecklist/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/lostarkchecklist/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/lostarkchecklist/index.html",
-    "main.3bf5cd12.js.map": "/lostarkchecklist/static/js/main.3bf5cd12.js.map",
+    "main.9f74890b.js.map": "/lostarkchecklist/static/js/main.9f74890b.js.map",
     "787.8d6bb516.chunk.js.map": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.3bf5cd12.js"
+    "static/js/main.9f74890b.js"
   ]
 }
