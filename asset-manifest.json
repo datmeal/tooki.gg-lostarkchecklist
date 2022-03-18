@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/lostarkchecklist/static/js/main.faa1c151.js",
+    "main.js": "/lostarkchecklist/static/js/main.3b618ee3.js",
     "static/js/787.8d6bb516.chunk.js": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/lostarkchecklist/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/lostarkchecklist/static/media/moake.fc4e652f9a54ec87dc0c.png",
@@ -19,6 +19,7 @@
     "static/media/grandprix.webp": "/lostarkchecklist/static/media/grandprix.f146b305cc3f9b8e5007.webp",
     "static/media/phantomwing.webp": "/lostarkchecklist/static/media/phantomwing.5949adc5f724fd9446d4.webp",
     "static/media/lushreed.webp": "/lostarkchecklist/static/media/lushreed.a2afdbcf344bebd2cce0.webp",
+    "static/media/asura.webp": "/lostarkchecklist/static/media/asura.23441a350897dd7d6a97.webp",
     "static/media/oblivion.webp": "/lostarkchecklist/static/media/oblivion.5c40158333e8796eb3dc.webp",
     "static/media/gesbroy.webp": "/lostarkchecklist/static/media/gesbroy.f21800d68a0a44b7d69f.webp",
     "static/media/illusion.webp": "/lostarkchecklist/static/media/illusion.9e32ac2eb8c18647654f.webp",
@@ -33,10 +34,10 @@
     "static/media/forpe.webp": "/lostarkchecklist/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/lostarkchecklist/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/lostarkchecklist/index.html",
-    "main.faa1c151.js.map": "/lostarkchecklist/static/js/main.faa1c151.js.map",
+    "main.3b618ee3.js.map": "/lostarkchecklist/static/js/main.3b618ee3.js.map",
     "787.8d6bb516.chunk.js.map": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.faa1c151.js"
+    "static/js/main.3b618ee3.js"
   ]
 }
