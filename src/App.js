@@ -347,7 +347,18 @@ const defaultEventSettings = {
       chaos_darkness_302: true,
     },
     fieldboss: {
+      ancheladus: true,
+      aurion: true,
+      brealeos: true,
+      chaoticchuo: true,
+      harvestlordincarnate: true,
+      kohinorr: true,
+      magmadon: true,
       moake: true,
+      proxima: true,
+      tarsila: true,
+      signatus: true,
+      solgrande: true,
     },
     ghostship: {
       ghostship_460: true,
@@ -382,17 +393,24 @@ const defaultEventSettings = {
       coopbattle: true,
     },
   },
+  offset: 1, // misc
+  timezone: 0, // East = 0 (UTC - 4 (- 0))
 };
 
 const eventsStore = create((set, get) => ({
   currentDay: moment().utc().subtract(5, "hours").day(),
   currentTime: moment().utc().subtract(5, "hours").format("HH:mm:ss"),
+  eventList: [],
   eventSettings: defaultEventSettings,
+  favorites: [],
   setCurrentTime: (currentTime) => {
     set((state) => ({ currentTime }));
   },
   setCurrentDay: (currentDay) => {
     set((state) => ({ currentDay }));
+  },
+  setEventList: (eventList) => {
+    set((state) => ({ eventList }));
   },
   toggleFilter: (selectedCategory, selectedId) => {
     set((state) => ({
@@ -406,6 +424,15 @@ const eventsStore = create((set, get) => ({
       },
     }));
     localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
+  },
+  setTimezone: (timezone) => {
+    console.log("setTimezone to:", timezone);
+    set((state) => ({
+      eventSettings: {
+        ...state.eventSettings,
+        timezone,
+      },
+    }));
   },
   updateES: (eventSettings) => set((state) => ({ eventSettings })),
 }));
@@ -503,7 +530,14 @@ function App() {
     updateGV(JSON.parse(localGoldValues));
   }
   if (localEventSettings) {
-    updateES(JSON.parse(localEventSettings));
+    const parsedSettings = JSON.parse(localEventSettings);
+    const updatedSettings = { ...defaultEventSettings };
+    _.each(parsedSettings.filter, (categoryObj, categoryName) => {
+      _.each(categoryObj, (value, index) => {
+        updatedSettings["filter"][categoryName][index] = value;
+      });
+    });
+    updateES(updatedSettings);
   }
 
   // console.log(JSON.parse(localTaskStatus), JSON.parse(localRosterStatus));
@@ -569,6 +603,17 @@ function App() {
         <TabPanel value={tabValue} index={2}>
           <Arbitrage useStore={arbitrageStore} theme={theme} />
         </TabPanel>
+        <Box
+          sx={{
+            my: 1,
+            p: { xs: 1, md: 1 },
+          }}
+        >
+          <Typography align="center">
+            Lost Ark Game content and assets are trademarks of Smilegate RPG,
+            Inc.
+          </Typography>
+        </Box>
       </Container>
     </ThemeProvider>
   );
