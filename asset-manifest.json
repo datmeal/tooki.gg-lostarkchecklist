@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/lostarkchecklist/static/js/main.9582cf90.js",
+    "main.js": "/lostarkchecklist/static/js/main.719a6de9.js",
     "static/js/787.8d6bb516.chunk.js": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/lostarkchecklist/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/lostarkchecklist/static/media/moake.fc4e652f9a54ec87dc0c.png",
@@ -26,6 +26,7 @@
     "static/media/harmony.webp": "/lostarkchecklist/static/media/harmony.13e26caa16b229c5954d.webp",
     "static/media/grandprix.webp": "/lostarkchecklist/static/media/grandprix.f146b305cc3f9b8e5007.webp",
     "static/media/phantomwing.webp": "/lostarkchecklist/static/media/phantomwing.5949adc5f724fd9446d4.webp",
+    "static/media/opportunity.webp": "/lostarkchecklist/static/media/opportunity.d665699c07a2b1d9b3aa.webp",
     "static/media/lushreed.webp": "/lostarkchecklist/static/media/lushreed.a2afdbcf344bebd2cce0.webp",
     "static/media/asura.webp": "/lostarkchecklist/static/media/asura.23441a350897dd7d6a97.webp",
     "static/media/oblivion.webp": "/lostarkchecklist/static/media/oblivion.5c40158333e8796eb3dc.webp",
@@ -33,6 +34,7 @@
     "static/media/illusion.webp": "/lostarkchecklist/static/media/illusion.9e32ac2eb8c18647654f.webp",
     "static/media/snowpang.webp": "/lostarkchecklist/static/media/snowpang.11d2a67042f41576d97a.webp",
     "static/media/lagoon.webp": "/lostarkchecklist/static/media/lagoon.83b9d5e320039f8eca17.webp",
+    "static/media/drumbeat.webp": "/lostarkchecklist/static/media/drumbeat.c48998ef5d5ada226cd5.webp",
     "static/media/monte.webp": "/lostarkchecklist/static/media/monte.ff3d457a0f49996dfa7e.webp",
     "static/media/sailinggate.webp": "/lostarkchecklist/static/media/sailinggate.322b54bcce7b9413bcf7.webp",
     "static/media/volare.webp": "/lostarkchecklist/static/media/volare.95ea8ee183e5a0849a55.webp",
@@ -42,10 +44,10 @@
     "static/media/forpe.webp": "/lostarkchecklist/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/lostarkchecklist/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/lostarkchecklist/index.html",
-    "main.9582cf90.js.map": "/lostarkchecklist/static/js/main.9582cf90.js.map",
+    "main.719a6de9.js.map": "/lostarkchecklist/static/js/main.719a6de9.js.map",
     "787.8d6bb516.chunk.js.map": "/lostarkchecklist/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.9582cf90.js"
+    "static/js/main.719a6de9.js"
   ]
 }
