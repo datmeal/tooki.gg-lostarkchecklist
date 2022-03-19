@@ -1083,7 +1083,7 @@ export const timerData = {
       ilvl: 302,
       image: sailingcoop,
       location: "Anikka",
-      days: ["wed"],
+      days: ["wed", "sun"],
     },
     // thursday
     {
@@ -1093,7 +1093,7 @@ export const timerData = {
       ilvl: 302,
       image: sailingcoop,
       location: "Arthetine",
-      days: ["thu"],
+      days: ["thu", "sun"],
     },
     {
       name: "Sailing Co-op: Anikka",
@@ -1138,7 +1138,7 @@ export const timerData = {
       ilvl: 1302,
       image: sailingcoop,
       location: "Punika",
-      days: ["thu"],
+      days: ["thu", "sun"],
     },
     // friday
     {
@@ -1166,7 +1166,7 @@ export const timerData = {
       ilvl: 302,
       image: sailingcoop,
       location: "Vern",
-      days: ["fri"],
+      days: ["fri", "sun"],
     },
     {
       name: "Sailing Co-op: Rohendel",
@@ -1193,7 +1193,7 @@ export const timerData = {
       ilvl: 960,
       image: sailingcoop,
       location: "Feiton",
-      days: ["fri"],
+      days: ["fri", "sun"],
     },
     // saturday
     {
@@ -1294,6 +1294,16 @@ export const timerData = {
       image: sailinggate,
       location: "",
       days: ["sat"],
+    },
+    // Sunday
+    {
+      name: "Sailing Co-op: Rohendel",
+      time: ["23:30"],
+      id: "sailingcoop_rohendel_sun",
+      ilvl: 460,
+      image: sailingcoop,
+      location: "Rohendel",
+      days: ["sun"],
     },
   ],
   pvp: [
