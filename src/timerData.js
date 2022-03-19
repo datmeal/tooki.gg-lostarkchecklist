@@ -107,7 +107,7 @@ export const timerData = {
     {
       name: "Harmony Island",
       time: ["19:00", "21:00", "23:00"],
-      id: "harmony-sat",
+      id: "harmony_sat",
       ilvl: 250,
       image: harmony,
       location: "Harmony Island",
@@ -152,7 +152,7 @@ export const timerData = {
     {
       name: "Monte Island",
       time: ["11:00", "13:00", "15:00"],
-      id: "monte-sat",
+      id: "monte_sat",
       ilvl: 250,
       image: monte,
       location: "Monte Island",
@@ -188,7 +188,7 @@ export const timerData = {
     {
       name: "Phantomwing Island",
       time: ["11:00", "13:00", "15:00"],
-      id: "phantomwing-sat",
+      id: "phantomwing_sat",
       ilvl: 250,
       image: phantomwing,
       location: "Phantomwing Island",
@@ -215,7 +215,7 @@ export const timerData = {
     {
       name: "Tranquil Isle",
       time: ["11:00", "13:00", "15:00"],
-      id: "tranquil-sat",
+      id: "tranquil_sat",
       ilvl: 250,
       image: tranquil,
       location: "Tranquil Isle",
@@ -247,7 +247,7 @@ export const timerData = {
         "27:00",
         "29:00",
       ],
-      id: "chaos_twisting_302",
+      id: "chaos_chaos_302",
       ilvl: 302,
       image: chaos,
       location: "Rattan Hill",
