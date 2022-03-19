@@ -71,7 +71,7 @@ export const timerData = {
     {
       name: "Asura Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
-      id: "forpe",
+      id: "asura",
       ilvl: 250,
       image: asura,
       location: "Asura Island",
@@ -84,7 +84,7 @@ export const timerData = {
       ilvl: 250,
       image: drumbeat,
       location: "Drumbeat Island",
-      days: ["sat"],
+      days: ["sat", "sun"],
     },
     {
       name: "Forpe",
@@ -141,6 +141,15 @@ export const timerData = {
       days: ["wed"],
     },
     {
+      name: "Medeia",
+      time: ["11:00", "13:00", "15:00"],
+      id: "medeia_sun",
+      ilvl: 250,
+      image: medeia,
+      location: "Medeia",
+      days: ["sun"],
+    },
+    {
       name: "Monte Island",
       time: ["11:00", "13:00", "19:00", "21:00", "23:00"],
       id: "monte",
@@ -156,7 +165,7 @@ export const timerData = {
       ilvl: 250,
       image: monte,
       location: "Monte Island",
-      days: ["sat"],
+      days: ["sat", "sun"],
     },
     {
       name: "Oblivion Isle",
@@ -166,6 +175,15 @@ export const timerData = {
       image: oblivion,
       location: "Oblivion Isle",
       days: ["mon", "fri"],
+    },
+    {
+      name: "Oblivion Isle",
+      time: ["19:00", "21:00", "23:00"],
+      id: "oblivion_sun",
+      ilvl: 250,
+      image: oblivion,
+      location: "Oblivion Isle",
+      days: ["sun"],
     },
     {
       name: "Opportunity Isle",
@@ -193,6 +211,15 @@ export const timerData = {
       image: phantomwing,
       location: "Phantomwing Island",
       days: ["sat"],
+    },
+    {
+      name: "Phantomwing Island",
+      time: ["19:00", "21:00", "23:00"],
+      id: "phantomwing_sun",
+      ilvl: 250,
+      image: phantomwing,
+      location: "Phantomwing Island",
+      days: ["sun"],
     },
     {
       name: "Snowpang Island",
@@ -229,6 +256,15 @@ export const timerData = {
       image: volare,
       location: "Volare Island",
       days: ["wed"],
+    },
+    {
+      name: "Volare Island",
+      time: ["11:00", "13:00", "15:00"],
+      id: "volare_sun",
+      ilvl: 250,
+      image: volare,
+      location: "Volare Island",
+      days: ["sun"],
     },
   ],
   chaos: [
