@@ -417,13 +417,13 @@ const defaultEventSettings = {
       coopbattle: true,
     },
   },
-  offset: 1, // misc
+  offset: 0, // misc
   timezone: 0, // East = 0 (UTC - 4 (- 0))
 };
 
 const eventsStore = create((set, get) => ({
-  currentDay: moment().utc().subtract(5, "hours").day(),
-  currentTime: moment().utc().subtract(5, "hours").format("HH:mm:ss"),
+  currentDay: moment().utc().subtract(4, "hours").day(),
+  currentTime: moment().utc().subtract(4, "hours").format("HH:mm:ss"),
   eventList: [],
   eventSettings: defaultEventSettings,
   favorites: [],
@@ -449,14 +449,23 @@ const eventsStore = create((set, get) => ({
     }));
     localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
   },
+  setOffset: (offset) => {
+    set((state) => ({
+      eventSettings: {
+        ...state.eventSettings,
+        offset,
+      },
+    }));
+    localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
+  },
   setTimezone: (timezone) => {
-    console.log("setTimezone to:", timezone);
     set((state) => ({
       eventSettings: {
         ...state.eventSettings,
         timezone,
       },
     }));
+    localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
   },
   updateES: (eventSettings) => set((state) => ({ eventSettings })),
 }));
@@ -561,6 +570,9 @@ function App() {
         updatedSettings["filter"][categoryName][index] = value;
       });
     });
+    if (parsedSettings.timezone) {
+      updatedSettings.timezone = parsedSettings.timezone;
+    }
     updateES(updatedSettings);
   }
 

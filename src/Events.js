@@ -68,25 +68,29 @@ export default function Events(props) {
         const timeAsSeconds = moment.duration(time).asSeconds();
         let remainingTimeAsSeconds;
         if (
+          // past 24:00
           timeAsSeconds > endOfDayAsSeconds &&
           _.includes(event.days, previousDay)
         ) {
           const eventTimeAsSeconds = moment
             .duration(event.time[index])
+            .add(offsetSeconds, "seconds")
             .asSeconds();
+          // if (event.name === "Moake") {
+          //   console.log(event.name, eventTimeAsSeconds);
+          // }
           const currentTimeAsSeconds = moment.duration(currentTime).asSeconds();
           remainingTimeAsSeconds =
-            eventTimeAsSeconds -
-            endOfDayAsSeconds -
-            (currentTimeAsSeconds - offsetSeconds);
+            eventTimeAsSeconds - endOfDayAsSeconds - currentTimeAsSeconds;
         } else {
+          // normal time
           remainingTimeAsSeconds =
-            moment.duration(event.time[index]).asSeconds() -
-            moment.duration(currentTime).asSeconds() -
-            offsetSeconds; // 46200, 60600 seconds
+            moment.duration(event.time[index]).asSeconds() +
+            offsetSeconds -
+            moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
         }
         const remainingTimeText = moment
-          .duration(remainingTimeAsSeconds + offset, "seconds")
+          .duration(remainingTimeAsSeconds, "seconds")
           .humanize();
         return {
           category: event.category,
@@ -127,7 +131,7 @@ export default function Events(props) {
     // console.log("TodaysEvents:", todaysEvents);
 
     const upcomingEvents = _.filter(todaysEvents, (event) => {
-      const upcoming = event.remainingTime > 0;
+      const upcoming = event.remainingTime > -180;
       return upcoming;
     });
 
@@ -147,7 +151,7 @@ export default function Events(props) {
     <ThemeProvider theme={theme}>
       <Typography variant="h4" component="h1" align="center">
         {moment(currentTime, "HH:mm:ss")
-          .add(offset, "hours")
+          // .add(offset, "hours")
           .subtract(timezone, "hours")
           .format("HH:mm:ss")}
         {`(${timezone === 0 ? "EST" : "PST"})`}
@@ -156,7 +160,7 @@ export default function Events(props) {
         {moment(currentDay, "e").add(offset, "hours").format("dddd")}
       </Typography>
       <Box>
-        <TimezoneControl offset={offset} useStore={useStore} />
+        <TimezoneControl timezone={timezone} useStore={useStore} />
       </Box>
       <Paper sx={{ my: 1, p: { xs: 1, md: 1 } }}>
         <Typography component="h1" variant="h6" align="center">
@@ -222,18 +226,31 @@ export default function Events(props) {
 }
 
 function TimezoneControl(props) {
-  const { timezone, useStore } = props;
-  const [value, setValue] = React.useState("east");
-  const setTimezone = useStore((state) => state.setTimezone);
-
   const timezones = {
     east: 0,
     west: 3,
+    euc: -5,
+    euw: -4,
   };
+
+  const { timezone, useStore } = props;
+  const [value, setValue] = React.useState(timezone);
+  const setTimezone = useStore((state) => state.setTimezone);
+  const setOffset = useStore((state) => state.setOffset);
 
   const handleRadioChange = (event) => {
     setValue(event.target.value);
-    setTimezone(timezones[event.target.value]);
+    setTimezone(event.target.value);
+    // if east/west, set offset to 0, or whatever, therwise like 2
+    console.log(event.target.value);
+    if (event.target.value === "0" || event.target.value === "3") {
+      console.log("America");
+      setOffset(0);
+    }
+    if (event.target.value === "-5" || event.target.value === "-4") {
+      console.log("Europe");
+      setOffset(-5);
+    }
   };
 
   return (
@@ -246,8 +263,26 @@ function TimezoneControl(props) {
         value={value}
         onChange={handleRadioChange}
       >
-        <FormControlLabel value="east" control={<Radio />} label="US East" />
-        {/* <FormControlLabel value="west" control={<Radio />} label="US West" /> */}
+        <FormControlLabel
+          value={timezones.east}
+          control={<Radio />}
+          label="US East"
+        />
+        <FormControlLabel
+          value={timezones.west}
+          control={<Radio />}
+          label="US West"
+        />
+        <FormControlLabel
+          value={timezones.euc}
+          control={<Radio />}
+          label="EU Central"
+        />
+        <FormControlLabel
+          value={timezones.euw}
+          control={<Radio />}
+          label="EU West"
+        />
       </RadioGroup>
     </FormControl>
   );
@@ -308,7 +343,6 @@ function Timeline(props) {
   const offset = 1; // add to time for AGS shenanigans
   const currentTimeAsMilli = moment
     .duration(currentTime, "HH:mm:ss")
-    .add(offset, "hours")
     .asMilliseconds();
   const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
@@ -317,8 +351,8 @@ function Timeline(props) {
   //   console.log("currentTime%", (currentTimeAsMilli / endTimeAsMilli) * 100);
 
   function refreshClock() {
-    setCurrentTime(moment().utc().subtract(5, "hours").format("HH:mm:ss"));
-    setCurrentDay(moment().utc().subtract(5, "hours").format("e"));
+    setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
+    setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
   }
 
   //   console.log(currentTime, moment.duration(currentTime).asMilliseconds());
@@ -374,14 +408,8 @@ function Timeline(props) {
 
 function Timers(props) {
   const { events, useStore } = props;
-  // useDeepCompareEffect(() => {
-  //   console.log("filter changed, firing...");
-  //   const filteredEvents = _.filter(events, (event) => {
-  //     return filter[event.category][event.id];
-  //   });
-  //   setFilteredEventList(filteredEvents);
-  // }, [filter]);
-  // const currentDay = useStore((state) => state.currentDay);
+  const offset = useStore((state) => state.eventSettings.offset);
+  const timezone = useStore((state) => state.eventSettings.timezone);
 
   return (
     <>
@@ -393,6 +421,7 @@ function Timers(props) {
       <Paper sx={{ my: { xs: 1, md: 1 }, p: { xs: 1, md: 1 } }}>
         <Grid container spacing={1}>
           {_.map(events, (event, index) => {
+            const inProgress = event.remainingTime < 0;
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
                 <TimerItem
@@ -401,7 +430,11 @@ function Timers(props) {
                   eventName={event.name}
                   eventRemainingTime={event.remainingTime}
                   eventRemainingTimeText={event.remainingTimeText}
-                  eventTime={event.time}
+                  eventTime={moment(event.time, "HH:mm")
+                    .subtract(timezone, "hours")
+                    .add(offset, "hours")
+                    .format("HH:mm")}
+                  inProgress={inProgress}
                 />
               </Grid>
             );
@@ -413,18 +446,26 @@ function Timers(props) {
 }
 
 function TimerItem(props) {
-  const { eventImage, eventName, eventRemainingTimeText, eventTime } = props;
+  const {
+    eventImage,
+    eventName,
+    eventRemainingTimeText,
+    eventTime,
+    inProgress,
+  } = props;
 
   const EventCard = styled(Paper)`
     &:hover {
       background-color: pink;
     }
+    ${inProgress && "border: 1px solid #ac9c73"}
   `;
 
   return (
     <EventCard
       sx={{ padding: "8px", display: "flex", alignItems: "center" }}
       variant="outlined"
+      className={inProgress ? "inProgress" : ""}
     >
       <img
         src={eventImage}
@@ -434,7 +475,9 @@ function TimerItem(props) {
       <Box sx={{ width: "100%" }}>
         <Typography>{eventName}</Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography>{eventRemainingTimeText}</Typography>
+          <Typography>
+            {inProgress ? "In progress" : eventRemainingTimeText}
+          </Typography>
           <Typography sx={{ opacity: 0.5 }}>{eventTime}</Typography>
         </Box>
       </Box>

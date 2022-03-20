@@ -493,7 +493,7 @@ export const timerData = {
       ilvl: 380,
       image: tarsila,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Signatus",
@@ -522,7 +522,7 @@ export const timerData = {
       ilvl: 380,
       image: signatus,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Chaotic Chuo",
@@ -551,7 +551,7 @@ export const timerData = {
       ilvl: 380,
       image: chaoticchuo,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Proxima",
@@ -580,7 +580,7 @@ export const timerData = {
       ilvl: 540,
       image: proxima,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Magmadon",
@@ -609,7 +609,7 @@ export const timerData = {
       ilvl: 540,
       image: magmadon,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Harvest Lord Incarnate",
@@ -638,7 +638,7 @@ export const timerData = {
       ilvl: 880,
       image: harvestlordincarnate,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Kohinorr",
@@ -667,7 +667,7 @@ export const timerData = {
       ilvl: 880,
       image: kohinorr,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Sol Grande",
@@ -696,7 +696,7 @@ export const timerData = {
       ilvl: 1040,
       image: solgrande,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Ancheladus",
@@ -725,7 +725,7 @@ export const timerData = {
       ilvl: 1040,
       image: ancheladus,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Brealeos",
@@ -754,7 +754,7 @@ export const timerData = {
       ilvl: 1385,
       image: brealeos,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Aurion",
@@ -783,7 +783,7 @@ export const timerData = {
       ilvl: 1385,
       image: aurion,
       location: "",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
     {
       name: "Moake",
@@ -812,7 +812,7 @@ export const timerData = {
       ilvl: 1415,
       image: moake,
       location: "Tikatika Colony",
-      days: ["tue", "fri"],
+      days: ["tue", "fri", "sun"],
     },
   ],
   ghostship: [
