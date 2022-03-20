@@ -49,11 +49,36 @@ export default function Events(props) {
 
   //   console.log(currentTime, moment.duration(currentTime).asMilliseconds());
 
+  const parseTimezone = (timezone) => {
+    const timezones = {
+      EST: 0,
+      PST: 3,
+      CET: -5,
+      WET: -4,
+    };
+    return _.findKey(timezones, (zone) => {
+      return zone === timezone;
+    });
+  };
+
   // Event Math
   function parseEvents() {
     // console.log("timerData:", timerData);
     // console.log("flatMappedTimerData:", _.flatMap(timerData));
     const categories = _.map(timerData, (categoryObj, categoryName) => {
+      // if category isn't complete on checklist, return array of events ( maybe in future, add a setting to show complete tasks )
+      if (rosterStatus.grandprix && categoryName === "fever") {
+        return [];
+      }
+      if (rosterStatus.adv && categoryName === "adventure") {
+        return [];
+      }
+      if (rosterStatus.chaosgate && categoryName === "chaos") {
+        return [];
+      }
+      if (rosterStatus.cal && categoryName === "fieldboss") {
+        return [];
+      }
       return _.map(categoryObj, (event) => {
         return { ...event, category: categoryName };
       });
@@ -154,10 +179,10 @@ export default function Events(props) {
           // .add(offset, "hours")
           .subtract(timezone, "hours")
           .format("HH:mm:ss")}
-        {`(${timezone === 0 ? "EST" : "PST"})`}
+        {` ${parseTimezone(timezone)}`}
       </Typography>
       <Typography align="center">
-        {moment(currentDay, "e").add(offset, "hours").format("dddd")}
+        {moment(currentDay, "e").subtract(timezone, "hours").format("dddd")}
       </Typography>
       <Box>
         <TimezoneControl timezone={timezone} useStore={useStore} />
@@ -196,6 +221,7 @@ export default function Events(props) {
             theme={theme}
             currentDay={currentDay}
             useStore={useStore}
+            rosterStatus={rosterStatus}
           />
           <Paper
             sx={{
@@ -239,16 +265,15 @@ function TimezoneControl(props) {
   const setOffset = useStore((state) => state.setOffset);
 
   const handleRadioChange = (event) => {
-    setValue(event.target.value);
-    setTimezone(event.target.value);
-    // if east/west, set offset to 0, or whatever, therwise like 2
-    console.log(event.target.value);
-    if (event.target.value === "0" || event.target.value === "3") {
-      console.log("America");
+    const value = _.parseInt(event.target.value);
+    setValue(value);
+    setTimezone(value);
+    // US
+    if (value === 0 || value === 3) {
       setOffset(0);
     }
-    if (event.target.value === "-5" || event.target.value === "-4") {
-      console.log("Europe");
+    // EU
+    if (value === -5 || value === -4) {
       setOffset(-5);
     }
   };
@@ -486,7 +511,7 @@ function TimerItem(props) {
 }
 
 const FilterList = React.memo((props) => {
-  const { currentDay, useStore } = props;
+  const { currentDay, rosterStatus, useStore } = props;
   // console.log("renderList");
   return (
     <List sx={{ p: 0 }}>
@@ -495,18 +520,21 @@ const FilterList = React.memo((props) => {
         title="Fever"
         currentDay={currentDay}
         useStore={useStore}
+        disabled={rosterStatus.grandprix}
       />
       <FilterCategory
         category="adventure"
         title="Adventure Island"
         currentDay={currentDay}
         useStore={useStore}
+        disabled={rosterStatus.adv}
       />
       <FilterCategory
         category="chaos"
         title="Chaos Gate"
         currentDay={currentDay}
         useStore={useStore}
+        disabled={rosterStatus.chaosgate}
       />
       <FilterCategory
         category="ghostship"
@@ -519,6 +547,7 @@ const FilterList = React.memo((props) => {
         title="Field Boss"
         currentDay={currentDay}
         useStore={useStore}
+        disabled={rosterStatus.cal}
       />
       <FilterCategory
         category="islands"
@@ -576,14 +605,15 @@ function Favorites(props) {
 }
 
 function FilterCategory(props) {
-  const { category, title, currentDay, useStore } = props;
+  const { category, disabled, title, currentDay, useStore } = props;
   const toggleFilter = useStore((state) => state.toggleFilter);
   const eventSettings = useStore((state) => state.eventSettings);
   const endOfDay = moment.duration("24:00").asSeconds();
   return (
-    <Accordion>
+    <Accordion disabled={disabled}>
       <AccordionSummary id="fever" expandIcon={<ExpandMoreIcon />}>
-        <Typography>{title}</Typography>
+        <Typography sx={{ flexShrink: 0, width: "66%" }}>{title}</Typography>
+        {disabled && <Typography>Completed</Typography>}
       </AccordionSummary>
       <AccordionDetails style={{ padding: 0 }}>
         <List dense={true}>
