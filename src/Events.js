@@ -375,26 +375,26 @@ function Timeline(props) {
   //   console.log(currentTimeAsMilli, startTimeAsMilli, endTimeAsMilli);
   //   console.log("currentTime%", (currentTimeAsMilli / endTimeAsMilli) * 100);
 
-  function refreshClock() {
-    setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
-    setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
-  }
-
   //   console.log(currentTime, moment.duration(currentTime).asMilliseconds());
   //   console.log(currentTime); // 01:59:57
 
   // Refreshes clock, temporarily disabled for developing
   useEffect(() => {
+    function refreshClock() {
+      setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
+      setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
+    }
+
     const timerId = setInterval(refreshClock, 1000);
     return function cleanup() {
       clearInterval(timerId);
     };
-  }, []);
+  }, [setCurrentTime, setCurrentDay]);
 
   // Auto moves hand
   useEffect(() => {
     setIndicatorPosition((currentTimeAsMilli / endTimeAsMilli) * 100);
-  });
+  }, [currentTimeAsMilli, endTimeAsMilli]);
 
   //   console.log(indicatorPosition);
 
@@ -436,6 +436,16 @@ function Timers(props) {
   const offset = useStore((state) => state.eventSettings.offset);
   const timezone = useStore((state) => state.eventSettings.timezone);
 
+  const addFavorite = useStore((state) => state.addFavorite);
+
+  function parseTime(timeText) {
+    const timeData = _.split(timeText, ":", 2);
+    const isNextDay = _.parseInt(timeData[0]) > 24;
+    return isNextDay
+      ? `${timeData[0] - 24}:${timeData[1]}`
+      : `${timeData[0]}:${timeData[1]}`;
+  }
+
   return (
     <>
       <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }}>
@@ -447,6 +457,11 @@ function Timers(props) {
         <Grid container spacing={1}>
           {_.map(events, (event, index) => {
             const inProgress = event.remainingTime < 0;
+            const timeText = parseTime(event.time);
+            const eventTime = moment(timeText, "HH:mm")
+              .subtract(timezone, "hours")
+              .add(offset, "hours")
+              .format("HH:mm");
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
                 <TimerItem
@@ -455,11 +470,12 @@ function Timers(props) {
                   eventName={event.name}
                   eventRemainingTime={event.remainingTime}
                   eventRemainingTimeText={event.remainingTimeText}
-                  eventTime={moment(event.time, "HH:mm")
-                    .subtract(timezone, "hours")
-                    .add(offset, "hours")
-                    .format("HH:mm")}
+                  eventTime={eventTime}
                   inProgress={inProgress}
+                  onClick={() => {
+                    console.log("You clicked me:", event);
+                    addFavorite(event);
+                  }}
                 />
               </Grid>
             );
@@ -477,6 +493,7 @@ function TimerItem(props) {
     eventRemainingTimeText,
     eventTime,
     inProgress,
+    onClick,
   } = props;
 
   const EventCard = styled(Paper)`
@@ -491,6 +508,7 @@ function TimerItem(props) {
       sx={{ padding: "8px", display: "flex", alignItems: "center" }}
       variant="outlined"
       className={inProgress ? "inProgress" : ""}
+      onClick={onClick}
     >
       <img
         src={eventImage}
@@ -572,6 +590,20 @@ const FilterList = React.memo((props) => {
 });
 
 function Favorites(props) {
+  const { useStore } = props;
+  const favorites = useStore((state) => state.favorites);
+  const offset = useStore((state) => state.eventSettings.offset);
+  const timezone = useStore((state) => state.eventSettings.timezone);
+
+  function parseTime(timeText) {
+    const timeData = _.split(timeText, ":", 2);
+    const isNextDay = _.parseInt(timeData[0]) > 24;
+    return isNextDay
+      ? `${timeData[0] - 24}:${timeData[1]}`
+      : `${timeData[0]}:${timeData[1]}`;
+  }
+
+  // console.log(favorites);
   return (
     <>
       <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }}>
@@ -581,23 +613,30 @@ function Favorites(props) {
       </Paper>
       <Paper sx={{ my: { xs: 1, md: 1 }, p: { xs: 1, md: 1 } }}>
         <Grid container spacing={1}>
-          {/* {_.map(events, (event, index) => {
-            const isDone = false;
+          {_.map(favorites, (event, index) => {
+            const inProgress = event.remainingTime < 0;
+            const timeText = parseTime(event.time);
+            const eventTime = moment(timeText, "HH:mm")
+              .subtract(timezone, "hours")
+              .add(offset, "hours")
+              .format("HH:mm");
             return (
-              event.remainingTime + offset > 0 &&
-              !isDone && (
-                <Grid item xs={12} key={`${event.name}-${index}`}>
-                  <TimerItem
-                    event={event}
-                    eventImage={event.image}
-                    eventName={event.name}
-                    eventRemainingTime={event.remainingTime}
-                    eventTime={event.time}
-                  />
-                </Grid>
-              )
+              <Grid item xs={12} key={`${event.name}-${index}`}>
+                <TimerItem
+                  event={event}
+                  eventImage={event.image}
+                  eventName={event.name}
+                  eventRemainingTime={event.remainingTime}
+                  eventRemainingTimeText={event.remainingTimeText}
+                  eventTime={eventTime}
+                  inProgress={inProgress}
+                  onClick={() => {
+                    console.log("You clicked me:", event);
+                  }}
+                />
+              </Grid>
             );
-          })} */}
+          })}
         </Grid>
       </Paper>
     </>

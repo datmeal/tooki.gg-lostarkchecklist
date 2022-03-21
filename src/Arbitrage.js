@@ -55,6 +55,13 @@ export default function Checklist(props) {
     createData(`Harmony Leapstone (Bound)`, "harmonyLeapstone", 1, 15, true),
     createData(`Life Leapstone (Bound)`, "lifeLeapstone", 1, 10, true),
     createData(`Honor Leapstone (Bound)`, "honorLeapstone", 1, 5, true),
+    createData(
+      `Great Honor Leapstone (Bound)`,
+      "greatHonorLeapstone",
+      1,
+      5,
+      true
+    ),
     createData(`Star's Breath (Bound)`, "starsBreath", 1, 10, true),
     createData(`Moon's Breath (Bound)`, "moonsBreath", 1, 5, true),
     createData(`Solar Grace (Bound)`, "solarGrace", 1, 20, true),
@@ -103,6 +110,7 @@ export default function Checklist(props) {
     harmonyLeapstone: 15 / 15,
     lifeLeapstone: 14 / 10,
     honorLeapstone: 10 / 5,
+    greatHonorLeapstone: 50 / 5,
     starsBreath: 30 / 10,
     moonsBreath: 30 / 5,
     solarGrace: 80 / 20,

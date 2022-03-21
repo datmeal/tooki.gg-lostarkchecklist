@@ -290,6 +290,7 @@ const defaultGoldPrices = {
   harmonyLeapstone: 15,
   lifeLeapstone: 125,
   honorLeapstone: 224,
+  greatHonorLeapstone: 688,
   starsBreath: 23,
   moonsBreath: 75,
   solarGrace: 69,
@@ -385,33 +386,37 @@ const defaultEventSettings = {
       unknown: true,
     },
     sailing: {
-      sailingcoop_harmony_wed: true,
-      sailingcoop_vern_wed: true,
-      sailingcoop_arthetine_wed: true,
-      sailingcoop_anikka_302: true,
-      sailingcoop_arthetine_thu: true,
-      sailingcoop_anikka_thu: true,
-      sailingcoop_vern_thu: true,
-      sailingcoop_rohendel_thu: true,
-      sailingcoop_feiton_thu: true,
-      sailingcoop_punika_thu: true,
-      sailingcoop_arthetine_fri: true,
-      sailingcoop_anikka_fri: true,
-      sailingcoop_vern_fri: true,
-      sailingcoop_rohendel_fri: true,
-      sailingcoop_yorn_fri: true,
-      sailingcoop_feiton_fri: true,
-      sailingcoop_arthetine_sat: true,
-      sailingcoop_anikka_sat: true,
-      sailingcoop_vern_sat: true,
-      sailingcoop_harmony_sat: true,
-      sailingcoop_rohendel_sat: true,
-      sailingcoop_wisdom_sat: true,
-      sailingcoop_yorn_sat: true,
-      sailingcoop_earth_sat: true,
-      sailingcoop_endurance_sat: true,
-      sailingcoop_feiton_sat: true,
-      sailingcoop_guidance_sat: true,
+      sailingcoop_arthetine_1930: true,
+      sailingcoop_arthetine_2130: true,
+      sailingcoop_arthetine_2330: true,
+      sailingcoop_anikka_1930: true,
+      sailingcoop_anikka_2130: true,
+      sailingcoop_anikka_2330: true,
+      sailingcoop_vern_1930: true,
+      sailingcoop_vern_2130: true,
+      sailingcoop_vern_2330: true,
+      sailingcoop_rohendel_1930: true,
+      sailingcoop_rohendel_2130: true,
+      sailingcoop_rohendel_2330: true,
+      sailingcoop_yorn_2130: true,
+      sailingcoop_yorn_2330: true,
+      sailingcoop_feiton_1930: true,
+      sailingcoop_feiton_2130: true,
+      sailingcoop_feiton_2330: true,
+      sailingcoop_punika_1930: true,
+      sailingcoop_punika_2130: true,
+      sailingcoop_punika_2330: true,
+      sailingcoop_harmony_2200: true,
+      sailingcoop_harmony_2300: true,
+      sailingcoop_wisdom_1800: true,
+      sailingcoop_wisdom_2200: true,
+      sailingcoop_wisdom_2300: true,
+      sailingcoop_earth_1800: true,
+      sailingcoop_earth_2200: true,
+      sailingcoop_endurance_1800: true,
+      sailingcoop_endurance_2200: true,
+      sailingcoop_guidance_1800: true,
+      sailingcoop_guidance_2200: true,
     },
     pvp: {
       coopbattle: true,
@@ -427,6 +432,11 @@ const eventsStore = create((set, get) => ({
   eventList: [],
   eventSettings: defaultEventSettings,
   favorites: [],
+  addFavorite: (event) => {
+    set((state) => ({
+      favorites: _.concat(state.favorites, event),
+    }));
+  },
   setCurrentTime: (currentTime) => {
     set((state) => ({ currentTime }));
   },
@@ -572,6 +582,9 @@ function App() {
     });
     if (parsedSettings.timezone) {
       updatedSettings.timezone = parsedSettings.timezone;
+    }
+    if (parsedSettings.offset) {
+      updatedSettings.offset = parsedSettings.offset;
     }
     updateES(updatedSettings);
   }
