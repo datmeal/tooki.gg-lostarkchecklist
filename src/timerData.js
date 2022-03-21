@@ -108,7 +108,7 @@ export const timerData = {
     {
       name: "Harmony Island",
       time: ["19:00", "21:00", "23:00"],
-      id: "harmony_sat",
+      id: "harmony",
       ilvl: 250,
       image: harmony,
       location: "Harmony Island",
@@ -144,7 +144,7 @@ export const timerData = {
     {
       name: "Medeia",
       time: ["11:00", "13:00", "15:00"],
-      id: "medeia_sun",
+      id: "medeia",
       ilvl: 250,
       image: medeia,
       location: "Medeia",
@@ -162,7 +162,7 @@ export const timerData = {
     {
       name: "Monte Island",
       time: ["11:00", "13:00", "15:00"],
-      id: "monte_sat",
+      id: "monte",
       ilvl: 250,
       image: monte,
       location: "Monte Island",
@@ -180,7 +180,7 @@ export const timerData = {
     // {
     //   name: "Oblivion Isle",
     //   time: ["19:00", "21:00", "23:00"],
-    //   id: "oblivion_sun",
+    //   id: "oblivion",
     //   ilvl: 250,
     //   image: oblivion,
     //   location: "Oblivion Isle",
@@ -189,7 +189,7 @@ export const timerData = {
     {
       name: "Oblivion Isle",
       time: ["11:00", "13:00", "15:00"],
-      id: "oblivion_sat",
+      id: "oblivion",
       ilvl: 250,
       image: oblivion,
       location: "Oblivion Isle",
@@ -216,7 +216,7 @@ export const timerData = {
     {
       name: "Phantomwing Island",
       time: ["11:00", "13:00", "15:00"],
-      id: "phantomwing_sat",
+      id: "phantomwing",
       ilvl: 250,
       image: phantomwing,
       location: "Phantomwing Island",
@@ -225,7 +225,7 @@ export const timerData = {
     {
       name: "Phantomwing Island",
       time: ["19:00", "21:00", "23:00"],
-      id: "phantomwing_sun",
+      id: "phantomwing",
       ilvl: 250,
       image: phantomwing,
       location: "Phantomwing Island",
@@ -252,7 +252,7 @@ export const timerData = {
     {
       name: "Tranquil Isle",
       time: ["11:00", "13:00", "15:00"],
-      id: "tranquil_sat",
+      id: "tranquil",
       ilvl: 250,
       image: tranquil,
       location: "Tranquil Isle",
@@ -270,7 +270,7 @@ export const timerData = {
     {
       name: "Volare Island",
       time: ["11:00", "13:00", "15:00"],
-      id: "volare_sun",
+      id: "volare",
       ilvl: 250,
       image: volare,
       location: "Volare Island",
