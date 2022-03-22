@@ -1,5 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
-import useDeepCompareEffect from "use-deep-compare-effect";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
@@ -22,11 +21,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
 
 import { timerData, days } from "./timerData";
-import { BookmarkAdded, Javascript, Pause, Timer } from "@mui/icons-material";
 
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
@@ -44,12 +41,25 @@ export default function Events(props) {
   const previousDay =
     days[moment(currentDay, "e").subtract(1, "days").format("e")]; // string "sat"
   const nextDay = days[moment(currentDay, "e").add(1, "days").format("e")]; // string "sat"
-  // console.log(previousDay);
-  // console.log("filter:", filter);
-  // hooks
-  //   const [interval, setInterval] = useState(0);
+  const setCurrentTime = useStore((state) => state.setCurrentTime);
+  const setCurrentDay = useStore((state) => state.setCurrentDay);
 
-  //   console.log(currentTime, moment.duration(currentTime).asMilliseconds());
+  // Clock math
+  // Refreshes clock, temporarily disabled for developing
+  useEffect(() => {
+    function refreshClock() {
+      setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
+      setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
+      // Test Time
+      // setCurrentTime(moment("23:55", "HH:mm").format("HH:mm:ss"));
+      // setCurrentDay(moment("23:55", "HH:mm").format("e"));
+    }
+
+    const timerId = setInterval(refreshClock, 1000);
+    return function cleanup() {
+      clearInterval(timerId);
+    };
+  }, [setCurrentTime, setCurrentDay]);
 
   const parseTimezone = (timezone) => {
     const timezones = {
@@ -65,8 +75,6 @@ export default function Events(props) {
 
   // Event Math
   function parseEvents() {
-    // console.log("timerData:", timerData);
-    // console.log("flatMappedTimerData:", _.flatMap(timerData));
     const categories = _.map(timerData, (categoryObj, categoryName) => {
       // if category isn't complete on checklist, return array of events ( maybe in future, add a setting to show complete tasks )
       if (rosterStatus.grandprix && categoryName === "fever") {
@@ -88,7 +96,6 @@ export default function Events(props) {
     // console.log("categories:", categories);
     const events = categories.flatMap((category) => category);
     // console.log("allEvents:", events);
-    // .add(offset, "hours")
     const allEvents = _.flatMap(events, (event) => {
       // console.log("event:", event);
       return _.flatMap(event.time, (time, index) => {
@@ -103,9 +110,6 @@ export default function Events(props) {
             .duration(event.time[index])
             .add(offsetSeconds, "seconds")
             .asSeconds();
-          // if (event.name === "Moake") {
-          //   console.log(event.name, eventTimeAsSeconds);
-          // }
           remainingTimeAsSeconds =
             eventTimeAsSeconds - endOfDayAsSeconds - currentTimeAsSeconds;
         } else if (
@@ -113,7 +117,6 @@ export default function Events(props) {
           _.includes(event.days, nextDay) &&
           moment.duration(time).asSeconds() < currentTimeAsSeconds
         ) {
-          console.log("nextdayevent:", event);
           remainingTimeAsSeconds =
             moment.duration(event.time[index]).asSeconds() +
             moment.duration(24, "hours").asSeconds() +
@@ -377,43 +380,15 @@ function Timeline(props) {
 
   // Hooks
   //   const [currentTime, setCurrentTime] = useState(""); // moment().zone("-14:00").format("HH:mm:ss")
-  const currentTime = useStore((state) => state.currentTime);
-  const setCurrentTime = useStore((state) => state.setCurrentTime);
-  const currentDay = useStore((state) => state.currentDay);
-  const setCurrentDay = useStore((state) => state.setCurrentDay);
   const [indicatorPosition, setIndicatorPosition] = useState(0);
+  const currentTime = useStore((state) => state.currentTime);
 
-  // Clock math
-  const offset = 1; // add to time for AGS shenanigans
+  // Auto moves hand
   const currentTimeAsMilli = moment
     .duration(currentTime, "HH:mm:ss")
     .asMilliseconds();
-  const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
+  // const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
-  //   const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
-  //   console.log(currentTimeAsMilli, startTimeAsMilli, endTimeAsMilli);
-  //   console.log("currentTime%", (currentTimeAsMilli / endTimeAsMilli) * 100);
-
-  //   console.log(currentTime, moment.duration(currentTime).asMilliseconds());
-  //   console.log(currentTime); // 01:59:57
-
-  // Refreshes clock, temporarily disabled for developing
-  useEffect(() => {
-    function refreshClock() {
-      setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
-      setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
-      // Test Time
-      // setCurrentTime(moment("23:55", "HH:mm").format("HH:mm:ss"));
-      // setCurrentDay(moment("23:55", "HH:mm").format("e"));
-    }
-
-    const timerId = setInterval(refreshClock, 1000);
-    return function cleanup() {
-      clearInterval(timerId);
-    };
-  }, [setCurrentTime, setCurrentDay]);
-
-  // Auto moves hand
   useEffect(() => {
     setIndicatorPosition((currentTimeAsMilli / endTimeAsMilli) * 100);
   }, [currentTimeAsMilli, endTimeAsMilli]);

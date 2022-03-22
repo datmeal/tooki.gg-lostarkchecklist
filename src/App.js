@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import _ from "lodash";
 import moment from "moment";
+import styled from "@emotion/styled";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -25,7 +26,7 @@ import Checklist from "./Checklist";
 import Events from "./Events";
 import Arbitrage from "./Arbitrage";
 
-import logo from "./logo.svg";
+import logo from "./img/logo.png";
 // import "./App.css";
 
 const defaultValues = {
@@ -627,11 +628,30 @@ function App() {
     setTabValue(newValue);
   };
 
+  const Logo = styled.div`
+    display: flex;
+    margin-right: 24px;
+    width: 200px;
+    img {
+      width: 100%;
+    }
+  `;
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container component="main" sx={{ my: 0 }} maxWidth="xl">
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingTop: 1,
+          }}
+        >
+          <Logo>
+            <img src={logo} />
+          </Logo>
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
