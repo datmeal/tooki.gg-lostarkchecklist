@@ -31,6 +31,7 @@ import { BookmarkAdded, Javascript, Pause, Timer } from "@mui/icons-material";
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
   const currentTime = useStore((state) => state.currentTime);
+  const currentTimeAsSeconds = moment.duration(currentTime).asSeconds();
   const currentDay = useStore((state) => state.currentDay); // a number 0-6
   const rosterStatus = taskStore((state) => state.rosterStatus);
   const filter = useStore((state) => state.eventSettings.filter);
@@ -42,6 +43,7 @@ export default function Events(props) {
   // console.log(moment(currentTime, "HH:mm:ss").subtract(1, "days").format("e"));
   const previousDay =
     days[moment(currentDay, "e").subtract(1, "days").format("e")]; // string "sat"
+  const nextDay = days[moment(currentDay, "e").add(1, "days").format("e")]; // string "sat"
   // console.log(previousDay);
   // console.log("filter:", filter);
   // hooks
@@ -104,9 +106,19 @@ export default function Events(props) {
           // if (event.name === "Moake") {
           //   console.log(event.name, eventTimeAsSeconds);
           // }
-          const currentTimeAsSeconds = moment.duration(currentTime).asSeconds();
           remainingTimeAsSeconds =
             eventTimeAsSeconds - endOfDayAsSeconds - currentTimeAsSeconds;
+        } else if (
+          // tomorrow's events, show as remaining time + 24h
+          _.includes(event.days, nextDay) &&
+          moment.duration(time).asSeconds() < currentTimeAsSeconds
+        ) {
+          console.log("nextdayevent:", event);
+          remainingTimeAsSeconds =
+            moment.duration(event.time[index]).asSeconds() +
+            moment.duration(24, "hours").asSeconds() +
+            offsetSeconds -
+            moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
         } else {
           // normal time
           remainingTimeAsSeconds =
@@ -148,6 +160,13 @@ export default function Events(props) {
       if (
         _.includes(event.days, previousDay) &&
         moment.duration(event.time).asSeconds() > endOfDayAsSeconds
+      ) {
+        return true;
+      }
+      // Tomorrow's Events before current time?
+      if (
+        _.includes(event.days, nextDay) &&
+        moment.duration(event.time).asSeconds() < currentTimeAsSeconds
       ) {
         return true;
       }
@@ -383,6 +402,9 @@ function Timeline(props) {
     function refreshClock() {
       setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
       setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
+      // Test Time
+      // setCurrentTime(moment("23:55", "HH:mm").format("HH:mm:ss"));
+      // setCurrentDay(moment("23:55", "HH:mm").format("e"));
     }
 
     const timerId = setInterval(refreshClock, 1000);
