@@ -263,9 +263,6 @@ export default function Events(props) {
                 <ListItemText>Pet Buff Calculator</ListItemText>
               </ListItem>
             </List>
-            <Typography align="center">
-              Please send any feedback to Salty#1961
-            </Typography>
           </Paper>
         </Grid>
       </Grid>

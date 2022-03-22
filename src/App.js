@@ -679,6 +679,9 @@ function App() {
           }}
         >
           <Typography align="center">
+            Please send any feedback to Salty#1961 on Discord
+          </Typography>
+          <Typography align="center">
             Lost Ark Game content and assets are trademarks of Smilegate RPG,
             Inc.
           </Typography>
