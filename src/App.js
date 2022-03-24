@@ -46,6 +46,7 @@ const defaultValues = {
     chaos2: false,
     guardian1: false,
     guardian2: false,
+    eventguardian: false,
     kalthertz: false,
     guildDonation: false,
   },
@@ -78,12 +79,12 @@ const defaultValues = {
     vendorPvp: false,
   },
   rosterStatus: {
-    eventguardian: false,
     grandprix: false,
     adv: false,
     cal: false,
     chaosgate: false,
     anguishedisle: false,
+    cradle: false,
     rapport1: {
       name: "Beatrice",
       song1: false,

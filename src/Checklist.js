@@ -62,6 +62,13 @@ const dailies = [
   createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
   createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
   createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    icon_guardian,
+    "guardian"
+  ),
+  createData(
     `Kalthertz`,
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
@@ -69,13 +76,6 @@ const dailies = [
 ];
 
 const accountDailies = [
-  createData(
-    `Event Guardian`,
-    "eventguardian",
-    null,
-    icon_guardian,
-    "guardian"
-  ),
   createData(`Grand Prix`, "grandprix", null, icon_grandprix),
   createData(
     `Adventure Island`,
@@ -87,6 +87,7 @@ const accountDailies = [
   createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle"),
+  createData(`Cradle of the Sea Fermata`, "cradle"),
 ];
 
 const weeklies = [
