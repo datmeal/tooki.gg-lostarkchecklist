@@ -440,8 +440,11 @@ function TimezoneControl(props) {
     setValue(value);
     setTimezone(value);
     // US
-    if (value === 0 || value === 3) {
+    if (value === 0) {
       setOffset(0);
+    }
+    if (value === 3) {
+      setOffset(1);
     }
     // EU
     if (value === -5 || value === -4) {
