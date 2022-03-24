@@ -84,7 +84,7 @@ const accountDailies = [
     icon_adventure_island,
     "adventure"
   ),
-  createData(`Field Boss`, "cal", null, icon_field_boss, "boss"),
+  createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle"),
 ];
