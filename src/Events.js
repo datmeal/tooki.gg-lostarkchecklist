@@ -49,11 +49,11 @@ export default function Events(props) {
 
   const parseTimezone = (timezone) => {
     const timezones = {
-      EST: 0,
+      "EST/AST": 0,
       PST: 3,
       CET: -5,
       WET: -4,
-      AST: 1,
+      // AST: 0,
     };
     return _.findKey(timezones, (zone) => {
       return zone === timezone;
@@ -429,7 +429,7 @@ function TimezoneControl(props) {
     west: 3,
     euc: -5,
     euw: -4,
-    ast: 1,
+    ast: 0,
   };
 
   const { timezone, useStore } = props;
@@ -452,10 +452,10 @@ function TimezoneControl(props) {
     if (value === -5 || value === -4) {
       setOffset(-5);
     }
-    // AST
-    if (value === 1) {
-      setOffset(1);
-    }
+    // AST same as EST?
+    // if (value === 1) {
+    //   setOffset(1);
+    // }
   };
 
   return (
@@ -471,7 +471,7 @@ function TimezoneControl(props) {
         <FormControlLabel
           value={timezones.east}
           control={<Radio />}
-          label="US East"
+          label="US East / South America"
         />
         <FormControlLabel
           value={timezones.west}
@@ -488,11 +488,11 @@ function TimezoneControl(props) {
           control={<Radio />}
           label="EU West"
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           value={timezones.ast}
           control={<Radio />}
           label="South America"
-        />
+        /> */}
       </RadioGroup>
     </FormControl>
   );
