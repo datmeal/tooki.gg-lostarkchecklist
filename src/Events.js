@@ -444,7 +444,7 @@ function TimezoneControl(props) {
       setOffset(0);
     }
     if (value === 3) {
-      setOffset(1);
+      setOffset(3);
     }
     // EU
     if (value === -5 || value === -4) {
