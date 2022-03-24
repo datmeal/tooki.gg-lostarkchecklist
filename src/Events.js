@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import _ from "lodash";
+import _, { times } from "lodash";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import moment from "moment";
@@ -10,6 +10,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
@@ -23,7 +25,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 
-import { timerData, days } from "./timerData";
+import { timerData, days, dayText } from "./timerData";
+import { Icon } from "@mui/material";
 
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
@@ -35,31 +38,14 @@ export default function Events(props) {
   const offset = useStore((state) => state.eventSettings.offset); // add to offset AGS shenanigans, DST
   const timezone = useStore((state) => state.eventSettings.timezone);
   const offsetSeconds = moment.duration(offset, "h").asSeconds();
+  const resetTimeAsSeconds = moment.duration("5:00").asSeconds();
   const endOfDayAsSeconds = moment.duration("24:00").asSeconds();
-  const eventCount = 50; // how many to show, configurable later, not sure why the number of items shown is weird atm
-  // console.log(moment(currentTime, "HH:mm:ss").subtract(1, "days").format("e"));
   const previousDay =
     days[moment(currentDay, "e").subtract(1, "days").format("e")]; // string "sat"
   const nextDay = days[moment(currentDay, "e").add(1, "days").format("e")]; // string "sat"
   const setCurrentTime = useStore((state) => state.setCurrentTime);
   const setCurrentDay = useStore((state) => state.setCurrentDay);
-
-  // Clock math
-  // Refreshes clock, temporarily disabled for developing
-  useEffect(() => {
-    function refreshClock() {
-      setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
-      setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
-      // Test Time
-      // setCurrentTime(moment("23:55", "HH:mm").format("HH:mm:ss"));
-      // setCurrentDay(moment("23:55", "HH:mm").format("e"));
-    }
-
-    const timerId = setInterval(refreshClock, 1000);
-    return function cleanup() {
-      clearInterval(timerId);
-    };
-  }, [setCurrentTime, setCurrentDay]);
+  const eventCount = 30;
 
   const parseTimezone = (timezone) => {
     const timezones = {
@@ -96,103 +82,257 @@ export default function Events(props) {
     // console.log("categories:", categories);
     const events = categories.flatMap((category) => category);
     // console.log("allEvents:", events);
-    const allEvents = _.flatMap(events, (event) => {
-      // console.log("event:", event);
-      return _.flatMap(event.time, (time, index) => {
-        const timeAsSeconds = moment.duration(time).asSeconds();
-        let remainingTimeAsSeconds;
-        if (
-          // past 24:00
-          timeAsSeconds > endOfDayAsSeconds &&
-          _.includes(event.days, previousDay)
-        ) {
-          const eventTimeAsSeconds = moment
-            .duration(event.time[index])
-            .add(offsetSeconds, "seconds")
-            .asSeconds();
-          remainingTimeAsSeconds =
-            eventTimeAsSeconds - endOfDayAsSeconds - currentTimeAsSeconds;
-        } else if (
-          // tomorrow's events, show as remaining time + 24h
-          _.includes(event.days, nextDay) &&
-          moment.duration(time).asSeconds() < currentTimeAsSeconds
-        ) {
-          remainingTimeAsSeconds =
-            moment.duration(event.time[index]).asSeconds() +
-            moment.duration(24, "hours").asSeconds() +
-            offsetSeconds -
-            moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
-        } else {
-          // normal time
-          remainingTimeAsSeconds =
-            moment.duration(event.time[index]).asSeconds() +
-            offsetSeconds -
-            moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
-        }
-        const remainingTimeText = moment
-          .duration(remainingTimeAsSeconds, "seconds")
-          .humanize();
-        return {
-          category: event.category,
-          days: event.days,
-          image: event.image,
-          ilvl: event.ilvl,
-          id: event.id,
-          location: event.location,
-          name: event.name,
-          time: time,
-          remainingTime: remainingTimeAsSeconds,
-          remainingTimeText: remainingTimeText,
-        };
-      });
-    });
-    // console.log("allEvents:", allEvents);
-    const filteredEvents = _.filter(allEvents, (event) => {
+
+    // const todayEvents = _.reduce(
+    //   events,
+    //   (result, event, key) => {
+    //     // // Today's Events
+    //     // if (
+    //     //   _.includes(event.days, days[currentDay]) &&
+    //     //   moment.duration(event.time).asSeconds() < endOfDayAsSeconds
+    //     // ) {
+    //     //   return true;
+    //     // }
+    //     // // Yesterday's Events after 11:59PM
+    //     // if (
+    //     //   _.includes(event.days, previousDay) &&
+    //     //   moment.duration(event.time).asSeconds() > endOfDayAsSeconds
+    //     // ) {
+    //     //   return true;
+    //     // }
+    //     // // Tomorrow's Events before current time?
+    //     // if (
+    //     //   _.includes(event.days, nextDay) &&
+    //     //   moment.duration(event.time).asSeconds() < currentTimeAsSeconds
+    //     // ) {
+    //     //   return true;
+    //     // }
+    //     console.log(result, event);
+    //     if (_.has(event.times, days[currentDay])) {
+    //       // console.log(`${event.name} happens today`, event);
+    //       return event;
+    //     }
+    //   },
+    //   []
+    // );
+    // const validEvents = events.reduce((result, event) => {
+    //   // Today's Events
+    //   if (_.has(event.times, days[currentDay])) {
+    //     result.push(event);
+    //   }
+    //   // // Tomorrow's Events (To see them before the next day starts)
+    //   if (_.has(event.times, nextDay)) {
+    //     result.push(event);
+    //   }
+    //   // // Yesterday's Events that happen after 24:00
+    //   if (
+    //     _.has(event.times, previousDay) &&
+    //     _.some(event.times[previousDay], (time) => {
+    //       const timeAsSeconds = moment.duration(time).asSeconds();
+    //       return timeAsSeconds > endOfDayAsSeconds;
+    //     })
+    //   ) {
+    //     result.push(event);
+    //   }
+    //   return _.uniq(result);
+    // }, []);
+    // return validEvents;
+    return events;
+  }
+
+  const timerEvents = () => {
+    const filteredEvents = _.filter(parseEvents(), (event) => {
       return filter[event.category][event.id];
     });
-    // console.log("filteredEvents:", filteredEvents);
-    const todaysEvents = _.filter(filteredEvents, (event) => {
-      // Today's Events
-      if (
-        _.includes(event.days, days[currentDay]) &&
-        moment.duration(event.time).asSeconds() < endOfDayAsSeconds
-      ) {
-        return true;
+
+    // const allEvents = _.flatMap(filteredEvents, (event) => {
+    //   return _.flatMap(event.time, (time, index) => {
+    //     const timeAsSeconds = moment.duration(time).asSeconds();
+    //     let remainingTimeAsSeconds;
+    //     if (
+    //       // past 24:00
+    //       timeAsSeconds > endOfDayAsSeconds &&
+    //       _.includes(event.days, previousDay)
+    //     ) {
+    //       const eventTimeAsSeconds = moment
+    //         .duration(event.time[index])
+    //         .add(offsetSeconds, "seconds")
+    //         .asSeconds();
+    //       remainingTimeAsSeconds =
+    //         eventTimeAsSeconds - endOfDayAsSeconds - currentTimeAsSeconds;
+    //     } else if (
+    //       // tomorrow's events, show as remaining time + 24h
+    //       _.includes(event.days, nextDay) &&
+    //       moment.duration(time).asSeconds() < currentTimeAsSeconds
+    //     ) {
+    //       remainingTimeAsSeconds =
+    //         moment.duration(event.time[index]).asSeconds() +
+    //         moment.duration(24, "hours").asSeconds() +
+    //         offsetSeconds -
+    //         moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
+    //     } else {
+    //       // normal time
+    //       remainingTimeAsSeconds =
+    //         moment.duration(event.time[index]).asSeconds() +
+    //         offsetSeconds -
+    //         moment.duration(currentTime).asSeconds(); // 46200, 60600 seconds
+    //     }
+    //     const remainingTimeText = moment
+    //       .duration(remainingTimeAsSeconds, "seconds")
+    //       .humanize();
+    //     return {
+    //       category: event.category,
+    //       days: _.map(event.times, (day, index) => index),
+    //       image: event.image,
+    //       ilvl: event.ilvl,
+    //       id: event.id,
+    //       location: event.location,
+    //       name: event.name,
+    //       time: time,
+    //       remainingTime: remainingTimeAsSeconds,
+    //       remainingTimeText: remainingTimeText,
+    //     };
+    //   });
+    // });
+
+    // console.log("allEvents:", allEvents);
+    // console.log(filteredEvents);
+    // const todaysEvents = _.filter(filteredEvents, (event) => {
+    //   // Today's Events
+    //   if (_.has(event.times, days[currentDay])) {
+    //     return true;
+    //   }
+    //   // Yesterday's Events after 11:59PM
+    //   if (_.has(event.times, previousDay)) {
+    //     const hasEventsAfterMidnight = _.some(
+    //       event.times[previousDay],
+    //       (time) => {
+    //         return moment.duration(time).asSeconds() > endOfDayAsSeconds;
+    //       }
+    //     );
+    //     return hasEventsAfterMidnight;
+    //   }
+    //   // Tomorrow's Events before current time?
+    //   if (_.has(event.times, nextDay)) {
+    //     const hasEventsPastMidnight = _.some(event.times[nextDay], (time) => {
+    //       return moment.duration(time).asSeconds() < currentTimeAsSeconds;
+    //     });
+    //     return hasEventsPastMidnight;
+    //   }
+    //   return false;
+    // });
+
+    const todaysEvents = filteredEvents.reduce((result, event) => {
+      const newEvent = _.cloneDeep(event);
+      newEvent.times = {};
+      // include all times for today
+      if (_.has(event.times, days[currentDay])) {
+        newEvent.times = {
+          ...newEvent.times,
+          [days[currentDay]]: event.times[days[currentDay]],
+        };
       }
-      // Yesterday's Events after 11:59PM
+      // filter to include times before server reset of next day
       if (
-        _.includes(event.days, previousDay) &&
-        moment.duration(event.time).asSeconds() > endOfDayAsSeconds
+        _.has(event.times, nextDay) &&
+        _.some(
+          event.times[nextDay],
+          (time) => moment.duration(time).asSeconds() <= resetTimeAsSeconds
+        )
       ) {
-        return true;
+        const nextDayTimes = event.times[nextDay].reduce((result, time) => {
+          const timeAsSeconds = moment.duration(time).asSeconds();
+          if (timeAsSeconds <= resetTimeAsSeconds) {
+            result.push(time);
+          }
+          return result;
+        }, []);
+        newEvent.times = {
+          ...newEvent.times,
+          [nextDay]: nextDayTimes,
+        };
       }
-      // Tomorrow's Events before current time?
-      if (
-        _.includes(event.days, nextDay) &&
-        moment.duration(event.time).asSeconds() < currentTimeAsSeconds
-      ) {
-        return true;
+      if (!_.isEmpty(newEvent.times)) {
+        result.push(newEvent);
       }
-      return false;
-    });
+      return result;
+    }, []);
     // console.log("TodaysEvents:", todaysEvents);
 
-    const upcomingEvents = _.filter(todaysEvents, (event) => {
+    const allTodayEvents = todaysEvents.flatMap((event) => {
+      return _.flatMap(event.times, (day, dayName) => {
+        return day.flatMap((time) => {
+          let eventTime = moment(time, "HH:mm")
+            .add(offsetSeconds, "seconds")
+            .format("HH:mm");
+          let remainingTime;
+          if (dayName === previousDay || dayName === days[currentDay]) {
+            remainingTime =
+              moment.duration(eventTime).asSeconds() - currentTimeAsSeconds;
+          }
+          if (
+            dayName === nextDay ||
+            (dayName === days[currentDay] && eventTime === "00:00")
+          ) {
+            remainingTime =
+              moment.duration(eventTime).asSeconds() +
+              moment.duration("24:00").asSeconds() -
+              currentTimeAsSeconds;
+          }
+          const remainingTimeText = moment
+            .duration(remainingTime, "seconds")
+            .humanize();
+          return {
+            category: event.category,
+            day: dayName,
+            id: event.id,
+            ilvl: event.ilvl,
+            image: event.image,
+            location: event.location,
+            name: event.name,
+            remainingTime,
+            remainingTimeText,
+            time: eventTime,
+            times: event.times,
+          };
+        });
+      });
+    });
+
+    // console.log("allToday:", allTodayEvents);
+
+    const upcomingEvents = _.filter(allTodayEvents, (event) => {
       const upcoming = event.remainingTime > -180;
       return upcoming;
     });
-
-    // console.log("upcoming:", upcomingEvents);
 
     const sortedEvents = _.slice(
       _.orderBy(upcomingEvents, "remainingTime"),
       0,
       eventCount
     );
-    // console.log("sorted:", sortedEvents);
-    // console.log(rosterStatus);
+
     return sortedEvents;
-  }
+  };
+
+  // Clock math
+  // Refreshes clock, temporarily disabled for developing
+  useEffect(() => {
+    function refreshClock() {
+      setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
+      setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
+      // Test Time
+      // setCurrentTime(moment("13:01", "HH:mm").format("HH:mm:ss"));
+      // setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
+    }
+
+    const timerId = setInterval(refreshClock, 1000);
+    return function cleanup() {
+      clearInterval(timerId);
+    };
+  }, [setCurrentTime, setCurrentDay]);
+
+  const parsedEvents = parseEvents();
 
   return (
     <ThemeProvider theme={theme}>
@@ -204,24 +344,29 @@ export default function Events(props) {
         {` ${parseTimezone(timezone)}`}
       </Typography>
       <Typography align="center">
-        {moment(currentDay, "e").subtract(timezone, "hours").format("dddd")}
+        {moment(currentDay, "e").format("dddd")}
       </Typography>
       <Box>
         <TimezoneControl timezone={timezone} useStore={useStore} />
       </Box>
-      <Paper sx={{ my: 1, p: { xs: 1, md: 1 } }}>
+      {/* <Paper sx={{ my: 1, p: { xs: 1, md: 1 } }}>
         <Typography component="h1" variant="h6" align="center">
           Timeline
         </Typography>
       </Paper>
-      <Timeline theme={theme} useStore={useStore} />
+      <Timeline theme={theme} useStore={useStore} /> */}
       <Grid container spacing={1}>
-        <Grid item md={4} sm={6} xs={0}>
-          <Favorites theme={theme} useStore={useStore} taskStore={taskStore} />
+        <Grid item md={4} sm={6} xs={12}>
+          <Favorites
+            theme={theme}
+            useStore={useStore}
+            taskStore={taskStore}
+            events={parsedEvents}
+          />
         </Grid>
         <Grid item md={4} sm={6} xs={12}>
           <Timers
-            events={parseEvents()}
+            events={timerEvents()}
             theme={theme}
             useStore={useStore}
             taskStore={taskStore}
@@ -233,6 +378,7 @@ export default function Events(props) {
               my: 1,
               p: { xs: 1, md: 1 },
             }}
+            variant="outlined"
           >
             <Typography component="h1" variant="h6" align="center">
               Filter
@@ -245,28 +391,34 @@ export default function Events(props) {
             useStore={useStore}
             rosterStatus={rosterStatus}
           />
-          <Paper
-            sx={{
-              my: 1,
-              p: { xs: 1, md: 1 },
-            }}
-          >
-            <Typography>To Do:</Typography>
-            <List dense={true}>
-              <ListItem>
-                <ListItemText>Favorites List</ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemText>Day/Week Toggle</ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemText>Pet Buff Calculator</ListItemText>
-              </ListItem>
-            </List>
-          </Paper>
+          {/* <TodoList /> */}
         </Grid>
       </Grid>
     </ThemeProvider>
+  );
+}
+
+function TodoList(props) {
+  return (
+    <Paper
+      sx={{
+        my: 1,
+        p: { xs: 1, md: 1 },
+      }}
+    >
+      <Typography>To Do:</Typography>
+      <List dense={true}>
+        <ListItem>
+          <ListItemText>Favorites List</ListItemText>
+        </ListItem>
+        <ListItem>
+          <ListItemText>Day/Week Toggle</ListItemText>
+        </ListItem>
+        <ListItem>
+          <ListItemText>Pet Buff Calculator</ListItemText>
+        </ListItem>
+      </List>
+    </Paper>
   );
 }
 
@@ -426,10 +578,10 @@ function Timeline(props) {
 }
 
 function Timers(props) {
-  const { events, useStore } = props;
+  const { events, useStore, isFavorite = false } = props;
   const offset = useStore((state) => state.eventSettings.offset);
   const timezone = useStore((state) => state.eventSettings.timezone);
-
+  const favorites = useStore((state) => state.eventSettings.favorites);
   const addFavorite = useStore((state) => state.addFavorite);
 
   function parseTime(timeText) {
@@ -440,9 +592,17 @@ function Timers(props) {
       : `${timeData[0]}:${timeData[1]}`;
   }
 
+  function handleAddFavorite(id) {
+    if (!_.some(favorites, (favorite) => favorite === id)) {
+      addFavorite(id);
+    }
+  }
+
+  // console.log(events);
+
   return (
     <>
-      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }}>
+      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }} variant="outlined">
         <Typography component="h1" variant="h6" align="center">
           Timers
         </Typography>
@@ -454,7 +614,7 @@ function Timers(props) {
             const timeText = parseTime(event.time);
             const eventTime = moment(timeText, "HH:mm")
               .subtract(timezone, "hours")
-              .add(offset, "hours")
+              // .add(offset, "hours")
               .format("HH:mm");
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
@@ -467,9 +627,10 @@ function Timers(props) {
                   eventTime={eventTime}
                   inProgress={inProgress}
                   onClick={() => {
-                    console.log("You clicked me:", event);
-                    addFavorite(event);
+                    handleAddFavorite(event.id);
                   }}
+                  isFavorite={isFavorite}
+                  useStore={useStore}
                 />
               </Grid>
             );
@@ -482,24 +643,61 @@ function Timers(props) {
 
 function TimerItem(props) {
   const {
+    day,
+    dayText,
     eventImage,
     eventName,
     eventRemainingTimeText,
     eventTime,
     inProgress,
+    isFavorite,
     onClick,
+    useStore,
   } = props;
+  const currentDay = useStore((state) => state.currentDay); // a number 0-6
 
   const EventCard = styled(Paper)`
+    ${inProgress
+      ? `
+    border: 1px solid #ac9c73;
     &:hover {
-      background-color: pink;
+      .TimerItem__hover {
+        opacity: 1;
+      }
     }
-    ${inProgress && "border: 1px solid #ac9c73"}
+    `
+      : `
+    &:hover {
+      .TimerItem__hover {
+        opacity: 1;
+      }
+    }
+    `}
+  `;
+
+  const HoverBox = styled(Box)`
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    opacity: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.8);
+    cursor: pointer;
   `;
 
   return (
     <EventCard
-      sx={{ padding: "8px", display: "flex", alignItems: "center" }}
+      sx={{
+        position: "relative",
+        padding: "8px",
+        display: "flex",
+        alignItems: "center",
+      }}
       variant="outlined"
       className={inProgress ? "inProgress" : ""}
       onClick={onClick}
@@ -515,9 +713,26 @@ function TimerItem(props) {
           <Typography>
             {inProgress ? "In progress" : eventRemainingTimeText}
           </Typography>
-          <Typography sx={{ opacity: 0.5 }}>{eventTime}</Typography>
+          <Typography sx={{ opacity: 0.5 }}>
+            {days[currentDay] !== day && isFavorite
+              ? `${dayText} ${eventTime}`
+              : `${eventTime}`}
+          </Typography>
         </Box>
       </Box>
+      <HoverBox className="TimerItem__hover">
+        {isFavorite ? (
+          <>
+            <FavoriteBorderIcon fontSize="large" sx={{ mr: 1 }} />
+            <Typography>REMOVE FROM FAVORITES</Typography>
+          </>
+        ) : (
+          <>
+            <FavoriteIcon fontSize="large" sx={{ mr: 1 }} />
+            <Typography>ADD TO FAVORITES</Typography>
+          </>
+        )}
+      </HoverBox>
     </EventCard>
   );
 }
@@ -585,9 +800,13 @@ const FilterList = React.memo((props) => {
 
 function Favorites(props) {
   const { useStore } = props;
-  const favorites = useStore((state) => state.favorites);
+  const favorites = useStore((state) => state.eventSettings.favorites);
   const offset = useStore((state) => state.eventSettings.offset);
   const timezone = useStore((state) => state.eventSettings.timezone);
+  const currentTime = useStore((state) => state.currentTime);
+  const removeFavorite = useStore((state) => state.removeFavorite);
+  const currentTimeAsSeconds = moment.duration(currentTime).asSeconds();
+  const currentDay = useStore((state) => state.currentDay);
 
   function parseTime(timeText) {
     const timeData = _.split(timeText, ":", 2);
@@ -597,40 +816,164 @@ function Favorites(props) {
       : `${timeData[0]}:${timeData[1]}`;
   }
 
-  // console.log(favorites);
+  const events = _.flatMap(timerData);
+
+  function parseFavorites() {
+    const list = _.reduce(
+      favorites,
+      (result, event) => {
+        const validEvent = _.find(events, ["id", event]);
+        if (validEvent) {
+          // if event happens today and hasn't already passed
+          if (
+            _.has(validEvent.times, days[currentDay]) &&
+            _.some(
+              validEvent.times[days[currentDay]],
+              (time) => moment.duration(time).asSeconds() > currentTimeAsSeconds
+            )
+          ) {
+            const timeDiff = _.reduce(
+              validEvent.times[days[currentDay]],
+              (result, time) => {
+                if (
+                  result === "" &&
+                  moment.duration(time).asSeconds() - currentTimeAsSeconds >
+                    -180
+                ) {
+                  result = time;
+                }
+                return result;
+              },
+              ""
+            );
+            validEvent.time = timeDiff;
+            validEvent.day = days[currentDay];
+            result.push(validEvent);
+          } else {
+            // add 1 day at a time until one works to find nearest day
+            const nextDay = _.reduce(
+              [1, 2, 3, 4, 5, 6],
+              (result, addDay) => {
+                const leapDay =
+                  _.parseInt(currentDay) + addDay > 6
+                    ? _.parseInt(currentDay) + addDay - 7
+                    : _.parseInt(currentDay) + addDay;
+                if (result === "" && _.has(validEvent.times, days[leapDay])) {
+                  result = days[leapDay];
+                }
+                return result;
+              },
+              ""
+            );
+            validEvent.time = validEvent["times"][nextDay][0];
+            validEvent.day = nextDay;
+            result.push(validEvent);
+          }
+        }
+        return result;
+      },
+      []
+    );
+    // console.log("parsedFavs:", list);
+    return list;
+  }
+
+  function handleRemove(id) {
+    removeFavorite(id);
+  }
+
+  const parsedFavorites = _.orderBy(
+    _.map(parseFavorites(), (event) => {
+      const dayInt = parseInt(_.findKey(days, (day) => day === event.day));
+      let remainingDays;
+      if (event.day === days[currentDay]) {
+        remainingDays = 0;
+      } else {
+        if (parseInt(currentDay) < dayInt) {
+          remainingDays = dayInt - parseInt(currentDay);
+        }
+        if (parseInt(currentDay) > dayInt) {
+          remainingDays = dayInt + 7 - parseInt(currentDay);
+        }
+      }
+      const remainingTime =
+        moment.duration(event.time).add(remainingDays, "days").asSeconds() -
+        currentTimeAsSeconds;
+      return {
+        day: event.day,
+        dayText: dayText[dayInt],
+        id: event.id,
+        ilvl: event.ilvl,
+        image: event.image,
+        location: event.location,
+        name: event.name,
+        time: event.time,
+        remainingDays: remainingDays,
+        remainingTime: remainingTime,
+        remainingTimeText: moment.duration(remainingTime, "seconds").humanize(),
+      };
+    }),
+    "remainingTime"
+  );
+
+  // console.log(parsedFavorites);
+
   return (
     <>
-      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }}>
+      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }} variant="outlined">
         <Typography component="h1" variant="h6" align="center">
           Favorites
         </Typography>
       </Paper>
       <Paper sx={{ my: { xs: 1, md: 1 }, p: { xs: 1, md: 1 } }}>
         <Grid container spacing={1}>
-          {_.map(favorites, (event, index) => {
+          {_.map(parsedFavorites, (event, index) => {
             const inProgress = event.remainingTime < 0;
             const timeText = parseTime(event.time);
             const eventTime = moment(timeText, "HH:mm")
               .subtract(timezone, "hours")
-              .add(offset, "hours")
+              // .add(offset, "hours")
               .format("HH:mm");
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
                 <TimerItem
                   event={event}
+                  eventDay={event.day}
                   eventImage={event.image}
                   eventName={event.name}
-                  eventRemainingTime={event.remainingTime}
+                  // eventRemainingDays={event.remainingDays}
+                  // eventRemainingTime={event.remainingTime}
                   eventRemainingTimeText={event.remainingTimeText}
                   eventTime={eventTime}
                   inProgress={inProgress}
                   onClick={() => {
-                    console.log("You clicked me:", event);
+                    handleRemove(event.id);
                   }}
+                  isFavorite={true}
+                  day={event.day}
+                  dayText={event.dayText}
+                  useStore={useStore}
                 />
               </Grid>
             );
           })}
+          {parsedFavorites.length === 0 && (
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FavoriteIcon fontSize="large" align="center" sx={{ mr: 1 }} />
+              <Typography>
+                Add an event from the Timers list to keep track of your favorite
+                events
+              </Typography>
+            </Grid>
+          )}
         </Grid>
       </Paper>
     </>
@@ -638,10 +981,9 @@ function Favorites(props) {
 }
 
 function FilterCategory(props) {
-  const { category, disabled, title, currentDay, useStore } = props;
+  const { category, disabled, title, useStore } = props;
   const toggleFilter = useStore((state) => state.toggleFilter);
   const eventSettings = useStore((state) => state.eventSettings);
-  const endOfDay = moment.duration("24:00").asSeconds();
   return (
     <Accordion disabled={disabled}>
       <AccordionSummary id="fever" expandIcon={<ExpandMoreIcon />}>
@@ -651,52 +993,42 @@ function FilterCategory(props) {
       <AccordionDetails style={{ padding: 0 }}>
         <List dense={true}>
           {_.map(timerData[category], (event, index) => {
-            const isToday = _.has(event, "days")
-              ? _.includes(event.days, days[currentDay])
-                ? true
-                : _.includes(event.days, days[currentDay - 1]) &&
-                  _.some(event.time, (time) => {
-                    return moment.duration(time).asSeconds() > endOfDay;
-                  })
-              : false;
             return (
-              isToday && (
-                <ListItem
-                  key={`${event.name}-${index}`}
-                  role="listitem"
-                  button
-                  onClick={() => {
-                    toggleFilter(category, event.id);
-                  }}
-                  disablePadding
-                  secondaryAction={
-                    event.image && (
-                      <Box sx={{ width: 40, height: 40 }}>
-                        <img
-                          src={event.image}
-                          alt={event.name}
-                          style={{ width: "100%" }}
-                        />
-                      </Box>
-                    )
-                  }
-                >
-                  <ListItemIcon>
-                    <Checkbox
-                      disableRipple
-                      checked={
-                        _.has(eventSettings, `filter.${category}.${event.id}`)
-                          ? eventSettings["filter"][category][event.id]
-                          : false
-                      }
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={event.name}
-                    secondary={`[${event.ilvl}]`}
+              <ListItem
+                key={`${event.name}-${index}`}
+                role="listitem"
+                button
+                onClick={() => {
+                  toggleFilter(category, event.id);
+                }}
+                disablePadding
+                secondaryAction={
+                  event.image && (
+                    <Box sx={{ width: 40, height: 40 }}>
+                      <img
+                        src={event.image}
+                        alt={event.name}
+                        style={{ width: "100%" }}
+                      />
+                    </Box>
+                  )
+                }
+              >
+                <ListItemIcon>
+                  <Checkbox
+                    disableRipple
+                    checked={
+                      _.has(eventSettings, `filter.${category}.${event.id}`)
+                        ? eventSettings["filter"][category][event.id]
+                        : false
+                    }
                   />
-                </ListItem>
-              )
+                </ListItemIcon>
+                <ListItemText
+                  primary={event.name}
+                  secondary={`[${event.ilvl}]`}
+                />
+              </ListItem>
             );
           })}
         </List>

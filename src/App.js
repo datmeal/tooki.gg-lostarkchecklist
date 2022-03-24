@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -280,25 +281,28 @@ const useStore = create((set, get) => ({
 }));
 
 const defaultGoldPrices = {
-  crystal: 598, // per 95
+  crystal: 530, // per 95
   royal: 596, // per 238 royal
-  destructionStoneFragment: 6,
+  destructionStoneFragment: 1,
   destructionStone: 7,
-  destructionStoneCrystal: 131,
-  guardianStoneFragment: 4,
-  guardianStone: 15,
-  guardianStoneCrystal: 68,
-  harmonyLeapstone: 15,
-  lifeLeapstone: 125,
-  honorLeapstone: 224,
-  greatHonorLeapstone: 688,
-  starsBreath: 23,
-  moonsBreath: 75,
-  solarGrace: 69,
-  solarBlessing: 240,
-  solarProtection: 600,
+  destructionStoneCrystal: 25,
+  guardianStoneFragment: 1,
+  guardianStone: 9,
+  guardianStoneCrystal: 17,
+  harmonyLeapstone: 16,
+  lifeLeapstone: 24,
+  honorLeapstone: 97,
+  greatHonorLeapstone: 365,
+  starsBreath: 7,
+  moonsBreath: 22,
+  solarGrace: 59,
+  solarBlessing: 190,
+  solarProtection: 465,
   healingBattleChest: 29, // Elemental HP Potion taken from chest
-  buffBattleChestAwakening: 29,
+  buffBattleChestAwakening: 24,
+  offensiveBattleChestDestruction: 14,
+  utilityBattleChestFlare: 10,
+  utilityBattleChestTimeStop: 29,
   t2gem: 18,
   t3gem: 85,
 };
@@ -312,15 +316,31 @@ const arbitrageStore = create((set, get) => ({
     set((state) => ({
       goldValues: {
         ...state.goldValues,
-        [event.target.id]: event.target.value,
+        [event.target.id]: parseInt(event.target.value),
       },
     }));
     localStorage.setItem("goldValues", JSON.stringify(get().goldValues));
   },
-  updateGV: (goldValues) => set((state) => ({ goldValues })),
+  updateGV: (goldValues) => {
+    const localGoldValues = _.reduce(
+      goldValues,
+      (result, itemValue, itemName) => {
+        Object.assign(result, { [itemName]: parseInt(itemValue) });
+        return result;
+      },
+      {}
+    );
+    set((state) => ({
+      goldValues: {
+        ...defaultGoldPrices,
+        ...localGoldValues,
+      },
+    }));
+  },
 }));
 
 const defaultEventSettings = {
+  favorites: [],
   filter: {
     fever: {
       grandprix: true,
@@ -330,19 +350,15 @@ const defaultEventSettings = {
       drumbeat: true,
       forpe: true,
       harmony: true,
-      harmony_sat: true,
       lagoon: true,
       lushreed: true,
       medeia: true,
       monte: true,
-      monte_sat: true,
       oblivion: true,
       opportunity: true,
       phantomwing: true,
-      phantomwing_sat: true,
       snowpang: true,
       tranquil: true,
-      tranquil_sat: true,
       volare: true,
     },
     chaos: {
@@ -387,37 +403,18 @@ const defaultEventSettings = {
       unknown: true,
     },
     sailing: {
-      sailingcoop_arthetine_1930: true,
-      sailingcoop_arthetine_2130: true,
-      sailingcoop_arthetine_2330: true,
-      sailingcoop_anikka_1930: true,
-      sailingcoop_anikka_2130: true,
-      sailingcoop_anikka_2330: true,
-      sailingcoop_vern_1930: true,
-      sailingcoop_vern_2130: true,
-      sailingcoop_vern_2330: true,
-      sailingcoop_rohendel_1930: true,
-      sailingcoop_rohendel_2130: true,
-      sailingcoop_rohendel_2330: true,
-      sailingcoop_yorn_2130: true,
-      sailingcoop_yorn_2330: true,
-      sailingcoop_feiton_1930: true,
-      sailingcoop_feiton_2130: true,
-      sailingcoop_feiton_2330: true,
-      sailingcoop_punika_1930: true,
-      sailingcoop_punika_2130: true,
-      sailingcoop_punika_2330: true,
-      sailingcoop_harmony_2200: true,
-      sailingcoop_harmony_2300: true,
-      sailingcoop_wisdom_1800: true,
-      sailingcoop_wisdom_2200: true,
-      sailingcoop_wisdom_2300: true,
-      sailingcoop_earth_1800: true,
-      sailingcoop_earth_2200: true,
-      sailingcoop_endurance_1800: true,
-      sailingcoop_endurance_2200: true,
-      sailingcoop_guidance_1800: true,
-      sailingcoop_guidance_2200: true,
+      sailingcoop_arthetine: true,
+      sailingcoop_anikka: true,
+      sailingcoop_vern: true,
+      sailingcoop_rohendel: true,
+      sailingcoop_yorn: true,
+      sailingcoop_feiton: true,
+      sailingcoop_punika: true,
+      sailingcoop_harmony: true,
+      sailingcoop_wisdom: true,
+      sailingcoop_earth: true,
+      sailingcoop_endurance: true,
+      sailingcoop_guidance: true,
     },
     pvp: {
       coopbattle: true,
@@ -435,8 +432,26 @@ const eventsStore = create((set, get) => ({
   favorites: [],
   addFavorite: (event) => {
     set((state) => ({
-      favorites: _.concat(state.favorites, event),
+      eventSettings: {
+        ...state.eventSettings,
+        favorites: state.eventSettings.favorites.concat(event),
+      },
     }));
+    localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
+  },
+  removeFavorite: (event) => {
+    set((state) => ({
+      eventSettings: {
+        ...state.eventSettings,
+        favorites: state.eventSettings.favorites.reduce((result, favorite) => {
+          if (favorite !== event) {
+            result.push(favorite);
+          }
+          return result;
+        }, []),
+      },
+    }));
+    localStorage.setItem("eventSettings", JSON.stringify(get().eventSettings));
   },
   setCurrentTime: (currentTime) => {
     set((state) => ({ currentTime }));
@@ -541,54 +556,55 @@ const theme = createTheme({
 function App() {
   const updateRS = useStore((state) => state.updateRS);
   const updateTS = useStore((state) => state.updateTS);
-  const updateGV = arbitrageStore((state) => state.updateGV);
   const updateES = eventsStore((state) => state.updateES);
   // const setTabValue = useStore((state) => state.setTabValue);
   // const siteSettings = useStore((state) => state.siteSettings);
   const updateSiteSettings = useStore((state) => state.updateSiteSettings);
 
-  const localSiteSettings = localStorage.getItem("siteSettings");
-  const localTaskStatus = localStorage.getItem("taskStatus");
-  const parsedLocalTasks = JSON.parse(localTaskStatus);
-  const localRosterStatus = localStorage.getItem("rosterStatus");
-  const localGoldValues = localStorage.getItem("goldValues");
-  const localEventSettings = localStorage.getItem("eventSettings");
+  // Initialize
+  useEffect(() => {
+    const localSiteSettings = localStorage.getItem("siteSettings");
+    const localTaskStatus = localStorage.getItem("taskStatus");
+    const parsedLocalTasks = JSON.parse(localTaskStatus);
+    const localRosterStatus = localStorage.getItem("rosterStatus");
+    const localEventSettings = localStorage.getItem("eventSettings");
 
-  if (localSiteSettings) {
-    updateSiteSettings(JSON.parse(localSiteSettings));
-  }
-  if (localTaskStatus) {
-    if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
-      updateTS(parsedLocalTasks);
-    } else {
-      _.each(parsedLocalTasks, (char) => {
-        char.weeklyVendors = defaultValues.weeklyVendors;
+    if (localSiteSettings) {
+      updateSiteSettings(JSON.parse(localSiteSettings));
+    }
+    if (localTaskStatus) {
+      if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
+        updateTS(parsedLocalTasks);
+      } else {
+        _.each(parsedLocalTasks, (char) => {
+          char.weeklyVendors = defaultValues.weeklyVendors;
+        });
+        updateTS(parsedLocalTasks);
+      }
+    }
+    if (localRosterStatus) {
+      updateRS(JSON.parse(localRosterStatus));
+    }
+    if (localEventSettings) {
+      const parsedSettings = JSON.parse(localEventSettings);
+      const updatedSettings = { ...defaultEventSettings };
+      _.each(parsedSettings.filter, (categoryObj, categoryName) => {
+        _.each(categoryObj, (value, index) => {
+          updatedSettings["filter"][categoryName][index] = value;
+        });
       });
-      updateTS(parsedLocalTasks);
+      if (parsedSettings.favorites) {
+        updatedSettings.favorites = _.map(parsedSettings.favorites);
+      }
+      if (parsedSettings.timezone) {
+        updatedSettings.timezone = parsedSettings.timezone;
+      }
+      if (parsedSettings.offset) {
+        updatedSettings.offset = parsedSettings.offset;
+      }
+      updateES(updatedSettings);
     }
-  }
-  if (localRosterStatus) {
-    updateRS(JSON.parse(localRosterStatus));
-  }
-  if (localGoldValues) {
-    updateGV(JSON.parse(localGoldValues));
-  }
-  if (localEventSettings) {
-    const parsedSettings = JSON.parse(localEventSettings);
-    const updatedSettings = { ...defaultEventSettings };
-    _.each(parsedSettings.filter, (categoryObj, categoryName) => {
-      _.each(categoryObj, (value, index) => {
-        updatedSettings["filter"][categoryName][index] = value;
-      });
-    });
-    if (parsedSettings.timezone) {
-      updatedSettings.timezone = parsedSettings.timezone;
-    }
-    if (parsedSettings.offset) {
-      updatedSettings.offset = parsedSettings.offset;
-    }
-    updateES(updatedSettings);
-  }
+  }, []);
 
   // console.log(JSON.parse(localTaskStatus), JSON.parse(localRosterStatus));
 
@@ -641,7 +657,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container component="main" sx={{ my: 0 }} maxWidth="xl">
-        <Box
+        <Grid
+          container
+          spacing={1}
           sx={{
             display: "flex",
             alignItems: "center",
@@ -649,20 +667,24 @@ function App() {
             paddingTop: 1,
           }}
         >
-          <Logo>
-            <img src={logo} />
-          </Logo>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            aria-label="Navigation"
-            centered
-          >
-            <Tab label="Checklist" {...tabProps(0)} />
-            <Tab label="Events" {...tabProps(1)} />
-            <Tab label="Mari's Shop" {...tabProps(2)} />
-          </Tabs>
-        </Box>
+          <Grid item md={4} sm={6} xs={12}>
+            <Logo>
+              <img src={logo} alt="tooki.gg - Lost Ark Tools" />
+            </Logo>
+          </Grid>
+          <Grid item>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              aria-label="Navigation"
+              sx={{ justifyContent: "flex-end" }}
+            >
+              <Tab label="Checklist" {...tabProps(0)} />
+              <Tab label="Events" {...tabProps(1)} />
+              <Tab label="Mari's Shop" {...tabProps(2)} />
+            </Tabs>
+          </Grid>
+        </Grid>
         <TabPanel value={tabValue} index={0}>
           <Checklist useStore={useStore} theme={theme} />
         </TabPanel>
