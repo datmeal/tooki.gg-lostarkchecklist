@@ -378,6 +378,7 @@ export default function Events(props) {
               my: 1,
               p: { xs: 1, md: 1 },
             }}
+            variant="outlined"
           >
             <Typography component="h1" variant="h6" align="center">
               Filter
@@ -601,7 +602,7 @@ function Timers(props) {
 
   return (
     <>
-      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }}>
+      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }} variant="outlined">
         <Typography component="h1" variant="h6" align="center">
           Timers
         </Typography>
@@ -919,9 +920,9 @@ function Favorites(props) {
 
   return (
     <>
-      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }}>
+      <Paper sx={{ my: { xs: 1 }, p: { xs: 1, md: 1 } }} variant="outlined">
         <Typography component="h1" variant="h6" align="center">
-          Favorites (WIP)
+          Favorites
         </Typography>
       </Paper>
       <Paper sx={{ my: { xs: 1, md: 1 }, p: { xs: 1, md: 1 } }}>
