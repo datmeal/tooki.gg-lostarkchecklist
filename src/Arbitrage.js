@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import _ from "lodash";
 import Box from "@mui/material/Box";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -13,9 +13,18 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-export default function Checklist(props) {
+export default function Arbitrage(props) {
   const { useStore } = props;
   const goldValues = useStore((state) => state.goldValues);
+  const updateGV = useStore((state) => state.updateGV);
+
+  // Initialize
+  useEffect(() => {
+    const localGoldValues = localStorage.getItem("goldValues");
+    if (localGoldValues) {
+      updateGV(JSON.parse(localGoldValues));
+    }
+  }, []);
 
   function createData(name, id, bundle = 10, mariAmount = 1, bound = false) {
     return { name, id, bundle, mariAmount, bound };
@@ -75,6 +84,13 @@ export default function Checklist(props) {
       true
     ),
     createData(
+      `Destruction Bomb (Offensive Battle Item Chest [5])`,
+      "offensiveBattleChestDestruction",
+      1,
+      25,
+      true
+    ),
+    createData(
       `Awakening Potion (Buff Battle Item Chest [5])`,
       "buffBattleChestAwakening",
       1,
@@ -117,6 +133,7 @@ export default function Checklist(props) {
     solarBlessing: 150 / 15,
     solarProtection: 150 / 3,
     healingBattleChest: 25 / 15,
+    offensiveBattleChestDestruction: 25 / 25,
     buffBattleChestAwakening: 25 / 10,
     utilityBattleChestTimeStop: 25 / 15,
     utilityBattleChestFlare: 25 / 25,
