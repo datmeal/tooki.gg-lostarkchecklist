@@ -52,7 +52,7 @@ export default function Events(props) {
       "EST/AST": 0,
       PST: 3,
       CET: -5,
-      WET: -4,
+      UTC: -4,
       // AST: 0,
     };
     return _.findKey(timezones, (zone) => {
@@ -449,8 +449,11 @@ function TimezoneControl(props) {
       setOffset(3);
     }
     // EU
-    if (value === -5 || value === -4) {
+    if (value === -5) {
       setOffset(-5);
+    }
+    if (value === -4) {
+      setOffset(-4);
     }
     // AST same as EST?
     // if (value === 1) {
