@@ -33,7 +33,7 @@ export default function CharacterSelect(props) {
       "Sorceress",
       "Soulfist",
       "Striker",
-      "Summoner",
+      // "Summoner",
       "Wardancer",
     ];
 

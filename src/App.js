@@ -75,25 +75,57 @@ const defaultValues = {
     vendorPirate: false,
     vendorRift: false,
     vendorChaos: false,
+    vendorPvp: false,
   },
   rosterStatus: {
+    eventguardian: false,
     grandprix: false,
     adv: false,
     cal: false,
     chaosgate: false,
     anguishedisle: false,
-    rapportsong1: false,
-    rapportsong2: false,
-    rapportsong3: false,
-    rapportsong4: false,
-    rapportsong5: false,
-    rapportsong6: false,
-    rapportemote1: false,
-    rapportemote2: false,
-    rapportemote3: false,
-    rapportemote4: false,
-    rapportemote5: false,
-    rapportemote6: false,
+    rapport1: {
+      name: "Beatrice",
+      song1: false,
+      song2: false,
+      emote1: false,
+      emote2: false,
+    },
+    rapport2: {
+      name: "Sasha",
+      song1: false,
+      song2: false,
+      emote1: false,
+      emote2: false,
+    },
+    rapport3: {
+      name: "Nineveh",
+      song1: false,
+      song2: false,
+      emote1: false,
+      emote2: false,
+    },
+    rapport4: {
+      name: "Blackfang",
+      song1: false,
+      song2: false,
+      emote1: false,
+      emote2: false,
+    },
+    rapport5: {
+      name: "Thighrain",
+      song1: false,
+      song2: false,
+      emote1: false,
+      emote2: false,
+    },
+    rapport6: {
+      name: "Mari",
+      song1: false,
+      song2: false,
+      emote1: false,
+      emote2: false,
+    },
   },
 };
 
@@ -107,13 +139,52 @@ const useStore = create((set, get) => ({
     }));
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
+  addCharacter: () => {
+    set((state) => ({
+      taskStatus: state.taskStatus.concat({
+        id: state.taskStatus.length,
+        name: "",
+        class: "",
+        dailies: defaultValues.dailies,
+        weeklies: defaultValues.weeklies,
+        weeklyVendors: defaultValues.weeklyVendors,
+      }),
+    }));
+    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+  },
   resetDailyTasks: () => {
     set((state) => ({
       taskStatus: state.taskStatus.map((item) => ({
         ...item,
         dailies: defaultValues.dailies,
       })),
-      rosterStatus: defaultValues.rosterStatus,
+      // rosterStatus: defaultValues.rosterStatus,
+      rosterStatus: _.reduce(
+        state.rosterStatus,
+        (result, status, item) => {
+          const rapports = [
+            "rapport1",
+            "rapport2",
+            "rapport3",
+            "rapport4",
+            "rapport5",
+            "rapport6",
+          ];
+          if (!_.includes(rapports, item)) {
+            result[item] = false;
+          } else {
+            result[item] = {
+              name: status["name"],
+              song1: false,
+              song2: false,
+              emote1: false,
+              emote2: false,
+            };
+          }
+          return result;
+        },
+        {}
+      ),
     }));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
@@ -195,6 +266,30 @@ const useStore = create((set, get) => ({
       ),
     }));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+  },
+  toggleRapportStatus: (rapportName, toggleItem) => {
+    set((state) => ({
+      rosterStatus: {
+        ...state.rosterStatus,
+        [rapportName]: {
+          ...state.rosterStatus[rapportName],
+          [toggleItem]: !state.rosterStatus[rapportName][toggleItem],
+        },
+      },
+    }));
+    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+  },
+  setRapportName: (rapportName, name) => {
+    set((state) => ({
+      rosterStatus: {
+        ...state.rosterStatus,
+        [rapportName]: {
+          ...state.rosterStatus[rapportName],
+          name,
+        },
+      },
+    }));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
   updateSiteSettings: (siteSettings) => {
@@ -581,9 +676,16 @@ function App() {
         });
         updateTS(parsedLocalTasks);
       }
+      // const parsedSettings = JSON.parse(localTaskStatus);
+      // const updatedSettings = { ...defaultValues.taskStatus };
     }
     if (localRosterStatus) {
-      updateRS(JSON.parse(localRosterStatus));
+      const parsedSettings = JSON.parse(localRosterStatus);
+      const updatedSettings = { ...defaultValues.rosterStatus };
+      _.each(parsedSettings, (value, settingName) => {
+        updatedSettings[settingName] = value;
+      });
+      updateRS(updatedSettings);
     }
     if (localEventSettings) {
       const parsedSettings = JSON.parse(localEventSettings);
@@ -609,7 +711,7 @@ function App() {
   // console.log(JSON.parse(localTaskStatus), JSON.parse(localRosterStatus));
 
   const TabPanel = (props) => {
-    const { children, value, index, ...other } = props;
+    const { children, noPadding = false, value, index, ...other } = props;
 
     return (
       <div
@@ -622,7 +724,11 @@ function App() {
         {value === index && (
           <Paper
             variant="outlined"
-            sx={{ my: { xs: 2, md: 4 }, p: { xs: 1, md: 3 } }}
+            sx={
+              noPadding
+                ? { margin: "16px 0 8px", p: 0 }
+                : { margin: "16px 0 8px", padding: "16px 16px" }
+            }
           >
             {children}
           </Paper>
@@ -685,7 +791,7 @@ function App() {
             </Tabs>
           </Grid>
         </Grid>
-        <TabPanel value={tabValue} index={0}>
+        <TabPanel value={tabValue} index={0} noPadding>
           <Checklist useStore={useStore} theme={theme} />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
@@ -701,11 +807,8 @@ function App() {
           }}
         >
           <Typography align="center">
-            Please send any feedback to Salty#1961 on Discord
-          </Typography>
-          <Typography align="center">
             Lost Ark Game content and assets are trademarks of Smilegate RPG,
-            Inc.
+            Inc. Please send any feedback to Salty#1961 on Discord!
           </Typography>
         </Box>
       </Container>

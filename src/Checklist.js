@@ -1,8 +1,12 @@
 import * as React from "react";
 import styled from "@emotion/styled";
+import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import InfoIcon from "@mui/icons-material/Info";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -49,6 +53,7 @@ function createData(name, id, info, icon, color) {
 
 const dailies = [
   createData(`Guild Donation`, "guildDonation", null, icon_guild),
+  // createData(`Guild Mission`, "guildMission", null, icon_guild),
   createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
   createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
   createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
@@ -64,6 +69,13 @@ const dailies = [
 ];
 
 const accountDailies = [
+  createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    icon_guardian,
+    "guardian"
+  ),
   createData(`Grand Prix`, "grandprix", null, icon_grandprix),
   createData(
     `Adventure Island`,
@@ -75,18 +87,6 @@ const accountDailies = [
   createData(`Field Boss`, "cal", null, icon_field_boss, "boss"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle"),
-  createData(`Rapport Song 1`, "rapportsong1", null, icon_rapport, "rapport"),
-  createData(`Rapport Song 2`, "rapportsong2", null, icon_rapport, "rapport"),
-  createData(`Rapport Song 3`, "rapportsong3", null, icon_rapport, "rapport"),
-  createData(`Rapport Song 4`, "rapportsong4", null, icon_rapport, "rapport"),
-  createData(`Rapport Song 5`, "rapportsong5", null, icon_rapport, "rapport"),
-  createData(`Rapport Song 6`, "rapportsong6", null, icon_rapport, "rapport"),
-  createData(`Rapport Emote 1`, "rapportemote1", null, icon_rapport, "rapport"),
-  createData(`Rapport Emote 2`, "rapportemote2", null, icon_rapport, "rapport"),
-  createData(`Rapport Emote 3`, "rapportemote3", null, icon_rapport, "rapport"),
-  createData(`Rapport Emote 4`, "rapportemote4", null, icon_rapport, "rapport"),
-  createData(`Rapport Emote 5`, "rapportemote5", null, icon_rapport, "rapport"),
-  createData(`Rapport Emote 6`, "rapportemote6", null, icon_rapport, "rapport"),
 ];
 
 const weeklies = [
@@ -194,6 +194,7 @@ const weeklyVendors = [
   createData(`Pirate`, "vendorPirate"),
   createData(`Rift Piece`, "vendorRift"),
   createData(`Endless Chaos`, "vendorChaos"),
+  createData(`PVP`, "vendorPvp"),
 ];
 
 export default function Checklist(props) {
@@ -211,12 +212,15 @@ export default function Checklist(props) {
   const toggleWeeklyVendorStatus = useStore(
     (state) => state.toggleWeeklyVendorStatus
   );
+  const setRapportName = useStore((state) => state.setRapportName);
+  const toggleRapportStatus = useStore((state) => state.toggleRapportStatus);
+  const addCharacter = useStore((state) => state.addCharacter);
 
   // normal hooks
   // const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
-  const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
-  const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
-  const [openWeeklyVendors, setOpenWeeklyVendors] = React.useState(false);
+  // const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
+  // const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
+  // const [openWeeklyVendors, setOpenWeeklyVendors] = React.useState(false);
 
   function handleDailyStatus(taskName, id) {
     toggleDailyStatus(taskName, id);
@@ -240,31 +244,54 @@ export default function Checklist(props) {
     height: 24px;
   `;
 
+  // console.log("rosterStatus:", rosterStatus);
+
   return (
     <ThemeProvider theme={theme}>
-      <TableContainer>
-        <Table size="small">
+      <TableContainer sx={{ maxHeight: "calc(100vh - 132px)" }}>
+        <Table
+          stickyHeader
+          size="small"
+          sx={{ maxHeight: "calc(100vh - 144px)" }}
+        >
           <TableHead>
             <TableRow>
-              <TableCell />
-              <TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                }}
+              />
+              <TableCell
+                sx={{ backgroundColor: theme.palette.background.paper }}
+              >
                 {/* <Checkbox /> */}
                 Characters
               </TableCell>
               {taskStatus.map((charData) => (
-                <TableCell key={`class-${charData.id}`}>
+                <TableCell
+                  key={`class-${charData.id}`}
+                  sx={{ backgroundColor: theme.palette.background.paper }}
+                >
                   <CharacterSelect
                     charData={charData}
                     useStore={props.useStore}
                   />
                 </TableCell>
               ))}
+              <TableCell
+                sx={{ backgroundColor: theme.palette.background.paper }}
+              >
+                <Box>
+                  <IconButton onClick={() => addCharacter()}>
+                    <AddIcon />
+                  </IconButton>
+                </Box>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* <CharacterNameRow useStore={props.useStore} /> */}
             <TableRow>
-              <TableCell>
+              <TableCell size="small">
                 <IconButton
                   aria-label="expand row"
                   size="small"
@@ -327,21 +354,26 @@ export default function Checklist(props) {
                       padding="checkbox"
                       key={`dailies-${charData.id}`}
                     >
-                      <Checkbox
-                        // color={row.color ? row.color : "primary"}
-                        onChange={() => handleDailyStatus(row.id, charData.id)}
-                        checked={taskStatus[charData.id].dailies[row.id]}
-                        sx={
-                          row.color && {
-                            color: theme.palette[row.color]["main"],
-                            "&.Mui-checked": {
-                              color: theme.palette[row.color]["main"],
-                            },
+                      <Box>
+                        <Checkbox
+                          // color={row.color ? row.color : "primary"}
+                          onChange={() =>
+                            handleDailyStatus(row.id, charData.id)
                           }
-                        }
-                      />
+                          checked={taskStatus[charData.id].dailies[row.id]}
+                          sx={
+                            row.color && {
+                              color: theme.palette[row.color]["main"],
+                              "&.Mui-checked": {
+                                color: theme.palette[row.color]["main"],
+                              },
+                            }
+                          }
+                        />
+                      </Box>
                     </TableCell>
                   ))}
+                  <TableCell />
                 </TableRow>
               ))}
             <TableRow>
@@ -358,7 +390,11 @@ export default function Checklist(props) {
                   )}
                 </IconButton>
               </TableCell>
-              <TableCell colSpan={taskStatus.length + 2}>
+              <TableCell
+                colSpan={
+                  siteSettings.accountDailiesOpen ? 2 : taskStatus.length + 1
+                }
+              >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography
                     variant="h6"
@@ -369,52 +405,129 @@ export default function Checklist(props) {
                   </Typography>
                 </Box>
               </TableCell>
+              {siteSettings.accountDailiesOpen && (
+                <>
+                  <TableCell>
+                    <Typography>Rapport Name</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>Song</Typography>
+                  </TableCell>
+                  <TableCell />
+                  <TableCell colSpan={2}>
+                    <Typography>Emote</Typography>
+                  </TableCell>
+                  <TableCell colSpan={taskStatus.length - 5} />
+                </>
+              )}
             </TableRow>
             {siteSettings.accountDailiesOpen &&
-              accountDailies.map((row) => (
-                <TableRow hover role="checkbox" key={row.id}>
-                  <TableCell>
-                    {row.info && (
-                      <Tooltip title={row.info}>
+              accountDailies.map((row, index) => {
+                const rapportItem = rosterStatus[`rapport${index + 1}`];
+                return (
+                  <TableRow hover role="checkbox" key={row.id}>
+                    <TableCell>
+                      {row.info && (
+                        <Tooltip title={row.info}>
+                          <IconButton size="small">
+                            {row.info && <InfoIcon />}
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {row.icon && (
                         <IconButton size="small">
-                          {row.info && <InfoIcon />}
+                          <IconImage src={row.icon} alt={row.name} />
                         </IconButton>
-                      </Tooltip>
-                    )}
-                    {row.icon && (
-                      <IconButton size="small">
-                        <IconImage src={row.icon} alt={row.name} />
-                      </IconButton>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      color={row.color && theme.palette[row.color]["main"]}
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        color={row.color && theme.palette[row.color]["main"]}
+                      >
+                        {row.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      padding="checkbox"
+                      key={`${row.id}`}
+                      colSpan={rapportItem ? 1 : taskStatus.length}
                     >
-                      {row.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell
-                    padding="checkbox"
-                    key={`${row.id}`}
-                    colSpan={taskStatus.length}
-                  >
-                    <Checkbox
-                      color="primary"
-                      onChange={(event) => handleAccountDaily(event, row.id)}
-                      checked={rosterStatus[row.id]}
-                      sx={
-                        row.color && {
-                          color: theme.palette[row.color]["main"],
-                          "&.Mui-checked": {
-                            color: theme.palette[row.color]["main"],
-                          },
-                        }
-                      }
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Checkbox
+                          color="primary"
+                          onChange={(event) =>
+                            handleAccountDaily(event, row.id)
+                          }
+                          checked={rosterStatus[row.id]}
+                          sx={
+                            row.color && {
+                              color: theme.palette[row.color]["main"],
+                              "&.Mui-checked": {
+                                color: theme.palette[row.color]["main"],
+                              },
+                            }
+                          }
+                        />
+                        <IconImage src={icon_rapport} />
+                      </Box>
+                    </TableCell>
+                    {rapportItem && (
+                      <>
+                        <TableCell>
+                          <Box>
+                            <TextField
+                              id={`rapport${index + 1}_name`}
+                              label="NPC"
+                              defaultValue={rapportItem.name}
+                              type="string"
+                              margin="normal"
+                              onBlur={(e) => {
+                                setRapportName(
+                                  `rapport${index + 1}`,
+                                  e.target.value
+                                );
+                              }}
+                            />
+                          </Box>
+                        </TableCell>
+                        {["song1", "song2", "emote1", "emote2"].map((item) => (
+                          <TableCell
+                            padding="checkbox"
+                            key={`rapport${index + 1}_${item}`}
+                            colSpan={1}
+                          >
+                            <Box>
+                              <Checkbox
+                                color="primary"
+                                onChange={() =>
+                                  toggleRapportStatus(
+                                    `rapport${index + 1}`,
+                                    item
+                                  )
+                                }
+                                checked={rapportItem[item]}
+                                sx={{
+                                  color: theme.palette["rapport"]["main"],
+                                  "&.Mui-checked": {
+                                    color: theme.palette["rapport"]["main"],
+                                  },
+                                }}
+                              />
+                            </Box>
+                          </TableCell>
+                        ))}
+                        <TableCell colSpan={taskStatus.length - 5} />
+                      </>
+                    )}
+                  </TableRow>
+                );
+              })}
             <TableRow>
               <TableCell>
                 <IconButton
@@ -479,21 +592,26 @@ export default function Checklist(props) {
                       padding="checkbox"
                       key={`weeklies-${charData.id}`}
                     >
-                      <Checkbox
-                        color="primary"
-                        onChange={() => handleWeeklyStatus(row.id, charData.id)}
-                        checked={taskStatus[charData.id].weeklies[row.id]}
-                        sx={
-                          row.color && {
-                            color: theme.palette[row.color]["main"],
-                            "&.Mui-checked": {
-                              color: theme.palette[row.color]["main"],
-                            },
+                      <Box>
+                        <Checkbox
+                          color="primary"
+                          onChange={() =>
+                            handleWeeklyStatus(row.id, charData.id)
                           }
-                        }
-                      />
+                          checked={taskStatus[charData.id].weeklies[row.id]}
+                          sx={
+                            row.color && {
+                              color: theme.palette[row.color]["main"],
+                              "&.Mui-checked": {
+                                color: theme.palette[row.color]["main"],
+                              },
+                            }
+                          }
+                        />
+                      </Box>
                     </TableCell>
                   ))}
+                  <TableCell />
                 </TableRow>
               ))}
             <TableRow>
@@ -534,15 +652,20 @@ export default function Checklist(props) {
                       padding="checkbox"
                       key={`weeklyVendors-${charData.id}`}
                     >
-                      <Checkbox
-                        color="primary"
-                        onChange={(event) =>
-                          handleWeeklyVendorStatus(row.id, charData.id)
-                        }
-                        checked={taskStatus[charData.id].weeklyVendors[row.id]}
-                      />
+                      <Box>
+                        <Checkbox
+                          color="primary"
+                          onChange={(event) =>
+                            handleWeeklyVendorStatus(row.id, charData.id)
+                          }
+                          checked={
+                            taskStatus[charData.id].weeklyVendors[row.id]
+                          }
+                        />
+                      </Box>
                     </TableCell>
                   ))}
+                  <TableCell />
                 </TableRow>
               ))}
           </TableBody>
