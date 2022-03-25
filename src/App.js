@@ -143,13 +143,26 @@ const useStore = create((set, get) => ({
   addCharacter: () => {
     set((state) => ({
       taskStatus: state.taskStatus.concat({
-        id: state.taskStatus.length,
+        id: Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1),
         name: "",
         class: "",
         dailies: defaultValues.dailies,
         weeklies: defaultValues.weeklies,
         weeklyVendors: defaultValues.weeklyVendors,
       }),
+    }));
+    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+  },
+  removeCharacter: (id) => {
+    set((state) => ({
+      taskStatus: state.taskStatus.reduce((result, character) => {
+        if (character.id !== id) {
+          result.push(character);
+        }
+        return result;
+      }, []),
     }));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
   },
@@ -325,49 +338,49 @@ const useStore = create((set, get) => ({
   siteSettings: defaultValues.siteSettings,
   taskStatus: [
     {
-      id: 0,
+      id: "0",
       name: "",
-      class: "",
+      class: "Berserker",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
       weeklyVendors: defaultValues.weeklyVendors,
     },
     {
-      id: 1,
+      id: "1",
       name: "",
-      class: "",
+      class: "Berserker",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
       weeklyVendors: defaultValues.weeklyVendors,
     },
     {
-      id: 2,
+      id: "2",
       name: "",
-      class: "",
+      class: "Berserker",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
       weeklyVendors: defaultValues.weeklyVendors,
     },
     {
-      id: 3,
+      id: "3",
       name: "",
-      class: "",
+      class: "Berserker",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
       weeklyVendors: defaultValues.weeklyVendors,
     },
     {
-      id: 4,
+      id: "4",
       name: "",
-      class: "",
+      class: "Berserker",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
       weeklyVendors: defaultValues.weeklyVendors,
     },
     {
-      id: 5,
+      id: "5",
       name: "",
-      class: "",
+      class: "Berserker",
       dailies: defaultValues.dailies,
       weeklies: defaultValues.weeklies,
       weeklyVendors: defaultValues.weeklyVendors,
