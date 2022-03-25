@@ -536,7 +536,7 @@ const defaultEventSettings = {
     },
   },
   offset: 0, // misc
-  timezone: 0, // East = 0 (UTC - 4 (- 0))
+  timezone: -4, // East = 0 (UTC - 4 (- 0))
 };
 
 const eventsStore = create((set, get) => ({
