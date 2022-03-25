@@ -4,9 +4,11 @@ import AddIcon from "@mui/icons-material/Add";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import InfoIcon from "@mui/icons-material/Info";
+import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -39,6 +41,7 @@ import icon_tower from "./img/icon_tower.png";
 import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
 import icon_abyss_raid from "./img/icon_abyss_raid.png";
 import icon_grandprix from "./img/events/grandprix.webp";
+import { Event } from "@mui/icons-material";
 
 function createData(name, id, info, icon, color) {
   return { name, id, info, icon, color };
@@ -218,6 +221,7 @@ export default function Checklist(props) {
   const addCharacter = useStore((state) => state.addCharacter);
 
   // normal hooks
+  const [characterEditMode, toggleCharacterEditMode] = React.useState(false);
   // const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
   // const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
   // const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
@@ -253,20 +257,34 @@ export default function Checklist(props) {
         <Table
           stickyHeader
           size="small"
-          sx={{ maxHeight: "calc(100vh - 144px)" }}
+          sx={{ maxHeight: "calc(100vh - 144px)", tableLayout: "auto" }}
         >
           <TableHead>
             <TableRow>
               <TableCell
                 sx={{
                   backgroundColor: theme.palette.background.paper,
+                  width: "1px",
                 }}
-              />
+              ></TableCell>
               <TableCell
-                sx={{ backgroundColor: theme.palette.background.paper }}
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                  width: "1px",
+                }}
               >
-                {/* <Checkbox /> */}
-                Characters
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography sx={{ mr: 2 }}>Characters</Typography>
+                  <Tooltip title="Toggle roster edit mode">
+                    <IconButton
+                      onClick={() => {
+                        toggleCharacterEditMode(!characterEditMode);
+                      }}
+                    >
+                      <SettingsIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </TableCell>
               {taskStatus.map((charData) => (
                 <TableCell
@@ -274,19 +292,29 @@ export default function Checklist(props) {
                   sx={{ backgroundColor: theme.palette.background.paper }}
                 >
                   <CharacterSelect
+                    characterEditMode={characterEditMode}
                     charData={charData}
                     useStore={props.useStore}
                   />
                 </TableCell>
               ))}
               <TableCell
-                sx={{ backgroundColor: theme.palette.background.paper }}
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                }}
               >
-                <Box>
-                  <IconButton onClick={() => addCharacter()}>
-                    <AddIcon />
-                  </IconButton>
-                </Box>
+                {characterEditMode && (
+                  <Tooltip title="Add new character">
+                    <Button
+                      onClick={() => addCharacter()}
+                      variant="text"
+                      sx={{ color: "#fff" }}
+                      size="large"
+                    >
+                      <AddIcon />
+                    </Button>
+                  </Tooltip>
+                )}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -329,7 +357,7 @@ export default function Checklist(props) {
             {siteSettings.dailyTasksOpen &&
               dailies.map((row) => (
                 <TableRow hover role="checkbox" key={row.id}>
-                  <TableCell>
+                  <TableCell sx={{ width: "1px" }}>
                     {row.info && (
                       <Tooltip title={row.info}>
                         <IconButton size="small">
@@ -343,7 +371,7 @@ export default function Checklist(props) {
                       </IconButton>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ width: "1px" }}>
                     <Typography
                       color={row.color && theme.palette[row.color]["main"]}
                     >
@@ -355,13 +383,19 @@ export default function Checklist(props) {
                       padding="checkbox"
                       key={`dailies-${charData.id}`}
                     >
-                      <Box>
+                      <Button
+                        onClick={() => {
+                          handleDailyStatus(row.id, charData.id);
+                        }}
+                        fullWidth
+                        variant={"text"}
+                      >
                         <Checkbox
                           // color={row.color ? row.color : "primary"}
-                          onChange={() =>
-                            handleDailyStatus(row.id, charData.id)
-                          }
-                          checked={taskStatus[charData.id].dailies[row.id]}
+                          // onChange={() =>
+                          //   handleDailyStatus(row.id, charData.id)
+                          // }
+                          checked={charData.dailies[row.id]}
                           sx={
                             row.color && {
                               color: theme.palette[row.color]["main"],
@@ -370,8 +404,9 @@ export default function Checklist(props) {
                               },
                             }
                           }
+                          disableRipple
                         />
-                      </Box>
+                      </Button>
                     </TableCell>
                   ))}
                   <TableCell />
@@ -411,14 +446,13 @@ export default function Checklist(props) {
                   <TableCell>
                     <Typography>Rapport Name</Typography>
                   </TableCell>
-                  <TableCell>
-                    <Typography>Song</Typography>
-                  </TableCell>
-                  <TableCell />
                   <TableCell colSpan={2}>
-                    <Typography>Emote</Typography>
+                    <Typography align="center">Song</Typography>
                   </TableCell>
-                  <TableCell colSpan={taskStatus.length - 5} />
+                  <TableCell colSpan={2}>
+                    <Typography align="center">Emote</Typography>
+                  </TableCell>
+                  <TableCell colSpan={taskStatus.length - 4} />
                 </>
               )}
             </TableRow>
@@ -453,18 +487,15 @@ export default function Checklist(props) {
                       key={`${row.id}`}
                       colSpan={rapportItem ? 1 : taskStatus.length}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
+                      <Button
+                        onClick={(event) => {
+                          handleAccountDaily(event, row.id);
                         }}
+                        fullWidth
+                        variant={"text"}
                       >
                         <Checkbox
                           color="primary"
-                          onChange={(event) =>
-                            handleAccountDaily(event, row.id)
-                          }
                           checked={rosterStatus[row.id]}
                           sx={
                             row.color && {
@@ -474,13 +505,13 @@ export default function Checklist(props) {
                               },
                             }
                           }
+                          disableRipple
                         />
-                        <IconImage src={icon_rapport} />
-                      </Box>
+                      </Button>
                     </TableCell>
                     {rapportItem && (
                       <>
-                        <TableCell>
+                        <TableCell sx={{ minWidth: 200, width: "1px" }}>
                           <Box>
                             <TextField
                               id={`rapport${index + 1}_name`}
@@ -494,6 +525,13 @@ export default function Checklist(props) {
                                   e.target.value
                                 );
                               }}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <IconImage src={icon_rapport} />
+                                  </InputAdornment>
+                                ),
+                              }}
                             />
                           </Box>
                         </TableCell>
@@ -503,15 +541,15 @@ export default function Checklist(props) {
                             key={`rapport${index + 1}_${item}`}
                             colSpan={1}
                           >
-                            <Box>
+                            <Button
+                              onClick={() =>
+                                toggleRapportStatus(`rapport${index + 1}`, item)
+                              }
+                              fullWidth
+                              variant={"text"}
+                            >
                               <Checkbox
                                 color="primary"
-                                onChange={() =>
-                                  toggleRapportStatus(
-                                    `rapport${index + 1}`,
-                                    item
-                                  )
-                                }
                                 checked={rapportItem[item]}
                                 sx={{
                                   color: theme.palette["rapport"]["main"],
@@ -519,8 +557,9 @@ export default function Checklist(props) {
                                     color: theme.palette["rapport"]["main"],
                                   },
                                 }}
+                                disableRipple
                               />
-                            </Box>
+                            </Button>
                           </TableCell>
                         ))}
                         <TableCell colSpan={taskStatus.length - 5} />
@@ -593,13 +632,14 @@ export default function Checklist(props) {
                       padding="checkbox"
                       key={`weeklies-${charData.id}`}
                     >
-                      <Box>
+                      <Button
+                        onClick={() => handleWeeklyStatus(row.id, charData.id)}
+                        fullWidth
+                        variant={"text"}
+                      >
                         <Checkbox
                           color="primary"
-                          onChange={() =>
-                            handleWeeklyStatus(row.id, charData.id)
-                          }
-                          checked={taskStatus[charData.id].weeklies[row.id]}
+                          checked={charData.weeklies[row.id]}
                           sx={
                             row.color && {
                               color: theme.palette[row.color]["main"],
@@ -608,8 +648,9 @@ export default function Checklist(props) {
                               },
                             }
                           }
+                          disableRipple
                         />
-                      </Box>
+                      </Button>
                     </TableCell>
                   ))}
                   <TableCell />
@@ -653,17 +694,19 @@ export default function Checklist(props) {
                       padding="checkbox"
                       key={`weeklyVendors-${charData.id}`}
                     >
-                      <Box>
+                      <Button
+                        onClick={(event) =>
+                          handleWeeklyVendorStatus(row.id, charData.id)
+                        }
+                        fullWidth
+                        variant={"text"}
+                      >
                         <Checkbox
                           color="primary"
-                          onChange={(event) =>
-                            handleWeeklyVendorStatus(row.id, charData.id)
-                          }
-                          checked={
-                            taskStatus[charData.id].weeklyVendors[row.id]
-                          }
+                          checked={charData.weeklyVendors[row.id]}
+                          disableRipple
                         />
-                      </Box>
+                      </Button>
                     </TableCell>
                   ))}
                   <TableCell />
