@@ -41,7 +41,6 @@ import icon_tower from "./img/icon_tower.png";
 import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
 import icon_abyss_raid from "./img/icon_abyss_raid.png";
 import icon_grandprix from "./img/events/grandprix.webp";
-import { Event } from "@mui/icons-material";
 
 function createData(name, id, info, icon, color) {
   return { name, id, info, icon, color };
