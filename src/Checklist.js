@@ -39,6 +39,10 @@ import icon_tower from "./img/icon_tower.png";
 import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
 import icon_abyss_raid from "./img/icon_abyss_raid.png";
 import icon_grandprix from "./img/events/grandprix.webp";
+import icon_bloodstone from "./img/icon_bloodstone.png";
+import icon_pirate_coin from "./img/icon_pirate_coin.png";
+import icon_rift_pieces from "./img/icon_rift_pieces.png";
+import icon_coin_of_courage from "./img/icon_coin_of_courage.png";
 
 function createData(name, id, info, icon, color) {
   return { name, id, info, icon, color };
@@ -191,11 +195,11 @@ const weeklies = [
 ];
 
 const weeklyVendors = [
-  createData(`Guild`, "vendorGuild"),
-  createData(`Pirate`, "vendorPirate"),
-  createData(`Rift Piece`, "vendorRift"),
-  createData(`Endless Chaos`, "vendorChaos"),
-  createData(`PVP`, "vendorPvp"),
+  createData(`Guild`, "vendorGuild", null, icon_bloodstone),
+  createData(`Pirate`, "vendorPirate", null, icon_pirate_coin),
+  createData(`Rift Piece`, "vendorRift", null, icon_rift_pieces),
+  createData(`Endless Chaos`, "vendorChaos", null, icon_chaos_dungeon),
+  createData(`PVP`, "vendorPvp", null, icon_coin_of_courage),
 ];
 
 export default function Checklist(props) {
@@ -644,9 +648,26 @@ export default function Checklist(props) {
             {siteSettings.weeklyVendorsOpen &&
               weeklyVendors.map((row) => (
                 <TableRow hover role="checkbox" key={row.id}>
-                  <TableCell />
                   <TableCell>
-                    <Typography>{row.name}</Typography>
+                    {row.info && (
+                      <Tooltip title={row.info}>
+                        <IconButton size="small">
+                          {row.info && <InfoIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {row.icon && (
+                      <IconButton size="small">
+                        <IconImage src={row.icon} alt={row.name} />
+                      </IconButton>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      color={row.color && theme.palette[row.color]["main"]}
+                    >
+                      {row.name}
+                    </Typography>
                   </TableCell>
                   {taskStatus.map((charData) => (
                     <TableCell
@@ -661,6 +682,14 @@ export default function Checklist(props) {
                           }
                           checked={
                             taskStatus[charData.id].weeklyVendors[row.id]
+                          }
+                          sx={
+                            row.color && {
+                              color: theme.palette[row.color]["main"],
+                              "&.Mui-checked": {
+                                color: theme.palette[row.color]["main"],
+                              },
+                            }
                           }
                         />
                       </Box>
