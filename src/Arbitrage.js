@@ -13,6 +13,9 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import icon_crystal from "./img/icon_crystal.png";
+import icon_gold from "./img/icon_gold.png";
+
 export default function Arbitrage(props) {
   const { useStore } = props;
   const goldValues = useStore((state) => state.goldValues);
@@ -61,6 +64,9 @@ export default function Arbitrage(props) {
       200,
       true
     ),
+    createData(`Harmony Shard Pouch (M)`, "harmonyShardM", 1, 5, true),
+    createData(`Life Shard Pouch (S)`, "lifeShardS", 1, 10, true),
+    createData(`Honor Shard Pouch (S)`, "honorShardS", 1, 10, true),
     createData(`Harmony Leapstone (Bound)`, "harmonyLeapstone", 1, 15, true),
     createData(`Life Leapstone (Bound)`, "lifeLeapstone", 1, 10, true),
     createData(`Honor Leapstone (Bound)`, "honorLeapstone", 1, 5, true),
@@ -76,6 +82,21 @@ export default function Arbitrage(props) {
     createData(`Solar Grace (Bound)`, "solarGrace", 1, 20, true),
     createData(`Solar Blessing (Bound)`, "solarBlessing", 1, 15, true),
     createData(`Solar Protection (Bound)`, "solarProtection", 1, 3, true),
+    createData(`Caldarr Fusion Material (Bound)`, "caldarrFusion", 1, 10, true),
+    createData(
+      `Basic Oreha Fusion Material (Bound)`,
+      "basicOrehaFusion",
+      1,
+      10,
+      true
+    ),
+    createData(
+      `Simple Oreha Fusion Material (Bound)`,
+      "simpleOrehaFusion",
+      1,
+      10,
+      true
+    ),
     createData(
       `Elemental HP Potion (Healing Battle Item Chest [5])`,
       "healingBattleChest",
@@ -123,6 +144,9 @@ export default function Arbitrage(props) {
     guardianStoneFragment: 36 / 400,
     guardianStone: 80 / 400,
     guardianStoneCrystal: 60 / 200,
+    harmonyShardM: 47 / 5,
+    lifeShardS: 38 / 10,
+    honorShardS: 56 / 10,
     harmonyLeapstone: 15 / 15,
     lifeLeapstone: 14 / 10,
     honorLeapstone: 10 / 5,
@@ -132,6 +156,9 @@ export default function Arbitrage(props) {
     solarGrace: 80 / 20,
     solarBlessing: 150 / 15,
     solarProtection: 150 / 3,
+    caldarrFusion: 70 / 10,
+    basicOrehaFusion: 40 / 10,
+    simpleOrehaFusion: 30 / 10,
     healingBattleChest: 25 / 15,
     offensiveBattleChestDestruction: 25 / 25,
     buffBattleChestAwakening: 25 / 10,
@@ -206,13 +233,23 @@ export default function Arbitrage(props) {
         <Table sx={{ minWidth: 650 }} aria-label="prices" size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Item Name</TableCell>
-              <TableCell align="right">Crystal Cost</TableCell>
-              <TableCell align="right">Gold Price per Bundle</TableCell>
+              <TableCell>
+                <Typography>Item Name</Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Typography>Crystal Cost</Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Typography>Gold Price per Bundle</Typography>
+              </TableCell>
               {/* <TableCell align="right">Crystal Price per Bundle</TableCell>
               <TableCell align="right">Crystal Price per Item (Mari)</TableCell> */}
-              <TableCell align="right">Profit per Item</TableCell>
-              <TableCell align="right">Profit per Mari Purchase</TableCell>
+              <TableCell align="right">
+                <Typography>Profit per Item</Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Typography>Profit per Mari Purchase</Typography>
+              </TableCell>
               <TableCell>Buy From</TableCell>
             </TableRow>
           </TableHead>

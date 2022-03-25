@@ -43,6 +43,23 @@ import unknown from "./img/events/unknown.png";
 import volare from "./img/events/volare.webp";
 
 export const timerData = {
+  // misc: [
+  //   {
+  //     name: "Daily Reset",
+  //     times: {
+  //       sun: ["06:00"],
+  //       mon: ["06:00"],
+  //       tue: ["06:00"],
+  //       wed: ["06:00"],
+  //       thu: ["06:00"],
+  //       fri: ["06:00"],
+  //       sat: ["06:00"],
+  //     },
+  //     id: "reset",
+  //     ilvl: 0,
+  //     location: "",
+  //   },
+  // ],
   fever: [
     {
       name: "Arkesia Grand Prix",

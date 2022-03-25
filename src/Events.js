@@ -35,9 +35,9 @@ export default function Events(props) {
   const currentDay = useStore((state) => state.currentDay); // a number 0-6
   const rosterStatus = taskStore((state) => state.rosterStatus);
   const filter = useStore((state) => state.eventSettings.filter);
-  const offset = useStore((state) => state.eventSettings.offset); // add to offset AGS shenanigans, DST
+  // const offset = useStore((state) => state.eventSettings.offset); // add to offset AGS shenanigans, DST
   const timezone = useStore((state) => state.eventSettings.timezone);
-  const offsetSeconds = moment.duration(offset, "h").asSeconds();
+  // const offsetSeconds = moment.duration(timezone, "h").asSeconds();
   const resetTimeAsSeconds = moment.duration("5:00").asSeconds();
   const endOfDayAsSeconds = moment.duration("24:00").asSeconds();
   const previousDay =
@@ -49,10 +49,10 @@ export default function Events(props) {
 
   const parseTimezone = (timezone) => {
     const timezones = {
-      "EST/AST": 0,
-      PST: 3,
-      CET: -5,
-      UTC: -4,
+      "EST/AST": -4,
+      PST: -7,
+      CET: 1,
+      UTC: 0,
       // AST: 0,
     };
     return _.findKey(timezones, (zone) => {
@@ -131,7 +131,7 @@ export default function Events(props) {
       return _.flatMap(event.times, (day, dayName) => {
         return day.flatMap((time) => {
           let eventTime = moment(time, "HH:mm")
-            .add(offsetSeconds, "seconds")
+            // .subtract(offsetSeconds, "seconds")
             .format("HH:mm");
           let remainingTime;
           if (dayName === previousDay || dayName === days[currentDay]) {
@@ -187,10 +187,10 @@ export default function Events(props) {
   // Refreshes clock, temporarily disabled for developing
   useEffect(() => {
     function refreshClock() {
-      setCurrentTime(moment().utc().subtract(4, "hours").format("HH:mm:ss"));
-      setCurrentDay(moment().utc().subtract(4, "hours").format("e"));
+      setCurrentTime(moment().utc().add(timezone, "hours").format("HH:mm:ss"));
+      setCurrentDay(moment().utc().add(timezone, "hours").format("e"));
       // Test Time
-      // setCurrentTime(moment("13:01", "HH:mm").format("HH:mm:ss"));
+      // setCurrentTime(moment("6:19", "HH:mm").format("HH:mm:ss"));
       // setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
     }
 
@@ -198,7 +198,7 @@ export default function Events(props) {
     return function cleanup() {
       clearInterval(timerId);
     };
-  }, [setCurrentTime, setCurrentDay]);
+  }, [setCurrentTime, setCurrentDay, timezone]);
 
   const parsedEvents = parseEvents();
 
@@ -207,7 +207,7 @@ export default function Events(props) {
       <Typography variant="h4" component="h1" align="center">
         {moment(currentTime, "HH:mm:ss")
           // .add(offset, "hours")
-          .subtract(timezone, "hours")
+          // .add(timezone, "hours")
           .format("HH:mm:ss")}
         {` ${parseTimezone(timezone)}`}
       </Typography>
@@ -292,40 +292,21 @@ function TodoList(props) {
 
 function TimezoneControl(props) {
   const timezones = {
-    east: 0,
-    west: 3,
-    euc: -5,
-    euw: -4,
-    ast: 0,
+    east: -4,
+    west: -7,
+    euc: 1,
+    euw: 0,
+    ast: -4,
   };
 
   const { timezone, useStore } = props;
   const [value, setValue] = React.useState(timezone);
   const setTimezone = useStore((state) => state.setTimezone);
-  const setOffset = useStore((state) => state.setOffset);
 
   const handleRadioChange = (event) => {
     const value = _.parseInt(event.target.value);
     setValue(value);
     setTimezone(value);
-    // US
-    if (value === 0) {
-      setOffset(0);
-    }
-    if (value === 3) {
-      setOffset(3);
-    }
-    // EU
-    if (value === -5) {
-      setOffset(-5);
-    }
-    if (value === -4) {
-      setOffset(-4);
-    }
-    // AST same as EST?
-    // if (value === 1) {
-    //   setOffset(1);
-    // }
   };
 
   return (
@@ -497,7 +478,7 @@ function Timers(props) {
             const inProgress = event.remainingTime < 0;
             const timeText = parseTime(event.time);
             const eventTime = moment(timeText, "HH:mm")
-              .subtract(timezone, "hours")
+              // .add(timezone, "hours")
               // .add(offset, "hours")
               .format("HH:mm");
             return (
