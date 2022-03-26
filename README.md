@@ -1,6 +1,8 @@
 # tooki.gg
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+
+This is the repository for tooki.gg - a Lost Ark website for task checklists, event timers, and some other little tools!
 
 If you're interested in contributing, please clone the 'master' branch, and send me a pull request when you have something to show!
 It uses standard React.js scripts:
