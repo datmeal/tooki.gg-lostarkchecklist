@@ -795,10 +795,7 @@ function Favorites(props) {
           {_.map(parsedFavorites, (event, index) => {
             const inProgress = event.remainingTime < 0;
             const timeText = parseTime(event.time);
-            const eventTime = moment(timeText, "HH:mm")
-              .subtract(timezone, "hours")
-              // .add(offset, "hours")
-              .format("HH:mm");
+            const eventTime = moment(timeText, "HH:mm").format("HH:mm");
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
                 <TimerItem

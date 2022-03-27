@@ -6,6 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -617,6 +618,7 @@ const theme = createTheme({
     primary: {
       main: "#90caf9",
       success: "#4ade80",
+      contrastText: "#fff",
     },
     secondary: {
       main: "#f48fb1",
@@ -828,7 +830,11 @@ function App() {
         >
           <Typography align="center">
             Lost Ark Game content and assets are trademarks of Smilegate RPG,
-            Inc. Please send any feedback to Salty#1961 on Discord!
+            Inc. Please send any feedback to Salty#1961 on Discord or{" "}
+            <Link href="https://github.com/datmeal/lostarkchecklist/issues">
+              here
+            </Link>{" "}
+            on Github!
           </Typography>
         </Box>
       </Container>
