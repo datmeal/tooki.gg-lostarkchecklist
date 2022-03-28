@@ -2331,6 +2331,7 @@ export const timerData = {
         fri: ["19:00"],
         sat: ["12:00", "18:00"],
       },
+      duration: 3600,
       id: "coopbattle",
       ilvl: 250,
       image: coopbattle,

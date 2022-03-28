@@ -45,8 +45,10 @@ import icon_bloodstone from "./img/icon_bloodstone.png";
 import icon_pirate_coin from "./img/icon_pirate_coin.png";
 import icon_rift_pieces from "./img/icon_rift_pieces.png";
 import icon_coin_of_courage from "./img/icon_coin_of_courage.png";
+import icon_competitive from "./img/icon_competitive.png";
+import icon_anguished from "./img/icon_anguished.png";
 
-function createData(name, id, info, icon, color) {
+function createData(name, id, info, icon, color, minilvl, maxilvl, isRoster) {
   return { name, id, info, icon, color };
 }
 
@@ -81,8 +83,27 @@ const dailies = [
   ),
 ];
 
+// const defaultDailyList = [
+//   {
+//     id: 'guildDonation', // id
+//     checked: false, // checkbox status
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     roster: false, // once per roster (one checkbox)
+//   },
+//   {
+//     id: 'guildDonation', // id
+//     checked: false, // checkbox status
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     roster: false, // once per roster (one checkbox)
+//   },
+// ];
+
 const accountDailies = [
-  createData(`Grand Prix`, "grandprix", null, icon_grandprix),
+  createData(`Grand Prix`, "grandprix", null, icon_competitive),
   createData(
     `Adventure Island`,
     "adv",
@@ -92,7 +113,7 @@ const accountDailies = [
   ),
   createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
-  createData(`Anguished Isle`, "anguishedisle"),
+  createData(`Anguished Isle`, "anguishedisle", null, icon_anguished),
   createData(`Cradle of the Sea Fermata`, "cradle"),
 ];
 
