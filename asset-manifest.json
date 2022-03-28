@@ -1,9 +1,10 @@
 {
   "files": {
-    "main.js": "/static/js/main.582d7374.js",
+    "main.js": "/static/js/main.6acf66e7.js",
     "static/js/787.8d6bb516.chunk.js": "/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/static/media/moake.fc4e652f9a54ec87dc0c.png",
+    "static/media/icon_competitive.png": "/static/media/icon_competitive.cbd501eba41e5aca2f6a.png",
     "static/media/deathshold.png": "/static/media/deathshold.1f8507f0d6ecdc6e68c7.png",
     "static/media/harvestlordincarnate.png": "/static/media/harvestlordincarnate.2e8541a3dc857949726b.png",
     "static/media/brealeos.png": "/static/media/brealeos.6208ece23b41251b2db5.png",
@@ -12,6 +13,7 @@
     "static/media/lullaby.png": "/static/media/lullaby.186950af38184ba39ba8.png",
     "static/media/coopbattle.png": "/static/media/coopbattle.14642aa59b82be1627d4.png",
     "static/media/erasmo.png": "/static/media/erasmo.5ed97bfe6661c03a046c.png",
+    "static/media/icon_anguished.png": "/static/media/icon_anguished.95ede7327a2d73835678.png",
     "static/media/kohinorr.png": "/static/media/kohinorr.556f1a4a437bc06dea52.png",
     "static/media/chaoticchuo.png": "/static/media/chaoticchuo.bbf53201299f4ba7368d.png",
     "static/media/solgrande.png": "/static/media/solgrande.5274752487801cfeddd7.png",
@@ -43,10 +45,10 @@
     "static/media/forpe.webp": "/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/index.html",
-    "main.582d7374.js.map": "/static/js/main.582d7374.js.map",
+    "main.6acf66e7.js.map": "/static/js/main.6acf66e7.js.map",
     "787.8d6bb516.chunk.js.map": "/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.582d7374.js"
+    "static/js/main.6acf66e7.js"
   ]
 }
