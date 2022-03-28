@@ -134,6 +134,7 @@ export default function Events(props) {
             // .subtract(offsetSeconds, "seconds")
             .format("HH:mm");
           let remainingTime;
+          let eventDuration = event.duration ? event.duration : 180;
           if (dayName === previousDay || dayName === days[currentDay]) {
             remainingTime =
               moment.duration(eventTime).asSeconds() - currentTimeAsSeconds;
@@ -153,6 +154,7 @@ export default function Events(props) {
           return {
             category: event.category,
             day: dayName,
+            duration: eventDuration,
             id: event.id,
             ilvl: event.ilvl,
             image: event.image,
@@ -170,7 +172,7 @@ export default function Events(props) {
     // console.log("allToday:", allTodayEvents);
 
     const upcomingEvents = _.filter(allTodayEvents, (event) => {
-      const upcoming = event.remainingTime > -180;
+      const upcoming = event.remainingTime > -event.duration;
       return upcoming;
     });
 
