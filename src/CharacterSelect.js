@@ -6,10 +6,13 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
@@ -41,19 +44,33 @@ export default function CharacterSelect(props) {
   const useStore = props.useStore;
   const updateClass = useStore((state) => state.updateClass);
   const removeCharacter = useStore((state) => state.removeCharacter);
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const characterName = charData.class;
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
+  const characterName = charData.name;
 
-  function handleOpenDialog() {
-    setOpenDialog(true);
+  function handleOpenDeleteDialog() {
+    setOpenDeleteDialog(true);
   }
 
-  function handleCloseDialog() {
-    setOpenDialog(false);
+  function handleCloseDeleteDialog() {
+    setOpenDeleteDialog(false);
   }
 
   function handleChangeClass(event) {
     updateClass(charData.id, event.target.value);
+  }
+
+  function handleOpenEditDialog() {
+    setOpenEditDialog(true);
+  }
+
+  function handleCloseEditDialog() {
+    setOpenEditDialog(false);
+  }
+
+  function handleSaveEditDialog(value) {
+    console.log(value);
+    handleCloseEditDialog();
   }
 
   return (
@@ -65,7 +82,7 @@ export default function CharacterSelect(props) {
               <IconButton
                 onClick={() => {
                   //removeCharacter(charData.id);
-                  handleOpenDialog();
+                  handleOpenDeleteDialog();
                 }}
                 color="error"
               >
@@ -93,8 +110,8 @@ export default function CharacterSelect(props) {
             </FormControl>
           </Box>
           <Dialog
-            open={openDialog}
-            onClose={handleCloseDialog}
+            open={openDeleteDialog}
+            onClose={handleCloseDeleteDialog}
             aria-labelledby="Delete Character"
             aria-describedby="Confirm deleting character"
           >
@@ -105,7 +122,7 @@ export default function CharacterSelect(props) {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Cancel</Button>
+              <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
               <Button
                 onClick={() => {
                   removeCharacter(charData.id);
@@ -120,7 +137,94 @@ export default function CharacterSelect(props) {
           </Dialog>
         </>
       ) : (
-        <Typography align="center">{characterName}</Typography>
+        <>
+          <Button
+            onClick={() => {
+              handleOpenEditDialog();
+            }}
+            fullWidth
+            sx={{ textTransform: "none" }}
+            variant="text"
+          >
+            <Typography align="center" color="#fff">
+              {characterName}
+            </Typography>
+          </Button>
+          <Dialog
+            open={openEditDialog}
+            onClose={handleCloseEditDialog}
+            aria-labelledby="Edit Character"
+            aria-describedby="Edit selected character"
+            sx={{ minWidth: "640px" }}
+          >
+            <DialogTitle>Edit Character</DialogTitle>
+            <DialogContent>
+              <Typography align="center">Basic Settings</Typography>
+              <List sx={{ width: 552 }}>
+                <ListItem
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography>Character Name / Class</Typography>
+                  <FormControl sx={{ minWidth: 210 }}>
+                    <Autocomplete
+                      freeSolo
+                      options={classes.map((option) => option.label)}
+                      value={characterName}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          inputProps={{ ...params.inputProps, maxLength: 16 }}
+                          label="Name / Class"
+                        />
+                      )}
+                      onBlur={handleChangeClass}
+                      clearOnEscape
+                      disableClearable
+                      fullWidth
+                    />
+                  </FormControl>
+                </ListItem>
+              </List>
+              <Typography align="center">Optional Settings</Typography>
+              <List>
+                <ListItem
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography>Item Level</Typography>
+                  <TextField
+                    id="standard-number"
+                    label="Number"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </ListItem>
+              </List>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseEditDialog}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  handleSaveEditDialog("somethin");
+                }}
+                autoFocus
+                color="success"
+                variant="outlined"
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
       )}
     </React.Fragment>
   );

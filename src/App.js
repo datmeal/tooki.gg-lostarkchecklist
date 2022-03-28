@@ -38,6 +38,8 @@ const defaultValues = {
     accountDailiesOpen: false,
     weeklyTasksOpen: false,
     weeklyVendorsOpen: false,
+    roster: [],
+    dailyTaskStatus: {},
   },
   dailies: {
     una1: false,
@@ -143,29 +145,35 @@ const useStore = create((set, get) => ({
   },
   addCharacter: () => {
     set((state) => ({
-      taskStatus: state.taskStatus.concat({
-        id: Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1),
-        name: "",
-        class: "",
-        dailies: defaultValues.dailies,
-        weeklies: defaultValues.weeklies,
-        weeklyVendors: defaultValues.weeklyVendors,
-      }),
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.concat({
+          id: Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1),
+          name: "",
+          class: "",
+          dailies: defaultValues.dailies,
+          weeklies: defaultValues.weeklies,
+          weeklyVendors: defaultValues.weeklyVendors,
+        }),
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   removeCharacter: (id) => {
     set((state) => ({
-      taskStatus: state.taskStatus.reduce((result, character) => {
-        if (character.id !== id) {
-          result.push(character);
-        }
-        return result;
-      }, []),
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.reduce((result, character) => {
+          if (character.id !== id) {
+            result.push(character);
+          }
+          return result;
+        }, []),
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   resetDailyTasks: () => {
     set((state) => ({
@@ -234,20 +242,45 @@ const useStore = create((set, get) => ({
   },
   toggleDailyStatus: (task, id) => {
     set((state) => ({
-      taskStatus: state.taskStatus.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              dailies: {
-                ...item.dailies,
-                [task]: !item.dailies[task],
-              },
-            }
-          : item
-      ),
+      siteSettings: {
+        ...state.siteSettings,
+        dailyTaskStatus: {
+          ...state.siteSettings.dailyTaskStatus,
+          [id]: {
+            ...state.siteSettings.dailyTaskStatus[id],
+            [task]: !state.siteSettings.dailyTaskStatus[id][task],
+          },
+        },
+        // dailyTaskStatus: state.siteSettings.dailyTaskStatus.reduce((result, char) => {
+
+        //   if (char.id === id) {
+        //     const newDailies = {
+        //       ...char.dailies,
+        //       [task]: !char.dailies[task],
+        //     };
+        //     char.dailies = newDailies;
+        //   }
+        //   result.push(char);
+        //   return result;
+        // }, {})
+        // roster: {
+        //   ...state.siteSettings.roster,
+
+        // }
+        //   state.taskStatus.map((item) =>
+        //   item.id === id
+        //     ? {
+        //         ...item,
+        //         dailies: {
+        //           ...item.dailies,
+        //           [task]: !item.dailies[task],
+        //         },
+        //       }
+        //     : item
+        // )
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
-    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   toggleWeeklyStatus: (task, id) => {
     set((state) => ({
@@ -309,21 +342,25 @@ const useStore = create((set, get) => ({
   },
   updateSiteSettings: (siteSettings) => {
     set((state) => ({ siteSettings }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   updateRS: (rosterStatus) => set((state) => ({ rosterStatus })),
   updateTS: (taskStatus) => set((state) => ({ taskStatus })),
   updateClass: (id, charclass) => {
     set((state) => ({
-      taskStatus: state.taskStatus.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              class: charclass,
-            }
-          : item
-      ),
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                name: charclass,
+              }
+            : item
+        ),
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   updateName: (id, name) =>
     set((state) => ({
@@ -336,7 +373,18 @@ const useStore = create((set, get) => ({
           : item
       ),
     })),
-  siteSettings: defaultValues.siteSettings,
+  siteSettings: {
+    ...defaultValues.siteSettings,
+    roster: [
+      {
+        id: "0",
+        name: "Berserker",
+      },
+    ],
+    dailyTaskStatus: {
+      0: defaultValues.dailies,
+    },
+  },
   taskStatus: [
     {
       id: "0",
@@ -681,13 +729,83 @@ function App() {
   // Initialize
   useEffect(() => {
     const localSiteSettings = localStorage.getItem("siteSettings");
+    const parsedSiteSettings = JSON.parse(localSiteSettings);
     const localTaskStatus = localStorage.getItem("taskStatus");
     const parsedLocalTasks = JSON.parse(localTaskStatus);
     const localRosterStatus = localStorage.getItem("rosterStatus");
     const localEventSettings = localStorage.getItem("eventSettings");
 
     if (localSiteSettings) {
-      updateSiteSettings(JSON.parse(localSiteSettings));
+      let updatedSettings = { ...defaultValues.siteSettings };
+      _.each(parsedSiteSettings, (value, settingName) => {
+        updatedSettings[settingName] = value;
+      });
+      // new roster data format, get the old format and replace contents if necessary
+      if (localTaskStatus) {
+        const oldRoster = _.reduce(
+          parsedLocalTasks,
+          (result, char) => {
+            const character = {
+              id: char.id,
+              name: char.class,
+            };
+            result.push(character);
+            return result;
+          },
+          []
+        );
+        const newRoster = _.reduce(
+          parsedSiteSettings.roster,
+          (result, char) => {
+            const character = {
+              id: char.id,
+              name: char.name,
+            };
+            result.push(character);
+            return result;
+          },
+          []
+        );
+        const updatedRoster = _.reduce(
+          oldRoster,
+          (result, rosterItem) => {
+            const matchingRosterItem = _.find(
+              newRoster,
+              (newRosterItem) => newRosterItem.id === rosterItem.id
+            );
+            if (matchingRosterItem) {
+              console.log("Found it:", matchingRosterItem);
+              result.push(matchingRosterItem);
+            } else {
+              console.log("Didnt Found it:", matchingRosterItem);
+              result.push(rosterItem);
+            }
+            return result;
+          },
+          []
+        );
+        console.log("updatedRoster:", updatedRoster);
+        updatedSettings.roster = updatedRoster;
+
+        const updatedDailyTaskStatus = _.reduce(
+          parsedLocalTasks,
+          (result, char) => {
+            const dailyStatus = {
+              [char.id]: char.dailies,
+            };
+            // console.log(dailyStatus);
+            result = {
+              ...result,
+              ...dailyStatus,
+            };
+            return result;
+          },
+          {}
+        );
+        // console.log(updatedDailyTaskStatus)
+        updatedSettings.dailyTaskStatus = updatedDailyTaskStatus;
+      }
+      updateSiteSettings(updatedSettings);
     }
     if (localTaskStatus) {
       if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
