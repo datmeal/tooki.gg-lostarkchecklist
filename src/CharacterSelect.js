@@ -200,8 +200,8 @@ export default function CharacterSelect(props) {
                 >
                   <Typography>Item Level</Typography>
                   <TextField
-                    id="standard-number"
-                    label="Number"
+                    id={`ilvl_${charData.id}`}
+                    label="Item Level"
                     type="number"
                     InputLabelProps={{
                       shrink: true,
