@@ -187,7 +187,7 @@ const accountDailies = [
   createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle", null, icon_anguished),
-  createData(`Cradle of the Sea Fermata`, "cradle"),
+  createData(`Cradle of the Sea Fermata`, "cradle", null, icon_cradle),
 ];
 
 const weeklies = [
