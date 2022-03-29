@@ -48,6 +48,7 @@ import icon_rift_pieces from "./img/icon_rift_pieces.png";
 import icon_coin_of_courage from "./img/icon_coin_of_courage.png";
 import icon_competitive from "./img/icon_competitive.png";
 import icon_anguished from "./img/icon_anguished.png";
+import icon_cradle from "./img/icon_cradle.png";
 
 function createData(name, id, info, icon, color, isRoster, minilvl, maxilvl) {
   return { name, id, info, icon, color, isRoster, minilvl, maxilvl };
@@ -145,7 +146,14 @@ const newDailies = [
     null,
     true
   ),
-  createData(`Cradle of the Sea Fermata`, "cradle", null, null, null, true),
+  createData(
+    `Cradle of the Sea Fermata`,
+    "cradle",
+    null,
+    icon_cradle,
+    null,
+    true
+  ),
 ];
 
 // const defaultDailyList = [
