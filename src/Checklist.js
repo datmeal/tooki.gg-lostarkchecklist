@@ -1,11 +1,14 @@
 import * as React from "react";
+import _ from "lodash";
 import styled from "@emotion/styled";
 import AddIcon from "@mui/icons-material/Add";
+import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import InfoIcon from "@mui/icons-material/Info";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
+import CircularProgress from "@mui/material/CircularProgress";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -47,16 +50,20 @@ import icon_rift_pieces from "./img/icon_rift_pieces.png";
 import icon_coin_of_courage from "./img/icon_coin_of_courage.png";
 import icon_competitive from "./img/icon_competitive.png";
 import icon_anguished from "./img/icon_anguished.png";
+import icon_cradle from "./img/icon_cradle.png";
+import { LinearProgress } from "@mui/material";
 
-function createData(name, id, info, icon, color, minilvl, maxilvl, isRoster) {
-  return { name, id, info, icon, color };
+function createData(name, id, info, icon, color, isRoster, minilvl, maxilvl) {
+  return { name, id, info, icon, color, isRoster, minilvl, maxilvl };
 }
 
 // const dailies = {
-//   name: `Una's Task 1`,
-//   id: 'una1',
-//   info: 'Tooltip information',
-//   icon: 'icon_una_daily.png'
+//     id: 'guildDonation', // id
+//     checked: false, // checkbox status
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     roster: false, // once per roster (one checkbox)
 // }
 
 const dailies = [
@@ -80,6 +87,75 @@ const dailies = [
     `Kalthertz`,
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
+  ),
+];
+
+// const dailies = {
+//     id: 'guildDonation', // id
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     isRoster: false, // once per roster (one checkbox)
+//     minilvl: null,
+//     maxilvl: null,
+// }
+
+const newDailies = [
+  createData(`Guild Donation`, "guildDonation", null, icon_guild),
+  // createData(`Guild Mission`, "guildMission", null, icon_guild),
+  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
+  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
+  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
+  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
+  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
+  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
+  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
+  createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    icon_guardian,
+    "guardian"
+  ),
+  createData(
+    `Kalthertz`,
+    "kalthertz",
+    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
+  ),
+
+  createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
+  createData(
+    `Adventure Island`,
+    "adv",
+    null,
+    icon_adventure_island,
+    "adventure",
+    true
+  ),
+  createData(`Field Boss`, "cal", null, icon_field_boss, "guardian", true),
+  createData(
+    `Chaos Gate`,
+    "chaosgate",
+    null,
+    icon_chaos_gate,
+    "chaosGate",
+    true
+  ),
+  createData(
+    `Anguished Isle`,
+    "anguishedisle",
+    null,
+    icon_anguished,
+    null,
+    true
+  ),
+  createData(
+    `Cradle of the Sea Fermata`,
+    "cradle",
+    null,
+    icon_cradle,
+    null,
+    true
   ),
 ];
 
@@ -114,7 +190,7 @@ const accountDailies = [
   createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle", null, icon_anguished),
-  createData(`Cradle of the Sea Fermata`, "cradle"),
+  createData(`Cradle of the Sea Fermata`, "cradle", null, icon_cradle),
 ];
 
 const weeklies = [
@@ -243,6 +319,7 @@ export default function Checklist(props) {
   const setRapportName = useStore((state) => state.setRapportName);
   const toggleRapportStatus = useStore((state) => state.toggleRapportStatus);
   const addCharacter = useStore((state) => state.addCharacter);
+  const updateCharacter = useStore((state) => state.updateCharacter);
 
   // normal hooks
   const [characterEditMode, toggleCharacterEditMode] = React.useState(false);
@@ -252,6 +329,70 @@ export default function Checklist(props) {
   // const [openWeeklyVendors, setOpenWeeklyVendors] = React.useState(false);
 
   function handleDailyStatus(taskName, id) {
+    const character = _.find(siteSettings.roster, (item) => item.id === id);
+    const taskStatus = siteSettings.dailyTaskStatus[id];
+    const checks = _.find(
+      siteSettings.dailyTaskStatus,
+      (item, index) => index === id
+    );
+    if (
+      [
+        "chaos1",
+        "chaos2",
+        "guardian1",
+        "guardian2",
+        "una1",
+        "una2",
+        "una3",
+      ].includes(taskName)
+    ) {
+      const taskType = taskName.slice(0, -1); // 'chaos', 'guardian', 'una'
+      const checkCount = _.reduce(
+        checks,
+        (result, value, name) => {
+          if (name.slice(0, -1) === taskType && value === true)
+            result.push({ [name]: value });
+          return result;
+        },
+        []
+      ).length;
+      // console.log(checkCount);
+      if (taskStatus[taskName] === true) {
+        // if its getting turned off, count number of current checkmarks and multiply the less than requirement by it
+        // current - temp = 20 * checks
+        if (
+          character[`rest_${taskType}`] - character[`rest_${taskType}_temp`] ===
+          20 * checkCount
+        ) {
+          character[`rest_${taskType}_temp`] += 20;
+        }
+        // if rep isn't already maxed out when you uncheck, subtract 10 rep
+        if (
+          ["una1", "una2", "una3"].includes(taskName) &&
+          character[taskName].current !== character[taskName].require
+        ) {
+          character[taskName].current -= 10;
+        }
+      } else {
+        // if its getting checked
+
+        // console.log(char, checks);
+        // check if character has at least 20 rest bonus
+        if (
+          character[`rest_${taskType}`] >= 20 &&
+          character[`rest_${taskType}_temp`] >= 20
+        ) {
+          character[`rest_${taskType}_temp`] -= 20;
+        }
+        if (
+          ["una1", "una2", "una3"].includes(taskName) &&
+          character[taskName].current < character[taskName].require
+        ) {
+          character[taskName].current += 10;
+        }
+      }
+      updateCharacter(character);
+    }
     toggleDailyStatus(taskName, id);
   }
 
@@ -273,7 +414,92 @@ export default function Checklist(props) {
     height: 24px;
   `;
 
+  React.useEffect(() => {
+    // console.log("siteSettings:", siteSettings);
+  }, [siteSettings]);
+
   // console.log("rosterStatus:", rosterStatus);
+
+  const CheckBadge = styled(Badge)(({ theme }) => ({
+    "& .MuiBadge-badge": {
+      top: 10,
+      right: 10,
+      "& .MuiSvgIcon-root": {
+        width: 16,
+        height: 16,
+        color: theme.palette.una.main,
+      },
+    },
+  }));
+
+  const renderUnaTooltip = (row, charData) => {
+    const task = charData[row.id];
+    return (
+      <React.Fragment>
+        <Typography variant="h6">{task.name ? task.name : ""}</Typography>
+        {task.location !== "" && (
+          <Typography variant="subtitle">{task.location}</Typography>
+        )}
+
+        {task.require > 0 && (
+          <>
+            <LinearProgress
+              color="una"
+              variant="determinate"
+              value={(task.current / task.require) * 100}
+            />
+            <Typography>
+              {task.current} / {task.require}
+            </Typography>
+          </>
+        )}
+      </React.Fragment>
+    );
+  };
+
+  const renderUnaTask = (row, charData) => {
+    const task = charData[row.id];
+    const hasUnaDesc =
+      task.name !== "" ||
+      task.location !== "" ||
+      task.current > 0 ||
+      task.require > 0;
+    return hasUnaDesc ? (
+      <Tooltip
+        title={renderUnaTooltip(row, charData)}
+        placement="top"
+        followCursor
+      >
+        <CheckBadge badgeContent={<InfoIcon />}>
+          <Checkbox
+            checked={siteSettings.dailyTaskStatus[charData.id][row.id]}
+            sx={
+              row.color && {
+                color: theme.palette[row.color]["main"],
+                "&.Mui-checked": {
+                  color: theme.palette[row.color]["main"],
+                },
+              }
+            }
+            disableRipple
+          />
+        </CheckBadge>
+      </Tooltip>
+    ) : (
+      <Checkbox
+        checked={siteSettings.dailyTaskStatus[charData.id][row.id]}
+        sx={
+          row.color && {
+            color: theme.palette[row.color]["main"],
+            "&.Mui-checked": {
+              color: theme.palette[row.color]["main"],
+            },
+          }
+        }
+        disableRipple
+      />
+    );
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -310,15 +536,16 @@ export default function Checklist(props) {
                   </Tooltip>
                 </Box>
               </TableCell>
-              {taskStatus.map((charData) => (
+              {siteSettings.roster.map((charData) => (
                 <TableCell
-                  key={`class-${charData.id}`}
+                  key={`class_${charData.id}`}
                   sx={{ backgroundColor: theme.palette.background.paper }}
                 >
                   <CharacterSelect
                     characterEditMode={characterEditMode}
                     charData={charData}
                     useStore={props.useStore}
+                    theme={theme}
                   />
                 </TableCell>
               ))}
@@ -357,7 +584,7 @@ export default function Checklist(props) {
                   )}
                 </IconButton>
               </TableCell>
-              <TableCell colSpan={taskStatus.length + 2}>
+              <TableCell colSpan={siteSettings.roster.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography
                     variant="h6"
@@ -370,7 +597,12 @@ export default function Checklist(props) {
                     <Button
                       color="error"
                       variant="contained"
-                      onClick={() => resetDailyTasks()}
+                      onClick={() =>
+                        resetDailyTasks(
+                          siteSettings.roster,
+                          siteSettings.dailyTaskStatus
+                        )
+                      }
                     >
                       Reset Daily Tasks
                     </Button>
@@ -379,63 +611,307 @@ export default function Checklist(props) {
               </TableCell>
             </TableRow>
             {siteSettings.dailyTasksOpen &&
-              dailies.map((row) => (
-                <TableRow hover role="checkbox" key={row.id}>
-                  <TableCell sx={{ width: "1px" }}>
-                    {row.info && (
-                      <Tooltip title={row.info}>
-                        <IconButton size="small">
-                          {row.info && <InfoIcon />}
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    {row.icon && (
-                      <IconButton size="small">
-                        <IconImage src={row.icon} alt={row.name} />
-                      </IconButton>
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ width: "1px" }}>
-                    <Typography
-                      color={row.color && theme.palette[row.color]["main"]}
-                    >
-                      {row.name}
-                    </Typography>
-                  </TableCell>
-                  {taskStatus.map((charData) => (
-                    <TableCell
-                      padding="checkbox"
-                      key={`dailies-${charData.id}`}
-                    >
-                      <Button
-                        onClick={() => {
-                          handleDailyStatus(row.id, charData.id);
-                        }}
-                        fullWidth
-                        variant={"text"}
-                      >
-                        <Checkbox
-                          // color={row.color ? row.color : "primary"}
-                          // onChange={() =>
-                          //   handleDailyStatus(row.id, charData.id)
-                          // }
-                          checked={charData.dailies[row.id]}
-                          sx={
-                            row.color && {
-                              color: theme.palette[row.color]["main"],
-                              "&.Mui-checked": {
-                                color: theme.palette[row.color]["main"],
-                              },
+              dailies.map((row) => {
+                // console.log(row);
+                return (
+                  <React.Fragment key={`daily_component_${row.id}`}>
+                    {row.id === "una1" && siteSettings.useRestUna && (
+                      <TableRow key={"unas_rested_row"}>
+                        <TableCell>
+                          <IconButton size="small">
+                            <IconImage src={row.icon} alt={row.name} />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell sx={{ width: "1px" }}>
+                          <Typography
+                            color={
+                              row.color && theme.palette[row.color]["main"]
                             }
-                          }
-                          disableRipple
-                        />
-                      </Button>
-                    </TableCell>
-                  ))}
-                  <TableCell />
-                </TableRow>
-              ))}
+                          >
+                            Una's Tasks Rest Bonus
+                          </Typography>
+                        </TableCell>
+                        {siteSettings.roster.map((charData) => {
+                          // console.log(charData);
+                          return (
+                            <TableCell key={`restBonus_${charData.id}`}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    position: "relative",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <CircularProgress
+                                    variant="determinate"
+                                    value={charData.rest_una_temp}
+                                    color="una"
+                                  />
+                                  <Box
+                                    sx={{
+                                      position: "absolute",
+                                      top: 0,
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      component="div"
+                                    >
+                                      {charData.rest_una_temp}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              </Box>
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell />
+                      </TableRow>
+                    )}
+                    {row.id === "chaos1" && siteSettings.useRestChaos && (
+                      <TableRow key={"chaos_rested_row"}>
+                        <TableCell>
+                          <IconButton size="small">
+                            <IconImage src={row.icon} alt={row.name} />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell sx={{ width: "1px" }}>
+                          <Typography
+                            color={
+                              row.color && theme.palette[row.color]["main"]
+                            }
+                          >
+                            Chaos Rest Bonus
+                          </Typography>
+                        </TableCell>
+                        {siteSettings.roster.map((charData) => {
+                          // console.log(charData);
+                          return (
+                            <TableCell key={`restBonus_${charData.id}`}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    position: "relative",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <CircularProgress
+                                    variant="determinate"
+                                    value={charData.rest_chaos_temp}
+                                    color="chaos"
+                                  />
+                                  <Box
+                                    sx={{
+                                      position: "absolute",
+                                      top: 0,
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      component="div"
+                                    >
+                                      {charData.rest_chaos_temp}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              </Box>
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell />
+                      </TableRow>
+                    )}
+                    {row.id === "guardian1" && siteSettings.useRestGuardian && (
+                      <TableRow key={"guardian_rested_row"}>
+                        <TableCell>
+                          <IconButton size="small">
+                            <IconImage src={row.icon} alt={row.name} />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell sx={{ width: "1px" }}>
+                          <Typography
+                            color={
+                              row.color && theme.palette[row.color]["main"]
+                            }
+                          >
+                            Guardian Raid Rest Bonus
+                          </Typography>
+                        </TableCell>
+                        {siteSettings.roster.map((charData) => {
+                          return (
+                            <TableCell key={`restBonus_${charData.id}`}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    position: "relative",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <CircularProgress
+                                    variant="determinate"
+                                    value={charData.rest_guardian_temp}
+                                    color="guardian"
+                                  />
+                                  <Box
+                                    sx={{
+                                      position: "absolute",
+                                      top: 0,
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      component="div"
+                                    >
+                                      {charData.rest_guardian_temp}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              </Box>
+                            </TableCell>
+                          );
+                        })}
+                        <TableCell />
+                      </TableRow>
+                    )}
+                    <TableRow hover role="checkbox" key={row.id}>
+                      <TableCell sx={{ width: "1px" }}>
+                        {row.info && (
+                          <Tooltip title={row.info}>
+                            <IconButton size="small">
+                              {row.info && <InfoIcon />}
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                        {row.icon && (
+                          <IconButton size="small">
+                            <IconImage src={row.icon} alt={row.name} />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                      <TableCell sx={{ width: "1px" }}>
+                        <Typography
+                          color={row.color && theme.palette[row.color]["main"]}
+                        >
+                          {row.name}
+                        </Typography>
+                      </TableCell>
+                      {!row.isRoster ? (
+                        siteSettings.roster.map((charData) => {
+                          return (
+                            <TableCell
+                              padding="checkbox"
+                              key={`dailies-${charData.id}`}
+                            >
+                              <Button
+                                onClick={() => {
+                                  handleDailyStatus(
+                                    row.id,
+                                    charData.id,
+                                    charData
+                                  );
+                                }}
+                                fullWidth
+                                variant={"text"}
+                              >
+                                {_.some(
+                                  ["una1", "una2", "una3"],
+                                  (item) => item === row.id
+                                ) ? (
+                                  renderUnaTask(row, charData)
+                                ) : (
+                                  <Checkbox
+                                    checked={
+                                      siteSettings.dailyTaskStatus[charData.id][
+                                        row.id
+                                      ]
+                                    }
+                                    sx={
+                                      row.color && {
+                                        color: theme.palette[row.color]["main"],
+                                        "&.Mui-checked": {
+                                          color:
+                                            theme.palette[row.color]["main"],
+                                        },
+                                      }
+                                    }
+                                    disableRipple
+                                  />
+                                )}
+                              </Button>
+                            </TableCell>
+                          );
+                        })
+                      ) : (
+                        <TableCell padding="checkbox" key={`dailies-${row.id}`}>
+                          <Button
+                            onClick={() => {
+                              handleDailyStatus(row.id);
+                            }}
+                            fullWidth
+                            variant={"text"}
+                          >
+                            <Checkbox
+                              checked={false}
+                              sx={
+                                row.color && {
+                                  color: theme.palette[row.color]["main"],
+                                  "&.Mui-checked": {
+                                    color: theme.palette[row.color]["main"],
+                                  },
+                                }
+                              }
+                              disableRipple
+                            />
+                          </Button>
+                        </TableCell>
+                      )}
+                      <TableCell />
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
             <TableRow>
               <TableCell>
                 <IconButton
@@ -452,7 +928,9 @@ export default function Checklist(props) {
               </TableCell>
               <TableCell
                 colSpan={
-                  siteSettings.accountDailiesOpen ? 2 : taskStatus.length + 1
+                  siteSettings.accountDailiesOpen
+                    ? 2
+                    : siteSettings.roster.length + 1
                 }
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -476,7 +954,7 @@ export default function Checklist(props) {
                   <TableCell colSpan={2}>
                     <Typography align="center">Emote</Typography>
                   </TableCell>
-                  <TableCell colSpan={taskStatus.length - 4} />
+                  <TableCell colSpan={siteSettings.roster.length - 4} />
                 </>
               )}
             </TableRow>
@@ -509,7 +987,7 @@ export default function Checklist(props) {
                     <TableCell
                       padding="checkbox"
                       key={`${row.id}`}
-                      colSpan={rapportItem ? 1 : taskStatus.length}
+                      colSpan={rapportItem ? 1 : siteSettings.roster.length}
                     >
                       <Button
                         onClick={(event) => {
@@ -586,7 +1064,7 @@ export default function Checklist(props) {
                             </Button>
                           </TableCell>
                         ))}
-                        <TableCell colSpan={taskStatus.length - 5} />
+                        <TableCell colSpan={siteSettings.roster.length - 5} />
                       </>
                     )}
                   </TableRow>
@@ -606,7 +1084,7 @@ export default function Checklist(props) {
                   )}
                 </IconButton>
               </TableCell>
-              <TableCell colSpan={taskStatus.length + 2}>
+              <TableCell colSpan={siteSettings.roster.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography
                     variant="h6"
@@ -651,32 +1129,40 @@ export default function Checklist(props) {
                       {row.name}
                     </Typography>
                   </TableCell>
-                  {taskStatus.map((charData) => (
-                    <TableCell
-                      padding="checkbox"
-                      key={`weeklies-${charData.id}`}
-                    >
-                      <Button
-                        onClick={() => handleWeeklyStatus(row.id, charData.id)}
-                        fullWidth
-                        variant={"text"}
+                  {siteSettings.roster.map((char) => {
+                    const charData = _.find(
+                      taskStatus,
+                      (character) => character.id === char.id
+                    );
+                    return (
+                      <TableCell
+                        padding="checkbox"
+                        key={`weeklies-${charData.id}`}
                       >
-                        <Checkbox
-                          color="primary"
-                          checked={charData.weeklies[row.id]}
-                          sx={
-                            row.color && {
-                              color: theme.palette[row.color]["main"],
-                              "&.Mui-checked": {
-                                color: theme.palette[row.color]["main"],
-                              },
-                            }
+                        <Button
+                          onClick={() =>
+                            handleWeeklyStatus(row.id, charData.id)
                           }
-                          disableRipple
-                        />
-                      </Button>
-                    </TableCell>
-                  ))}
+                          fullWidth
+                          variant={"text"}
+                        >
+                          <Checkbox
+                            color="primary"
+                            checked={charData.weeklies[row.id]}
+                            sx={
+                              row.color && {
+                                color: theme.palette[row.color]["main"],
+                                "&.Mui-checked": {
+                                  color: theme.palette[row.color]["main"],
+                                },
+                              }
+                            }
+                            disableRipple
+                          />
+                        </Button>
+                      </TableCell>
+                    );
+                  })}
                   <TableCell />
                 </TableRow>
               ))}
@@ -694,7 +1180,7 @@ export default function Checklist(props) {
                   )}
                 </IconButton>
               </TableCell>
-              <TableCell colSpan={taskStatus.length + 2}>
+              <TableCell colSpan={siteSettings.roster.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography
                     variant="h6"
@@ -730,34 +1216,40 @@ export default function Checklist(props) {
                       {row.name}
                     </Typography>
                   </TableCell>
-                  {taskStatus.map((charData) => (
-                    <TableCell
-                      padding="checkbox"
-                      key={`weeklyVendors-${charData.id}`}
-                    >
-                      <Button
-                        onClick={(event) =>
-                          handleWeeklyVendorStatus(row.id, charData.id)
-                        }
-                        fullWidth
-                        variant={"text"}
+                  {siteSettings.roster.map((char) => {
+                    const charData = _.find(
+                      taskStatus,
+                      (character) => character.id === char.id
+                    );
+                    return (
+                      <TableCell
+                        padding="checkbox"
+                        key={`weeklyVendors-${charData.id}`}
                       >
-                        <Checkbox
-                          color="primary"
-                          checked={charData.weeklyVendors[row.id]}
-                          disableRipple
-                          sx={
-                            row.color && {
-                              color: theme.palette[row.color]["main"],
-                              "&.Mui-checked": {
-                                color: theme.palette[row.color]["main"],
-                              },
-                            }
+                        <Button
+                          onClick={(event) =>
+                            handleWeeklyVendorStatus(row.id, charData.id)
                           }
-                        />
-                      </Button>
-                    </TableCell>
-                  ))}
+                          fullWidth
+                          variant={"text"}
+                        >
+                          <Checkbox
+                            color="primary"
+                            checked={charData.weeklyVendors[row.id]}
+                            disableRipple
+                            sx={
+                              row.color && {
+                                color: theme.palette[row.color]["main"],
+                                "&.Mui-checked": {
+                                  color: theme.palette[row.color]["main"],
+                                },
+                              }
+                            }
+                          />
+                        </Button>
+                      </TableCell>
+                    );
+                  })}
                   <TableCell />
                 </TableRow>
               ))}
@@ -771,6 +1263,7 @@ export default function Checklist(props) {
 function CharacterNameRow(props) {
   const useStore = props.useStore;
 
+  const siteSettings = useStore((state) => state.siteSettings);
   const taskStatus = useStore((state) => state.taskStatus);
   const updateName = useStore((state) => state.updateName);
 
@@ -784,7 +1277,7 @@ function CharacterNameRow(props) {
       <TableCell>
         <Typography>Name (Optional)</Typography>
       </TableCell>
-      {taskStatus.map((charData) => (
+      {siteSettings.roster.map((charData) => (
         <TableCell size="medium" key={`${charData.name}-${charData.id}-name`}>
           <TextField
             id={`characterName-${charData.id}`}

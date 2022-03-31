@@ -38,6 +38,46 @@ const defaultValues = {
     accountDailiesOpen: false,
     weeklyTasksOpen: false,
     weeklyVendorsOpen: false,
+    useRestChaos: true,
+    useRestGuardian: true,
+    useRestUna: true,
+    roster: [],
+    dailyTaskStatus: {},
+  },
+  una: {
+    name: "",
+    location: "",
+    current: 0,
+    require: 0,
+  },
+  character: {
+    id: "",
+    name: "",
+    ilvl: 0,
+    rest_chaos: 0,
+    rest_chaos_temp: 0,
+    rest_guardian: 0,
+    rest_guardian_temp: 0,
+    rest_una: 0,
+    rest_una_temp: 0,
+    una1: {
+      name: "",
+      location: "",
+      current: 0,
+      require: 0,
+    },
+    una2: {
+      name: "",
+      location: "",
+      current: 0,
+      require: 0,
+    },
+    una3: {
+      name: "",
+      location: "",
+      current: 0,
+      require: 0,
+    },
   },
   dailies: {
     una1: false,
@@ -142,33 +182,105 @@ const useStore = create((set, get) => ({
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   addCharacter: () => {
+    const id = Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
     set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.concat({
+          ...defaultValues.character,
+          id: id,
+        }),
+        dailyTaskStatus: {
+          ...state.siteSettings.dailyTaskStatus,
+          [id]: {
+            ...defaultValues.dailies,
+          },
+        },
+      },
+      // eventually will migrate this data as well
       taskStatus: state.taskStatus.concat({
-        id: Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1),
-        name: "",
-        class: "",
-        dailies: defaultValues.dailies,
+        id: id,
         weeklies: defaultValues.weeklies,
         weeklyVendors: defaultValues.weeklyVendors,
       }),
     }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
   },
   removeCharacter: (id) => {
     set((state) => ({
-      taskStatus: state.taskStatus.reduce((result, character) => {
-        if (character.id !== id) {
-          result.push(character);
-        }
-        return result;
-      }, []),
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.reduce((result, character) => {
+          if (character.id !== id) {
+            result.push(character);
+          }
+          return result;
+        }, []),
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
-  resetDailyTasks: () => {
+  resetDailyTasks: (roster, dailyTaskStatus) => {
+    // console.log("resetDailyTasks:", roster, dailyTaskStatus);
+    // check if 1 or 2 chaos is checked, subtract 20 per check if rest is over 20/40. if only 1 or 0 checked, add 10/20 rest to roster[char]
+    const updatedRoster = roster.reduce((result, char) => {
+      let character = _.cloneDeep(char);
+      const checks = _.find(
+        dailyTaskStatus,
+        (item, index) => index === char.id
+      );
+      const chaosNames = ["chaos1", "chaos2"];
+      if (char.rest_chaos_temp < 100) {
+        _.each(chaosNames, (task) => {
+          if (!checks[task]) {
+            character.rest_chaos_temp += 10;
+          }
+        });
+      }
+      const guardianNames = ["guardian1", "guardian2"];
+      if (char.rest_guardian_temp < 100) {
+        _.each(guardianNames, (task) => {
+          if (!checks[task]) {
+            character.rest_guardian_temp += 10;
+          }
+        });
+      }
+      const unaNames = ["una1", "una2", "una3"];
+      if (char.rest_una_temp < 100) {
+        _.each(unaNames, (task) => {
+          if (!checks[task]) {
+            character.rest_una_temp += 10;
+          }
+        });
+      }
+      character.rest_chaos_temp =
+        character.rest_chaos_temp > 100 ? 100 : character.rest_chaos_temp;
+      character.rest_guardian_temp =
+        character.rest_guardian_temp > 100 ? 100 : character.rest_guardian_temp;
+      character.rest_una_temp =
+        character.rest_una_temp > 100 ? 100 : character.rest_una_temp;
+      character.rest_chaos = character.rest_chaos_temp;
+      character.rest_guardian = character.rest_guardian_temp;
+      character.rest_una = character.rest_una_temp;
+      result.push(character);
+      return result;
+    }, []);
+    const updatedDailyTaskStatus = _.reduce(
+      dailyTaskStatus,
+      (result, item, charId) => {
+        return _.set(result, charId, defaultValues.dailies);
+      },
+      {}
+    );
     set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        roster: updatedRoster,
+        dailyTaskStatus: updatedDailyTaskStatus,
+      },
       taskStatus: state.taskStatus.map((item) => ({
         ...item,
         dailies: defaultValues.dailies,
@@ -201,6 +313,7 @@ const useStore = create((set, get) => ({
         {}
       ),
     }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
@@ -234,20 +347,45 @@ const useStore = create((set, get) => ({
   },
   toggleDailyStatus: (task, id) => {
     set((state) => ({
-      taskStatus: state.taskStatus.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              dailies: {
-                ...item.dailies,
-                [task]: !item.dailies[task],
-              },
-            }
-          : item
-      ),
+      siteSettings: {
+        ...state.siteSettings,
+        dailyTaskStatus: {
+          ...state.siteSettings.dailyTaskStatus,
+          [id]: {
+            ...state.siteSettings.dailyTaskStatus[id],
+            [task]: !state.siteSettings.dailyTaskStatus[id][task],
+          },
+        },
+        // dailyTaskStatus: state.siteSettings.dailyTaskStatus.reduce((result, char) => {
+
+        //   if (char.id === id) {
+        //     const newDailies = {
+        //       ...char.dailies,
+        //       [task]: !char.dailies[task],
+        //     };
+        //     char.dailies = newDailies;
+        //   }
+        //   result.push(char);
+        //   return result;
+        // }, {})
+        // roster: {
+        //   ...state.siteSettings.roster,
+
+        // }
+        //   state.taskStatus.map((item) =>
+        //   item.id === id
+        //     ? {
+        //         ...item,
+        //         dailies: {
+        //           ...item.dailies,
+        //           [task]: !item.dailies[task],
+        //         },
+        //       }
+        //     : item
+        // )
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
-    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   toggleWeeklyStatus: (task, id) => {
     set((state) => ({
@@ -307,23 +445,38 @@ const useStore = create((set, get) => ({
     }));
     localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
   },
+  updateCharacter: (character) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.map((item) =>
+          item.id === character.id ? character : item
+        ),
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
   updateSiteSettings: (siteSettings) => {
     set((state) => ({ siteSettings }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   updateRS: (rosterStatus) => set((state) => ({ rosterStatus })),
   updateTS: (taskStatus) => set((state) => ({ taskStatus })),
   updateClass: (id, charclass) => {
     set((state) => ({
-      taskStatus: state.taskStatus.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              class: charclass,
-            }
-          : item
-      ),
+      siteSettings: {
+        ...state.siteSettings,
+        roster: state.siteSettings.roster.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                name: charclass,
+              }
+            : item
+        ),
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   updateName: (id, name) =>
     set((state) => ({
@@ -336,50 +489,37 @@ const useStore = create((set, get) => ({
           : item
       ),
     })),
-  siteSettings: defaultValues.siteSettings,
+  siteSettings: {
+    ...defaultValues.siteSettings,
+    roster: [
+      {
+        id: "0",
+        name: "Berserker",
+        ilvl: 0,
+        rest_chaos: 0,
+        rest_chaos_temp: 0,
+        rest_guardian: 0,
+        rest_guardian_temp: 0,
+        rest_una: 0,
+        rest_una_temp: 0,
+        una1: {
+          ...defaultValues.una,
+        },
+        una2: {
+          ...defaultValues.una,
+        },
+        una3: {
+          ...defaultValues.una,
+        },
+      },
+    ],
+    dailyTaskStatus: {
+      0: defaultValues.dailies,
+    },
+  },
   taskStatus: [
     {
       id: "0",
-      name: "",
-      class: "Berserker",
-      dailies: defaultValues.dailies,
-      weeklies: defaultValues.weeklies,
-      weeklyVendors: defaultValues.weeklyVendors,
-    },
-    {
-      id: "1",
-      name: "",
-      class: "Berserker",
-      dailies: defaultValues.dailies,
-      weeklies: defaultValues.weeklies,
-      weeklyVendors: defaultValues.weeklyVendors,
-    },
-    {
-      id: "2",
-      name: "",
-      class: "Berserker",
-      dailies: defaultValues.dailies,
-      weeklies: defaultValues.weeklies,
-      weeklyVendors: defaultValues.weeklyVendors,
-    },
-    {
-      id: "3",
-      name: "",
-      class: "Berserker",
-      dailies: defaultValues.dailies,
-      weeklies: defaultValues.weeklies,
-      weeklyVendors: defaultValues.weeklyVendors,
-    },
-    {
-      id: "4",
-      name: "",
-      class: "Berserker",
-      dailies: defaultValues.dailies,
-      weeklies: defaultValues.weeklies,
-      weeklyVendors: defaultValues.weeklyVendors,
-    },
-    {
-      id: "5",
       name: "",
       class: "Berserker",
       dailies: defaultValues.dailies,
@@ -681,13 +821,93 @@ function App() {
   // Initialize
   useEffect(() => {
     const localSiteSettings = localStorage.getItem("siteSettings");
+    const parsedSiteSettings = JSON.parse(localSiteSettings);
     const localTaskStatus = localStorage.getItem("taskStatus");
     const parsedLocalTasks = JSON.parse(localTaskStatus);
     const localRosterStatus = localStorage.getItem("rosterStatus");
     const localEventSettings = localStorage.getItem("eventSettings");
 
+    const defaultUna = {
+      name: "",
+      location: "",
+      current: 0,
+      require: 0,
+    };
+
     if (localSiteSettings) {
-      updateSiteSettings(JSON.parse(localSiteSettings));
+      let updatedSettings = { ...defaultValues.siteSettings };
+      _.each(parsedSiteSettings, (value, settingName) => {
+        updatedSettings[settingName] = value;
+      });
+      // new roster data format, get the old format and replace contents if necessary
+      if (localTaskStatus && !_.has(parsedSiteSettings, "roster")) {
+        // converting old localStorage data to new format
+        const oldRoster = _.reduce(
+          parsedLocalTasks,
+          (result, char) => {
+            const character = {
+              id: _.toString(char.id),
+              name: char.class,
+              ilvl: 0,
+              rest_chaos: 0,
+              rest_chaos_temp: 0,
+              rest_guardian: 0,
+              rest_guardian_temp: 0,
+              rest_una: 0,
+              rest_una_temp: 0,
+              una1: {
+                ...defaultUna,
+              },
+              una2: {
+                ...defaultUna,
+              },
+              una3: {
+                ...defaultUna,
+              },
+            };
+            result.push(character);
+            return result;
+          },
+          []
+        );
+        updatedSettings.roster = oldRoster;
+        const updatedDailyTaskStatus = _.reduce(
+          parsedLocalTasks,
+          (result, char) => {
+            const dailyStatus = {
+              [char.id]: char.dailies,
+            };
+            result = {
+              ...result,
+              ...dailyStatus,
+            };
+            return result;
+          },
+          {}
+        );
+        // console.log(updatedDailyTaskStatus);
+        updatedSettings.dailyTaskStatus = updatedDailyTaskStatus;
+      } else {
+        // Already on new format
+        const updatedDailyTaskStatus = _.reduce(
+          parsedSiteSettings.roster,
+          (result, char) => {
+            const dailyStatus = {
+              [char.id]: parsedSiteSettings.dailyTaskStatus[char.id],
+            };
+            // console.log(dailyStatus);
+            result = {
+              ...result,
+              ...dailyStatus,
+            };
+            return result;
+          },
+          {}
+        );
+        // console.log(updatedDailyTaskStatus);
+        updatedSettings.dailyTaskStatus = updatedDailyTaskStatus;
+      }
+      updateSiteSettings(updatedSettings);
     }
     if (localTaskStatus) {
       if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
