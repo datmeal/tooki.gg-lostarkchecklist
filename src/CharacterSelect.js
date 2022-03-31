@@ -615,7 +615,7 @@ export default function CharacterSelect(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Typography>Item Level</Typography>
+                  <Typography>Item Level (WIP)</Typography>
                   <TextField
                     id={`ilvl_${charData.id}`}
                     label="Item Level"

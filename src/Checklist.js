@@ -1132,8 +1132,9 @@ export default function Checklist(props) {
                   {siteSettings.roster.map((char) => {
                     const charData = _.find(
                       taskStatus,
-                      (character) => character.id === char.id
+                      (character) => _.toString(character.id) === char.id
                     );
+                    console.log("char:", char, "charData:", charData);
                     return (
                       <TableCell
                         padding="checkbox"
@@ -1219,7 +1220,7 @@ export default function Checklist(props) {
                   {siteSettings.roster.map((char) => {
                     const charData = _.find(
                       taskStatus,
-                      (character) => character.id === char.id
+                      (character) => _.toString(character.id) === char.id
                     );
                     return (
                       <TableCell
