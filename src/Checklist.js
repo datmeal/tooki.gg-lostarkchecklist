@@ -1134,7 +1134,6 @@ export default function Checklist(props) {
                       taskStatus,
                       (character) => _.toString(character.id) === char.id
                     );
-                    console.log("char:", char, "charData:", charData);
                     return (
                       <TableCell
                         padding="checkbox"

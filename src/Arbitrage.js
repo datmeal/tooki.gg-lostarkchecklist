@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import _ from "lodash";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -13,13 +14,18 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+
 import icon_crystal from "./img/icon_crystal.png";
 import icon_gold from "./img/icon_gold.png";
 
 export default function Arbitrage(props) {
-  const { useStore } = props;
+  const { siteStore, useStore } = props;
   const goldValues = useStore((state) => state.goldValues);
   const updateGV = useStore((state) => state.updateGV);
+  const siteSettings = siteStore((state) => state.siteSettings);
+  const toggleSiteSetting = siteStore((state) => state.toggleSiteSetting);
 
   // Initialize
   useEffect(() => {
@@ -46,7 +52,7 @@ export default function Arbitrage(props) {
       `Destruction Stone Crystal (Bound)`,
       "destructionStoneCrystal",
       10,
-      50,
+      300,
       true
     ),
     createData(
@@ -61,14 +67,14 @@ export default function Arbitrage(props) {
       `Guardian Stone Crystal (Bound)`,
       "guardianStoneCrystal",
       10,
-      200,
+      800,
       true
     ),
     createData(`Harmony Shard Pouch (M)`, "harmonyShardM", 1, 5, true),
     createData(`Life Shard Pouch (S)`, "lifeShardS", 1, 10, true),
     createData(`Honor Shard Pouch (S)`, "honorShardS", 1, 10, true),
     createData(`Harmony Leapstone (Bound)`, "harmonyLeapstone", 1, 15, true),
-    createData(`Life Leapstone (Bound)`, "lifeLeapstone", 1, 10, true),
+    createData(`Life Leapstone (Bound)`, "lifeLeapstone", 1, 40, true),
     createData(`Honor Leapstone (Bound)`, "honorLeapstone", 1, 5, true),
     createData(
       `Great Honor Leapstone (Bound)`,
@@ -95,6 +101,13 @@ export default function Arbitrage(props) {
       "simpleOrehaFusion",
       1,
       10,
+      true
+    ),
+    createData(
+      `Major HP Potion (Healing Battle Item Chest [5])`,
+      "healingBattleChestMajor",
+      1,
+      50,
       true
     ),
     createData(
@@ -139,16 +152,16 @@ export default function Arbitrage(props) {
   // Value per crystal (crystal price / Mari amount)
   const crystalValues = {
     destructionStoneFragment: 60 / 150,
-    destructionStone: 84 / 150,
-    destructionStoneCrystal: 40 / 50,
+    destructionStone: 167 / 300,
+    destructionStoneCrystal: 240 / 300,
     guardianStoneFragment: 36 / 400,
     guardianStone: 80 / 400,
-    guardianStoneCrystal: 60 / 200,
+    guardianStoneCrystal: 240 / 800,
     harmonyShardM: 47 / 5,
     lifeShardS: 38 / 10,
     honorShardS: 56 / 10,
-    harmonyLeapstone: 15 / 15,
-    lifeLeapstone: 14 / 10,
+    harmonyLeapstone: 30 / 30,
+    lifeLeapstone: 56 / 40,
     honorLeapstone: 10 / 5,
     greatHonorLeapstone: 50 / 5,
     starsBreath: 30 / 10,
@@ -160,6 +173,7 @@ export default function Arbitrage(props) {
     basicOrehaFusion: 40 / 10,
     simpleOrehaFusion: 30 / 10,
     healingBattleChest: 25 / 15,
+    healingBattleChestMajor: 25 / 50,
     offensiveBattleChestDestruction: 25 / 25,
     buffBattleChestAwakening: 25 / 10,
     utilityBattleChestTimeStop: 25 / 15,
@@ -167,6 +181,45 @@ export default function Arbitrage(props) {
     t2gem: 56 / 10,
     t3gem: 73 / 20,
   };
+
+  const tier1List = [
+    "destructionStoneFragment",
+    "guardianStoneFragment",
+    "harmonyShardM",
+    "harmonyLeapstone",
+    "starsBreath",
+  ];
+  const tier2List = [
+    "destructionStone",
+    "guardianStone",
+    "lifeShardS",
+    "lifeLeapstone",
+    "greatHonorLeapstone",
+    "moonsBreath",
+    "caldarrFusion",
+    "t2gem",
+  ];
+  const tier3List = [
+    "destructionStoneCrystal",
+    "guardianStoneCrystal",
+    "honorShardS",
+    "honorLeapstone",
+    "greatHonorLeapstone",
+    "solarGrace",
+    "solarBlessing",
+    "solarProtection",
+    "basicOrehaFusion",
+    "simpleOrehaFusion",
+    "t3gem",
+  ];
+  const miscList = [
+    "healingBattleChest",
+    "healingBattleChestMajor",
+    "offensiveBattleChestDestruction",
+    "buffBattleChestAwakening",
+    "utilityBattleChestTimeStop",
+    "utilityBattleChestFlare",
+  ];
 
   const goldPerCrystal = goldValues.crystal / 95;
   const goldPerRoyal = goldValues.royal / 238;
@@ -254,21 +307,136 @@ export default function Arbitrage(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {_.map(itemData, (item) => (
-              <ItemRow
-                key={item.id}
-                itemName={item.name}
-                itemId={item.id}
-                bundle={item.bundle}
-                mariAmount={item.mariAmount}
-                bound={item.bound}
-              />
-            ))}
+            <TableRow hover onClick={() => toggleSiteSetting("mariTier1")}>
+              <TableCell size="small" colSpan={6} sx={{ cursor: "pointer" }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ mr: 1 }}>
+                    <IconButton aria-label="expand row" size="small">
+                      {siteSettings.mariTier1 ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <KeyboardArrowDownIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
+                    Tier 1
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+            {_.map(itemData, (item) => {
+              if (tier1List.includes(item.id) && siteSettings.mariTier1) {
+                return renderItemRow(item);
+              }
+            })}
+            <TableRow hover onClick={() => toggleSiteSetting("mariTier2")}>
+              <TableCell size="small" colSpan={6} sx={{ cursor: "pointer" }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ mr: 1 }}>
+                    <IconButton aria-label="expand row" size="small">
+                      {siteSettings.mariTier2 ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <KeyboardArrowDownIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
+                    Tier 2
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+            {_.map(itemData, (item) => {
+              if (tier2List.includes(item.id) && siteSettings.mariTier2) {
+                return renderItemRow(item);
+              }
+            })}
+            <TableRow hover onClick={() => toggleSiteSetting("mariTier3")}>
+              <TableCell size="small" colSpan={6} sx={{ cursor: "pointer" }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ mr: 1 }}>
+                    <IconButton aria-label="expand row" size="small">
+                      {siteSettings.mariTier3 ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <KeyboardArrowDownIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
+                    Tier 3
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+            {_.map(itemData, (item) => {
+              if (tier3List.includes(item.id) && siteSettings.mariTier3) {
+                return renderItemRow(item);
+              }
+            })}
+            <TableRow hover onClick={() => toggleSiteSetting("mariMisc")}>
+              <TableCell size="small" colSpan={6} sx={{ cursor: "pointer" }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ mr: 1 }}>
+                    <IconButton aria-label="expand row" size="small">
+                      {siteSettings.mariMisc ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <KeyboardArrowDownIcon />
+                      )}
+                    </IconButton>
+                  </Box>
+
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    sx={{ padding: 2, paddingLeft: 0 }}
+                  >
+                    Misc
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+            {_.map(itemData, (item) => {
+              if (miscList.includes(item.id) && siteSettings.mariMisc) {
+                return renderItemRow(item);
+              }
+            })}
           </TableBody>
         </Table>
       </TableContainer>
     </>
   );
+
+  function renderItemRow(item) {
+    return (
+      <ItemRow
+        key={item.id}
+        itemName={item.name}
+        itemId={item.id}
+        bundle={item.bundle}
+        mariAmount={item.mariAmount}
+        bound={item.bound}
+      />
+    );
+  }
 
   function ItemRow(props) {
     const { itemName, itemId, bundle = 1, mariAmount, bound } = props;

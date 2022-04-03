@@ -38,9 +38,9 @@ const defaultValues = {
     accountDailiesOpen: false,
     weeklyTasksOpen: false,
     weeklyVendorsOpen: false,
-    useRestChaos: true,
-    useRestGuardian: true,
-    useRestUna: true,
+    useRestChaos: false,
+    useRestGuardian: false,
+    useRestUna: false,
     roster: [],
     dailyTaskStatus: {},
   },
@@ -531,30 +531,31 @@ const useStore = create((set, get) => ({
 }));
 
 const defaultGoldPrices = {
-  crystal: 530, // per 95
-  royal: 596, // per 238 royal
+  crystal: 390, // per 95
+  royal: 385, // per 238 royal
   destructionStoneFragment: 1,
-  destructionStone: 7,
-  destructionStoneCrystal: 25,
+  destructionStone: 4,
+  destructionStoneCrystal: 15,
   guardianStoneFragment: 1,
-  guardianStone: 9,
-  guardianStoneCrystal: 17,
-  harmonyShardM: 230,
-  lifeShardS: 210,
-  honorShardS: 53,
-  harmonyLeapstone: 16,
-  lifeLeapstone: 24,
-  honorLeapstone: 97,
-  greatHonorLeapstone: 365,
-  starsBreath: 7,
-  moonsBreath: 22,
-  solarGrace: 59,
-  solarBlessing: 190,
-  solarProtection: 465,
-  caldarrFusion: 7,
+  guardianStone: 5,
+  guardianStoneCrystal: 10,
+  harmonyShardM: 141,
+  lifeShardS: 110,
+  honorShardS: 23,
+  harmonyLeapstone: 4,
+  lifeLeapstone: 8,
+  honorLeapstone: 19,
+  greatHonorLeapstone: 95,
+  starsBreath: 5,
+  moonsBreath: 6,
+  solarGrace: 28,
+  solarBlessing: 100,
+  solarProtection: 210,
+  caldarrFusion: 5,
   basicOrehaFusion: 9,
-  simpleOrehaFusion: 10,
-  healingBattleChest: 29, // Elemental HP Potion taken from chest
+  simpleOrehaFusion: 9,
+  healingBattleChest: 17, // Elemental HP Potion taken from chest
+  healingBattleChestMajor: 7, // blue HP potion
   buffBattleChestAwakening: 24,
   offensiveBattleChestDestruction: 14,
   utilityBattleChestFlare: 10,
@@ -1040,7 +1041,11 @@ function App() {
           <Events useStore={eventsStore} taskStore={useStore} theme={theme} />
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <Arbitrage useStore={arbitrageStore} theme={theme} />
+          <Arbitrage
+            siteStore={useStore}
+            useStore={arbitrageStore}
+            theme={theme}
+          />
         </TabPanel>
         <Box
           sx={{
