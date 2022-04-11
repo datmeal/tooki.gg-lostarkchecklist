@@ -194,7 +194,6 @@ export default function Arbitrage(props) {
     "guardianStone",
     "lifeShardS",
     "lifeLeapstone",
-    "greatHonorLeapstone",
     "moonsBreath",
     "caldarrFusion",
     "t2gem",
