@@ -46,9 +46,7 @@ export default function Events(props) {
     days[moment(currentDay, "e").subtract(1, "days").format("e")]; // string "sat"
   const nextDay = days[moment(currentDay, "e").add(1, "days").format("e")]; // string "sat"
   const setCurrentTime = useStore((state) => state.setCurrentTime);
-  const setCurrentDay = useStore((state) => state.setCurrentDay);
-  const setCurrentDateTime = useStore((state) => state.setCurrentDateTime);
-  const setCurrentDateTimeFNS = useStore((state) => state.setCurrentDateTimeFNS);
+  const setCurrentDay = useStore((state) => state.setCurrentDay);  
   const eventCount = 30;
 
   const parseTimezone = (timezone) => {
@@ -203,6 +201,7 @@ export default function Events(props) {
       //setCurrentDay(moment().utc().add(timezone, "hours").format("e"));
       //new   
       setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
+
       // Test Time
       // setCurrentTime(moment("6:19", "HH:mm").format("HH:mm:ss"));
       // setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
@@ -218,7 +217,7 @@ export default function Events(props) {
   const parsedEvents = parseEvents();
 
   return (
-    // changed all uses of moment to use date-fns
+    // changed uses of moment to use date-fns
     <ThemeProvider theme={theme}>      
       <Typography variant="h4" component="h1" align="center">   
         {currentTime}        

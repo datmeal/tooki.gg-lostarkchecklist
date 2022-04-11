@@ -718,7 +718,7 @@ const eventsStore = create((set, get) => ({
   },
   setCurrentDay: (currentDay) => {
     set((state) => ({ currentDay }));
-  },    
+  },
   setEventList: (eventList) => {
     set((state) => ({ eventList }));
   },
