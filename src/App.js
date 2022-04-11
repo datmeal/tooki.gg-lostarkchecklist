@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import _ from "lodash";
-import moment from "moment";
 import styled from "@emotion/styled";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -29,6 +28,8 @@ import Events from "./Events";
 import Arbitrage from "./Arbitrage";
 
 import logo from "./img/logo.png";
+import { format,subHours } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 // import "./App.css";
 
 const defaultValues = {
@@ -681,9 +682,11 @@ const defaultEventSettings = {
   timezone: -4, // East = 0 (UTC - 4 (- 0))
 };
 
-const eventsStore = create((set, get) => ({
-  currentDay: moment().utc().subtract(4, "hours").day(),
-  currentTime: moment().utc().subtract(4, "hours").format("HH:mm:ss"),
+
+
+const eventsStore = create((set, get) => ({  
+  currentDay: formatInTimeZone(subHours(new Date(), 4), "UTC", 'i'),
+  currentTime: formatInTimeZone(subHours(new Date(), 4), "UTC", 'HH:mm:ss'),
   eventList: [],
   eventSettings: defaultEventSettings,
   favorites: [],

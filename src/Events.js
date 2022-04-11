@@ -3,6 +3,8 @@ import _, { times } from "lodash";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import moment from "moment";
+import { setDay,add } from "date-fns";
+import { format,formatInTimeZone  } from "date-fns-tz";
 import { ThemeProvider } from "@mui/material/styles";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -44,7 +46,7 @@ export default function Events(props) {
     days[moment(currentDay, "e").subtract(1, "days").format("e")]; // string "sat"
   const nextDay = days[moment(currentDay, "e").add(1, "days").format("e")]; // string "sat"
   const setCurrentTime = useStore((state) => state.setCurrentTime);
-  const setCurrentDay = useStore((state) => state.setCurrentDay);
+  const setCurrentDay = useStore((state) => state.setCurrentDay);  
   const eventCount = 30;
 
   const parseTimezone = (timezone) => {
@@ -189,11 +191,21 @@ export default function Events(props) {
   // Refreshes clock, temporarily disabled for developing
   useEffect(() => {
     function refreshClock() {
-      setCurrentTime(moment().utc().add(timezone, "hours").format("HH:mm:ss"));
-      setCurrentDay(moment().utc().add(timezone, "hours").format("e"));
+            
+      //old
+      //setCurrentTime(moment().utc().add(timezone, "hours").format("HH:mm:ss"));
+      //new
+      setCurrentTime(formatInTimeZone(add(new Date(), { hours: timezone}), "UTC", 'HH:mm:ss'));      
+
+      //old
+      //setCurrentDay(moment().utc().add(timezone, "hours").format("e"));
+      //new   
+      setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
+
       // Test Time
       // setCurrentTime(moment("6:19", "HH:mm").format("HH:mm:ss"));
       // setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
+
     }
 
     const timerId = setInterval(refreshClock, 1000);
@@ -205,16 +217,14 @@ export default function Events(props) {
   const parsedEvents = parseEvents();
 
   return (
-    <ThemeProvider theme={theme}>
-      <Typography variant="h4" component="h1" align="center">
-        {moment(currentTime, "HH:mm:ss")
-          // .add(offset, "hours")
-          // .add(timezone, "hours")
-          .format("HH:mm:ss")}
+    // changed uses of moment to use date-fns
+    <ThemeProvider theme={theme}>      
+      <Typography variant="h4" component="h1" align="center">   
+        {currentTime}        
         {` ${parseTimezone(timezone)}`}
       </Typography>
       <Typography align="center">
-        {moment(currentDay, "e").format("dddd")}
+        {format(setDay(new Date(), currentDay), 'EEEE')}                     
       </Typography>
       <Box>
         <TimezoneControl timezone={timezone} useStore={useStore} />
