@@ -40,6 +40,18 @@ import Typography from "@mui/material/Typography";
 import { timerData, days, dayText } from "./timerData";
 import { Icon } from "@mui/material";
 
+function hmsToSecondsOnly(str) {
+  var p = str.split(':'),
+      s = 0, m = 1;
+
+  while (p.length > 0) {
+    s += m * parseInt(p.pop(), 10);
+    m *= 60;
+  }
+
+  return s;
+}
+
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
   const currentTime = useStore((state) => state.currentTime);
@@ -147,7 +159,7 @@ export default function Events(props) {
               // .subtract(offsetSeconds, "seconds")
               .format("HH:mm");
           const eventTimeAsDate = parse(eventTime, "HH:mm", new Date());
-          console.log(eventTime)
+          console.log(time)
           let remainingTime;
           let eventDuration = event.duration ? event.duration : 180;
           if (dayName === previousDay || dayName === days[currentDay]) {
@@ -782,9 +794,10 @@ function Favorites(props) {
           remainingDays = dayInt + 7 - parseInt(currentDay);
         }
       }
-      const remainingTime =
-        moment.duration(event.time).add(remainingDays, "days").asSeconds() -
+
+      const remainingTime = differenceInSeconds(add(parse(event.time,"HH:mm", new Date()), {days: remainingDays}), startOfToday()) -
         currentTimeAsSeconds;
+
       return {
         day: event.day,
         dayText: dayText[dayInt],
