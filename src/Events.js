@@ -148,7 +148,6 @@ export default function Events(props) {
               // .subtract(offsetSeconds, "seconds")
               .format("HH:mm");
           const eventTimeAsDate = parse(eventTime, "HH:mm", new Date());
-          console.log(time)
           let remainingTime;
           let eventDuration = event.duration ? event.duration : 180;
           if (dayName === previousDay || dayName === days[currentDay]) {
