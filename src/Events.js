@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
-import _, { times } from "lodash";
+import React, {useEffect, useState} from "react";
+import _, {times} from "lodash";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import {css} from "@emotion/react";
 import moment from "moment";
 import {
-  setDay,
   add,
+  differenceInMilliseconds,
   differenceInSeconds,
-  startOfDay,
-  startOfToday,
-  parse,
-  getSeconds,
+  formatDuration,
+  hoursToMilliseconds,
   hoursToSeconds,
-  sub, formatDuration, intervalToDuration, differenceInMilliseconds, hoursToMilliseconds
+  intervalToDuration,
+  parse,
+  setDay,
+  startOfToday,
+  sub
 } from "date-fns";
-import { format,formatInTimeZone  } from "date-fns-tz";
-import { ThemeProvider } from "@mui/material/styles";
+import {format, formatInTimeZone} from "date-fns-tz";
+import {ThemeProvider} from "@mui/material/styles";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -37,20 +39,8 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 
-import { timerData, days, dayText } from "./timerData";
-import { Icon } from "@mui/material";
+import {days, dayText, timerData} from "./timerData";
 
-function hmsToSecondsOnly(str) {
-  var p = str.split(':'),
-      s = 0, m = 1;
-
-  while (p.length > 0) {
-    s += m * parseInt(p.pop(), 10);
-    m *= 60;
-  }
-
-  return s;
-}
 
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
@@ -106,8 +96,7 @@ export default function Events(props) {
       });
     });
     // console.log("categories:", categories);
-    const events = categories.flatMap((category) => category);
-    return events;
+    return categories.flatMap((category) => category);
   }
 
   const timerEvents = () => {
@@ -198,17 +187,14 @@ export default function Events(props) {
     // console.log("allToday:", allTodayEvents);
 
     const upcomingEvents = _.filter(allTodayEvents, (event) => {
-      const upcoming = event.remainingTime > -event.duration;
-      return upcoming;
+      return event.remainingTime > -event.duration;
     });
 
-    const sortedEvents = _.slice(
-      _.orderBy(upcomingEvents, "remainingTime"),
-      0,
-      eventCount
+    return _.slice(
+        _.orderBy(upcomingEvents, "remainingTime"),
+        0,
+        eventCount
     );
-
-    return sortedEvents;
   };
 
   // Clock math
@@ -603,7 +589,7 @@ function TimerItem(props) {
         src={eventImage}
         alt={eventName}
         style={{ width: 32, height: 32, marginRight: 8 }}
-      ></img>
+      />
       <Box sx={{ width: "100%" }}>
         <Typography>{eventName}</Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -717,63 +703,61 @@ function Favorites(props) {
   const events = _.flatMap(timerData);
 
   function parseFavorites() {
-    const list = _.reduce(
-      favorites,
-      (result, event) => {
-        const validEvent = _.find(events, ["id", event]);
-        if (validEvent) {
-          // if event happens today and hasn't already passed
-          if (
-            _.has(validEvent.times, days[currentDay]) &&
-            _.some(
-              validEvent.times[days[currentDay]],
-              (time) => differenceInSeconds(parse(time,"HH:mm", new Date()), startOfToday()) > currentTimeAsSeconds
-            )
-          ) {
-            const timeDiff = _.reduce(
-              validEvent.times[days[currentDay]],
-              (result, time) => {
-                if (
-                  result === "" &&
-                    differenceInSeconds(parse(time,"HH:mm", new Date()), startOfToday()) - currentTimeAsSeconds >
-                    -180
-                ) {
-                  result = time;
-                }
-                return result;
-              },
-              ""
-            );
-            validEvent.time = timeDiff;
-            validEvent.day = days[currentDay];
-            result.push(validEvent);
-          } else {
-            // add 1 day at a time until one works to find nearest day
-            const nextDay = _.reduce(
-              [1, 2, 3, 4, 5, 6],
-              (result, addDay) => {
-                const leapDay =
-                  _.parseInt(currentDay) + addDay > 6
-                    ? _.parseInt(currentDay) + addDay - 7
-                    : _.parseInt(currentDay) + addDay;
-                if (result === "" && _.has(validEvent.times, days[leapDay])) {
-                  result = days[leapDay];
-                }
-                return result;
-              },
-              ""
-            );
-            validEvent.time = validEvent["times"][nextDay][0];
-            validEvent.day = nextDay;
-            result.push(validEvent);
-          }
-        }
-        return result;
-      },
-      []
-    );
     // console.log("parsedFavs:", list);
-    return list;
+    return _.reduce(
+        favorites,
+        (result, event) => {
+          const validEvent = _.find(events, ["id", event]);
+          if (validEvent) {
+            // if event happens today and hasn't already passed
+            if (
+                _.has(validEvent.times, days[currentDay]) &&
+                _.some(
+                    validEvent.times[days[currentDay]],
+                    (time) => differenceInSeconds(parse(time, "HH:mm", new Date()), startOfToday()) > currentTimeAsSeconds
+                )
+            ) {
+              validEvent.time = _.reduce(
+                  validEvent.times[days[currentDay]],
+                  (result, time) => {
+                    if (
+                        result === "" &&
+                        differenceInSeconds(parse(time, "HH:mm", new Date()), startOfToday()) - currentTimeAsSeconds >
+                        -180
+                    ) {
+                      result = time;
+                    }
+                    return result;
+                  },
+                  ""
+              );
+              validEvent.day = days[currentDay];
+              result.push(validEvent);
+            } else {
+              // add 1 day at a time until one works to find nearest day
+              const nextDay = _.reduce(
+                  [1, 2, 3, 4, 5, 6],
+                  (result, addDay) => {
+                    const leapDay =
+                        _.parseInt(currentDay) + addDay > 6
+                            ? _.parseInt(currentDay) + addDay - 7
+                            : _.parseInt(currentDay) + addDay;
+                    if (result === "" && _.has(validEvent.times, days[leapDay])) {
+                      result = days[leapDay];
+                    }
+                    return result;
+                  },
+                  ""
+              );
+              validEvent.time = validEvent["times"][nextDay][0];
+              validEvent.day = nextDay;
+              result.push(validEvent);
+            }
+          }
+          return result;
+        },
+        []
+    );
   }
 
   function handleRemove(id) {
