@@ -3,7 +3,17 @@ import _, { times } from "lodash";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import moment from "moment";
-import { setDay,add } from "date-fns";
+import {
+  setDay,
+  add,
+  differenceInSeconds,
+  startOfDay,
+  startOfToday,
+  parse,
+  getSeconds,
+  hoursToSeconds,
+  sub, formatDuration, intervalToDuration
+} from "date-fns";
 import { format,formatInTimeZone  } from "date-fns-tz";
 import { ThemeProvider } from "@mui/material/styles";
 import Accordion from "@mui/material/Accordion";
@@ -33,18 +43,19 @@ import { Icon } from "@mui/material";
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
   const currentTime = useStore((state) => state.currentTime);
-  const currentTimeAsSeconds = moment.duration(currentTime).asSeconds();
+  const currentTimeAsDate = parse(currentTime,"HH:mm:ss", new Date());
+  const currentTimeAsSeconds = differenceInSeconds(currentTimeAsDate, startOfToday());
   const currentDay = useStore((state) => state.currentDay); // a number 0-6
   const rosterStatus = taskStore((state) => state.rosterStatus);
   const filter = useStore((state) => state.eventSettings.filter);
   // const offset = useStore((state) => state.eventSettings.offset); // add to offset AGS shenanigans, DST
   const timezone = useStore((state) => state.eventSettings.timezone);
   // const offsetSeconds = moment.duration(timezone, "h").asSeconds();
-  const resetTimeAsSeconds = moment.duration("5:00").asSeconds();
-  const endOfDayAsSeconds = moment.duration("24:00").asSeconds();
-  const previousDay =
-    days[moment(currentDay, "e").subtract(1, "days").format("e")]; // string "sat"
-  const nextDay = days[moment(currentDay, "e").add(1, "days").format("e")]; // string "sat"
+  const resetTimeAsSeconds = hoursToSeconds(5);
+  const endOfDayAsSeconds = hoursToSeconds(24);
+  const previousDay = format(sub(currentTimeAsDate, {days: 1}), "ddd"); //string
+
+  const nextDay = format(add(currentTimeAsDate, {days: 1}), "ddd"); // string "sat"
   const setCurrentTime = useStore((state) => state.setCurrentTime);
   const setCurrentDay = useStore((state) => state.setCurrentDay);  
   const eventCount = 30;
@@ -107,11 +118,11 @@ export default function Events(props) {
         _.has(event.times, nextDay) &&
         _.some(
           event.times[nextDay],
-          (time) => moment.duration(time).asSeconds() <= resetTimeAsSeconds
+          (time) => hoursToSeconds(time) <= resetTimeAsSeconds
         )
       ) {
         const nextDayTimes = event.times[nextDay].reduce((result, time) => {
-          const timeAsSeconds = moment.duration(time).asSeconds();
+          const timeAsSeconds = hoursToSeconds(time);
           if (timeAsSeconds <= resetTimeAsSeconds) {
             result.push(time);
           }
@@ -128,31 +139,32 @@ export default function Events(props) {
       return result;
     }, []);
     // console.log("TodaysEvents:", todaysEvents);
-
     const allTodayEvents = todaysEvents.flatMap((event) => {
       return _.flatMap(event.times, (day, dayName) => {
         return day.flatMap((time) => {
-          let eventTime = moment(time, "HH:mm")
-            // .subtract(offsetSeconds, "seconds")
-            .format("HH:mm");
+          //What was the point of the previous code?
+          let eventTime = time;
+          const eventTimeAsDate = parse(eventTime, "HH:mm", new Date());
           let remainingTime;
           let eventDuration = event.duration ? event.duration : 180;
           if (dayName === previousDay || dayName === days[currentDay]) {
-            remainingTime =
-              moment.duration(eventTime).asSeconds() - currentTimeAsSeconds;
+            remainingTime = differenceInSeconds((eventTimeAsDate), startOfToday()) - currentTimeAsSeconds;
+
           }
           if (
             dayName === nextDay ||
             (dayName === days[currentDay] && eventTime === "00:00")
           ) {
             remainingTime =
-              moment.duration(eventTime).asSeconds() +
-              moment.duration("24:00").asSeconds() -
-              currentTimeAsSeconds;
+                differenceInSeconds((eventTimeAsDate), startOfToday()) +
+                hoursToSeconds(24) -
+                currentTimeAsSeconds;
           }
           const remainingTimeText = moment
             .duration(remainingTime, "seconds")
             .humanize();
+          //const remainingTimeText = formatDuration(intervalToDuration({start: 0, end: remainingTime * 1000}));
+          console.log(remainingTimeText)
           return {
             category: event.category,
             day: dayName,
