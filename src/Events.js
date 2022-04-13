@@ -12,7 +12,7 @@ import {
   parse,
   getSeconds,
   hoursToSeconds,
-  sub, formatDuration, intervalToDuration
+  sub, formatDuration, intervalToDuration, differenceInMilliseconds, hoursToMilliseconds
 } from "date-fns";
 import { format,formatInTimeZone  } from "date-fns-tz";
 import { ThemeProvider } from "@mui/material/styles";
@@ -147,6 +147,7 @@ export default function Events(props) {
               // .subtract(offsetSeconds, "seconds")
               .format("HH:mm");
           const eventTimeAsDate = parse(eventTime, "HH:mm", new Date());
+          console.log(eventTime)
           let remainingTime;
           let eventDuration = event.duration ? event.duration : 180;
           if (dayName === previousDay || dayName === days[currentDay]) {
@@ -164,7 +165,6 @@ export default function Events(props) {
           }
           const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }));
           //const remainingTimeText = formatDuration(intervalToDuration({start: 0, end: remainingTime * 1000}));
-          console.log(remainingTimeText, eventTimeAsDate, previousDay, nextDay, )
           return {
             category: event.category,
             day: dayName,
@@ -420,13 +420,12 @@ function Timeline(props) {
   //   const [currentTime, setCurrentTime] = useState(""); // moment().zone("-14:00").format("HH:mm:ss")
   const [indicatorPosition, setIndicatorPosition] = useState(0);
   const currentTime = useStore((state) => state.currentTime);
+  const currentTimeAsDate = parse(currentTime,"HH:mm:ss", new Date());
 
   // Auto moves hand
-  const currentTimeAsMilli = moment
-    .duration(currentTime, "HH:mm:ss")
-    .asMilliseconds();
+  const currentTimeAsMilli = differenceInMilliseconds(currentTimeAsDate, startOfToday());
   // const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
-  const endTimeAsMilli = moment.duration("24:00:00").asMilliseconds();
+  const endTimeAsMilli = hoursToMilliseconds(24);
   useEffect(() => {
     setIndicatorPosition((currentTimeAsMilli / endTimeAsMilli) * 100);
   }, [currentTimeAsMilli, endTimeAsMilli]);
@@ -501,10 +500,7 @@ function Timers(props) {
           {_.map(events, (event, index) => {
             const inProgress = event.remainingTime < 0;
             const timeText = parseTime(event.time);
-            const eventTime = moment(timeText, "HH:mm")
-              // .add(timezone, "hours")
-              // .add(offset, "hours")
-              .format("HH:mm");
+            const eventTime = format(parse(timeText, "HH:mm", new Date()), "HH:mm");
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
                 <TimerItem
@@ -694,7 +690,8 @@ function Favorites(props) {
   const timezone = useStore((state) => state.eventSettings.timezone);
   const currentTime = useStore((state) => state.currentTime);
   const removeFavorite = useStore((state) => state.removeFavorite);
-  const currentTimeAsSeconds = moment.duration(currentTime).asSeconds();
+  const currentTimeAsDate = parse(currentTime,"HH:mm:ss", new Date());
+  const currentTimeAsSeconds = differenceInSeconds(currentTimeAsDate, startOfToday());
   const currentDay = useStore((state) => state.currentDay);
 
   function parseTime(timeText) {
@@ -718,7 +715,7 @@ function Favorites(props) {
             _.has(validEvent.times, days[currentDay]) &&
             _.some(
               validEvent.times[days[currentDay]],
-              (time) => moment.duration(time).asSeconds() > currentTimeAsSeconds
+              (time) => differenceInSeconds(parse(time,"HH:mm", new Date()), startOfToday()) > currentTimeAsSeconds
             )
           ) {
             const timeDiff = _.reduce(
@@ -726,7 +723,7 @@ function Favorites(props) {
               (result, time) => {
                 if (
                   result === "" &&
-                  moment.duration(time).asSeconds() - currentTimeAsSeconds >
+                    differenceInSeconds(parse(time,"HH:mm", new Date()), startOfToday()) - currentTimeAsSeconds >
                     -180
                 ) {
                   result = time;
@@ -799,7 +796,7 @@ function Favorites(props) {
         time: event.time,
         remainingDays: remainingDays,
         remainingTime: remainingTime,
-        remainingTimeText: moment.duration(remainingTime, "seconds").humanize(),
+        remainingTimeText: formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 })),
       };
     }),
     "remainingTime"
