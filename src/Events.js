@@ -142,8 +142,10 @@ export default function Events(props) {
     const allTodayEvents = todaysEvents.flatMap((event) => {
       return _.flatMap(event.times, (day, dayName) => {
         return day.flatMap((time) => {
-          //What was the point of the previous code?
-          let eventTime = time;
+
+          let eventTime = moment(time, "HH:mm")
+              // .subtract(offsetSeconds, "seconds")
+              .format("HH:mm");
           const eventTimeAsDate = parse(eventTime, "HH:mm", new Date());
           let remainingTime;
           let eventDuration = event.duration ? event.duration : 180;
@@ -160,11 +162,9 @@ export default function Events(props) {
                 hoursToSeconds(24) -
                 currentTimeAsSeconds;
           }
-          const remainingTimeText = moment
-            .duration(remainingTime, "seconds")
-            .humanize();
+          const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }));
           //const remainingTimeText = formatDuration(intervalToDuration({start: 0, end: remainingTime * 1000}));
-          console.log(remainingTimeText)
+          console.log(remainingTimeText, eventTimeAsDate, previousDay, nextDay, )
           return {
             category: event.category,
             day: dayName,
