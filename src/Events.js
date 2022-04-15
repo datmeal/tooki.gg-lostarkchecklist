@@ -121,7 +121,6 @@ export default function Events(props) {
           ...newEvent.times,
           [days[currentDay]]: event.times[days[currentDay]],
         };
-        console.log(event.name, event.times[nextDay]);
       }
       // filter to include times before server reset of next day. event.times[day] returns a string!
       if (
@@ -131,8 +130,6 @@ export default function Events(props) {
           (time) => parseTimeStringtoSecs(time) <= resetTimeAsSeconds
         )
       ) {
-        //TODO: Doesnt get reached
-        console.log("Reached!")
         const nextDayTimes = event.times[nextDay].reduce((result, time) => {
           const timeAsSeconds = parseTimeStringtoSecs(time);
           if (timeAsSeconds <= resetTimeAsSeconds) {
@@ -222,8 +219,8 @@ export default function Events(props) {
       setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
 
       // Test Time
-       setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
-       setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
+      //setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
+      //setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
 
     }
 
