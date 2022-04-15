@@ -55,12 +55,20 @@ export default function Events(props) {
   // const offsetSeconds = moment.duration(timezone, "h").asSeconds();
   const resetTimeAsSeconds = hoursToSeconds(5);
   const endOfDayAsSeconds = hoursToSeconds(24);
-  const previousDay = format(sub(currentTimeAsDate, {days: 1}), "ddd"); //string
+  const previousDay = format(sub(currentTimeAsDate, {days: 1}), "eee").toLowerCase(); //string "sat"
 
-  const nextDay = format(add(currentTimeAsDate, {days: 1}), "ddd"); // string "sat"
+  const nextDay = format(add(currentTimeAsDate, {days: 1}), "eee").toLowerCase(); // string "sat"
   const setCurrentTime = useStore((state) => state.setCurrentTime);
   const setCurrentDay = useStore((state) => state.setCurrentDay);  
   const eventCount = 30;
+
+
+  //Splits a HH:mm string to seconds only
+  const parseTimeStringtoSecs = (time) => {
+    let a = time.split(':');
+    let seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;
+    return seconds;
+  }
 
   const parseTimezone = (timezone) => {
     const timezones = {
@@ -113,17 +121,20 @@ export default function Events(props) {
           ...newEvent.times,
           [days[currentDay]]: event.times[days[currentDay]],
         };
+        console.log(event.name, event.times[nextDay]);
       }
-      // filter to include times before server reset of next day
+      // filter to include times before server reset of next day. event.times[day] returns a string!
       if (
         _.has(event.times, nextDay) &&
         _.some(
           event.times[nextDay],
-          (time) => hoursToSeconds(time) <= resetTimeAsSeconds
+          (time) => parseTimeStringtoSecs(time) <= resetTimeAsSeconds
         )
       ) {
+        //TODO: Doesnt get reached
+        console.log("Reached!")
         const nextDayTimes = event.times[nextDay].reduce((result, time) => {
-          const timeAsSeconds = hoursToSeconds(time);
+          const timeAsSeconds = parseTimeStringtoSecs(time);
           if (timeAsSeconds <= resetTimeAsSeconds) {
             result.push(time);
           }
@@ -183,7 +194,6 @@ export default function Events(props) {
       });
     });
 
-    // console.log("allToday:", allTodayEvents);
 
     const upcomingEvents = _.filter(allTodayEvents, (event) => {
       return event.remainingTime > -event.duration;
@@ -212,8 +222,8 @@ export default function Events(props) {
       setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
 
       // Test Time
-      // setCurrentTime(moment("6:19", "HH:mm").format("HH:mm:ss"));
-      // setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
+       setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
+       setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
 
     }
 
