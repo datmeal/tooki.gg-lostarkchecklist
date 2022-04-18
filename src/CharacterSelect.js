@@ -32,6 +32,8 @@ const classes = [
   { label: "Berserker", id: 3 },
   { label: "Deadeye", id: 4 },
   { label: "Deathblade", id: 5 },
+  { label: "Destroyer", id: 18 },
+  { label: "Glavier", id: 17 },
   { label: "Gunlancer", id: 6 },
   { label: "Gunslinger", id: 7 },
   { label: "Paladin", id: 8 },
