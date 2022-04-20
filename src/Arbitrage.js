@@ -44,7 +44,7 @@ export default function Arbitrage(props) {
       `Destruction Stone Fragment (Bound)`,
       "destructionStoneFragment",
       10,
-      150,
+      300,
       true
     ),
     createData(`Destruction Stone (Bound)`, "destructionStone", 10, 150, true),
@@ -59,7 +59,7 @@ export default function Arbitrage(props) {
       `Guardian Stone Fragment (Bound)`,
       "guardianStoneFragment",
       10,
-      400,
+      800,
       true
     ),
     createData(`Guardian Stone (Bound)`, "guardianStone", 10, 400, true),
@@ -75,7 +75,7 @@ export default function Arbitrage(props) {
     createData(`Honor Shard Pouch (S)`, "honorShardS", 1, 10, true),
     createData(`Harmony Leapstone (Bound)`, "harmonyLeapstone", 1, 15, true),
     createData(`Life Leapstone (Bound)`, "lifeLeapstone", 1, 40, true),
-    createData(`Honor Leapstone (Bound)`, "honorLeapstone", 1, 5, true),
+    createData(`Honor Leapstone (Bound)`, "honorLeapstone", 1, 10, true),
     createData(
       `Great Honor Leapstone (Bound)`,
       "greatHonorLeapstone",
@@ -84,7 +84,7 @@ export default function Arbitrage(props) {
       true
     ),
     createData(`Star's Breath (Bound)`, "starsBreath", 1, 10, true),
-    createData(`Moon's Breath (Bound)`, "moonsBreath", 1, 5, true),
+    createData(`Moon's Breath (Bound)`, "moonsBreath", 1, 10, true),
     createData(`Solar Grace (Bound)`, "solarGrace", 1, 20, true),
     createData(`Solar Blessing (Bound)`, "solarBlessing", 1, 15, true),
     createData(`Solar Protection (Bound)`, "solarProtection", 1, 3, true),
@@ -151,21 +151,21 @@ export default function Arbitrage(props) {
 
   // Value per crystal (crystal price / Mari amount)
   const crystalValues = {
-    destructionStoneFragment: 60 / 150,
+    destructionStoneFragment: 120 / 300,
     destructionStone: 167 / 300,
     destructionStoneCrystal: 240 / 300,
-    guardianStoneFragment: 36 / 400,
-    guardianStone: 80 / 400,
+    guardianStoneFragment: 72 / 800,
+    guardianStone: 160 / 800,
     guardianStoneCrystal: 240 / 800,
     harmonyShardM: 47 / 5,
     lifeShardS: 38 / 10,
     honorShardS: 56 / 10,
     harmonyLeapstone: 30 / 30,
     lifeLeapstone: 56 / 40,
-    honorLeapstone: 10 / 5,
+    honorLeapstone: 20 / 10,
     greatHonorLeapstone: 50 / 5,
     starsBreath: 30 / 10,
-    moonsBreath: 30 / 5,
+    moonsBreath: 60 / 10,
     solarGrace: 80 / 20,
     solarBlessing: 150 / 15,
     solarProtection: 150 / 3,
