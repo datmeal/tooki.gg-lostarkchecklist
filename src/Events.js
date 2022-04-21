@@ -1,23 +1,24 @@
-import React, {useEffect, useState} from "react";
-import _, {times} from "lodash";
+import React, { useEffect, useState } from "react";
+import _, { times } from "lodash";
 import styled from "@emotion/styled";
-import {css} from "@emotion/react";
+import { css } from "@emotion/react";
 import moment from "moment";
 import {
   add,
   differenceInMilliseconds,
   differenceInSeconds,
   formatDuration,
+  formatDistanceStrict,
   hoursToMilliseconds,
   hoursToSeconds,
   intervalToDuration,
   parse,
   setDay,
   startOfToday,
-  sub
+  sub,
 } from "date-fns";
-import {format, formatInTimeZone} from "date-fns-tz";
-import {ThemeProvider} from "@mui/material/styles";
+import { format, formatInTimeZone } from "date-fns-tz";
+import { ThemeProvider } from "@mui/material/styles";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -39,14 +40,16 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Typography from "@mui/material/Typography";
 
-import {days, dayText, timerData} from "./timerData";
-
+import { days, dayText, timerData } from "./timerData";
 
 export default function Events(props) {
   const { theme, useStore, taskStore } = props;
   const currentTime = useStore((state) => state.currentTime);
-  const currentTimeAsDate = parse(currentTime,"HH:mm:ss", new Date());
-  const currentTimeAsSeconds = differenceInSeconds(currentTimeAsDate, startOfToday());
+  const currentTimeAsDate = parse(currentTime, "HH:mm:ss", new Date());
+  const currentTimeAsSeconds = differenceInSeconds(
+    currentTimeAsDate,
+    startOfToday()
+  );
   const currentDay = useStore((state) => state.currentDay); // a number 0-6
   const rosterStatus = taskStore((state) => state.rosterStatus);
   const filter = useStore((state) => state.eventSettings.filter);
@@ -55,20 +58,25 @@ export default function Events(props) {
   // const offsetSeconds = moment.duration(timezone, "h").asSeconds();
   const resetTimeAsSeconds = hoursToSeconds(5);
   const endOfDayAsSeconds = hoursToSeconds(24);
-  const previousDay = format(sub(currentTimeAsDate, {days: 1}), "eee").toLowerCase(); //string "sat"
+  const previousDay = format(
+    sub(currentTimeAsDate, { days: 1 }),
+    "eee"
+  ).toLowerCase(); //string "sat"
 
-  const nextDay = format(add(currentTimeAsDate, {days: 1}), "eee").toLowerCase(); // string "sat"
+  const nextDay = format(
+    add(currentTimeAsDate, { days: 1 }),
+    "eee"
+  ).toLowerCase(); // string "sat"
   const setCurrentTime = useStore((state) => state.setCurrentTime);
-  const setCurrentDay = useStore((state) => state.setCurrentDay);  
+  const setCurrentDay = useStore((state) => state.setCurrentDay);
   const eventCount = 30;
-
 
   //Splits a HH:mm string to seconds only
   const parseTimeStringtoSecs = (time) => {
-    let a = time.split(':');
-    let seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60;
+    let a = time.split(":");
+    let seconds = +a[0] * 60 * 60 + +a[1] * 60;
     return seconds;
-  }
+  };
 
   const parseTimezone = (timezone) => {
     const timezones = {
@@ -151,27 +159,31 @@ export default function Events(props) {
     const allTodayEvents = todaysEvents.flatMap((event) => {
       return _.flatMap(event.times, (day, dayName) => {
         return day.flatMap((time) => {
-
           let eventTime = moment(time, "HH:mm")
-              // .subtract(offsetSeconds, "seconds")
-              .format("HH:mm");
+            // .subtract(offsetSeconds, "seconds")
+            .format("HH:mm");
           const eventTimeAsDate = parse(eventTime, "HH:mm", new Date());
           let remainingTime;
           let eventDuration = event.duration ? event.duration : 180;
           if (dayName === previousDay || dayName === days[currentDay]) {
-            remainingTime = differenceInSeconds((eventTimeAsDate), startOfToday()) - currentTimeAsSeconds;
-
+            remainingTime =
+              differenceInSeconds(eventTimeAsDate, startOfToday()) -
+              currentTimeAsSeconds;
           }
           if (
             dayName === nextDay ||
             (dayName === days[currentDay] && eventTime === "00:00")
           ) {
             remainingTime =
-                differenceInSeconds((eventTimeAsDate), startOfToday()) +
-                hoursToSeconds(24) -
-                currentTimeAsSeconds;
+              differenceInSeconds(eventTimeAsDate, startOfToday()) +
+              hoursToSeconds(24) -
+              currentTimeAsSeconds;
           }
-          const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }),{ format: ['days', 'hours', 'minutes'] });
+          // const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }),{ format: ['days', 'hours', 'minutes'] }); // Going to use distance for now
+          const remainingTimeText = formatDistanceStrict(
+            0,
+            remainingTime * 1000
+          );
           return {
             category: event.category,
             day: dayName,
@@ -190,37 +202,38 @@ export default function Events(props) {
       });
     });
 
-
     const upcomingEvents = _.filter(allTodayEvents, (event) => {
       return event.remainingTime > -event.duration;
     });
 
-    return _.slice(
-        _.orderBy(upcomingEvents, "remainingTime"),
-        0,
-        eventCount
-    );
+    return _.slice(_.orderBy(upcomingEvents, "remainingTime"), 0, eventCount);
   };
 
   // Clock math
   // Refreshes clock, temporarily disabled for developing
   useEffect(() => {
     function refreshClock() {
-            
       //old
       //setCurrentTime(moment().utc().add(timezone, "hours").format("HH:mm:ss"));
       //new
-      setCurrentTime(formatInTimeZone(add(new Date(), { hours: timezone}), "UTC", 'HH:mm:ss'));      
+      setCurrentTime(
+        formatInTimeZone(
+          add(new Date(), { hours: timezone }),
+          "UTC",
+          "HH:mm:ss"
+        )
+      );
 
       //old
       //setCurrentDay(moment().utc().add(timezone, "hours").format("e"));
-      //new   
-      setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
+      //new
+      setCurrentDay(
+        formatInTimeZone(add(new Date(), { hours: timezone }), "UTC", "i")
+      );
 
       // Test Time
       //setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
       //setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
-
     }
 
     const timerId = setInterval(refreshClock, 1000);
@@ -233,13 +246,13 @@ export default function Events(props) {
 
   return (
     // changed uses of moment to use date-fns
-    <ThemeProvider theme={theme}>      
-      <Typography variant="h4" component="h1" align="center">   
-        {currentTime}        
+    <ThemeProvider theme={theme}>
+      <Typography variant="h4" component="h1" align="center">
+        {currentTime}
         {` ${parseTimezone(timezone)}`}
       </Typography>
       <Typography align="center">
-        {format(setDay(new Date(), currentDay), 'EEEE')}                     
+        {format(setDay(new Date(), currentDay), "EEEE")}
       </Typography>
       <Box>
         <TimezoneControl timezone={timezone} useStore={useStore} />
@@ -423,10 +436,13 @@ function Timeline(props) {
   //   const [currentTime, setCurrentTime] = useState(""); // moment().zone("-14:00").format("HH:mm:ss")
   const [indicatorPosition, setIndicatorPosition] = useState(0);
   const currentTime = useStore((state) => state.currentTime);
-  const currentTimeAsDate = parse(currentTime,"HH:mm:ss", new Date());
+  const currentTimeAsDate = parse(currentTime, "HH:mm:ss", new Date());
 
   // Auto moves hand
-  const currentTimeAsMilli = differenceInMilliseconds(currentTimeAsDate, startOfToday());
+  const currentTimeAsMilli = differenceInMilliseconds(
+    currentTimeAsDate,
+    startOfToday()
+  );
   // const startTimeAsMilli = moment.duration("00:00:00").asMilliseconds();
   const endTimeAsMilli = hoursToMilliseconds(24);
   useEffect(() => {
@@ -503,7 +519,10 @@ function Timers(props) {
           {_.map(events, (event, index) => {
             const inProgress = event.remainingTime < 0;
             const timeText = parseTime(event.time);
-            const eventTime = format(parse(timeText, "HH:mm", new Date()), "HH:mm");
+            const eventTime = format(
+              parse(timeText, "HH:mm", new Date()),
+              "HH:mm"
+            );
             return (
               <Grid item xs={12} key={`${event.name}-${index}`}>
                 <TimerItem
@@ -689,12 +708,15 @@ const FilterList = React.memo((props) => {
 function Favorites(props) {
   const { useStore } = props;
   const favorites = useStore((state) => state.eventSettings.favorites);
-  const offset = useStore((state) => state.eventSettings.offset);
-  const timezone = useStore((state) => state.eventSettings.timezone);
+  // const offset = useStore((state) => state.eventSettings.offset);
+  // const timezone = useStore((state) => state.eventSettings.timezone);
   const currentTime = useStore((state) => state.currentTime);
   const removeFavorite = useStore((state) => state.removeFavorite);
-  const currentTimeAsDate = parse(currentTime,"HH:mm:ss", new Date());
-  const currentTimeAsSeconds = differenceInSeconds(currentTimeAsDate, startOfToday());
+  const currentTimeAsDate = parse(currentTime, "HH:mm:ss", new Date());
+  const currentTimeAsSeconds = differenceInSeconds(
+    currentTimeAsDate,
+    startOfToday()
+  );
   const currentDay = useStore((state) => state.currentDay);
 
   function parseTime(timeText) {
@@ -710,58 +732,66 @@ function Favorites(props) {
   function parseFavorites() {
     // console.log("parsedFavs:", list);
     return _.reduce(
-        favorites,
-        (result, event) => {
-          const validEvent = _.find(events, ["id", event]);
-          if (validEvent) {
-            // if event happens today and hasn't already passed
-            if (
-                _.has(validEvent.times, days[currentDay]) &&
-                _.some(
-                    validEvent.times[days[currentDay]],
-                    (time) => differenceInSeconds(parse(time, "HH:mm", new Date()), startOfToday()) > currentTimeAsSeconds
-                )
-            ) {
-              validEvent.time = _.reduce(
-                  validEvent.times[days[currentDay]],
-                  (result, time) => {
-                    if (
-                        result === "" &&
-                        differenceInSeconds(parse(time, "HH:mm", new Date()), startOfToday()) - currentTimeAsSeconds >
-                        -180
-                    ) {
-                      result = time;
-                    }
-                    return result;
-                  },
-                  ""
-              );
-              validEvent.day = days[currentDay];
-              result.push(validEvent);
-            } else {
-              // add 1 day at a time until one works to find nearest day
-              const nextDay = _.reduce(
-                  [1, 2, 3, 4, 5, 6],
-                  (result, addDay) => {
-                    const leapDay =
-                        _.parseInt(currentDay) + addDay > 6
-                            ? _.parseInt(currentDay) + addDay - 7
-                            : _.parseInt(currentDay) + addDay;
-                    if (result === "" && _.has(validEvent.times, days[leapDay])) {
-                      result = days[leapDay];
-                    }
-                    return result;
-                  },
-                  ""
-              );
-              validEvent.time = validEvent["times"][nextDay][0];
-              validEvent.day = nextDay;
-              result.push(validEvent);
-            }
+      favorites,
+      (result, event) => {
+        const validEvent = _.find(events, ["id", event]);
+        if (validEvent) {
+          // if event happens today and hasn't already passed
+          if (
+            _.has(validEvent.times, days[currentDay]) &&
+            _.some(
+              validEvent.times[days[currentDay]],
+              (time) =>
+                differenceInSeconds(
+                  parse(time, "HH:mm", new Date()),
+                  startOfToday()
+                ) > currentTimeAsSeconds
+            )
+          ) {
+            validEvent.time = _.reduce(
+              validEvent.times[days[currentDay]],
+              (result, time) => {
+                if (
+                  result === "" &&
+                  differenceInSeconds(
+                    parse(time, "HH:mm", new Date()),
+                    startOfToday()
+                  ) -
+                    currentTimeAsSeconds >
+                    -180
+                ) {
+                  result = time;
+                }
+                return result;
+              },
+              ""
+            );
+            validEvent.day = days[currentDay];
+            result.push(validEvent);
+          } else {
+            // add 1 day at a time until one works to find nearest day
+            const nextDay = _.reduce(
+              [1, 2, 3, 4, 5, 6],
+              (result, addDay) => {
+                const leapDay =
+                  _.parseInt(currentDay) + addDay > 6
+                    ? _.parseInt(currentDay) + addDay - 7
+                    : _.parseInt(currentDay) + addDay;
+                if (result === "" && _.has(validEvent.times, days[leapDay])) {
+                  result = days[leapDay];
+                }
+                return result;
+              },
+              ""
+            );
+            validEvent.time = validEvent["times"][nextDay][0];
+            validEvent.day = nextDay;
+            result.push(validEvent);
           }
-          return result;
-        },
-        []
+        }
+        return result;
+      },
+      []
     );
   }
 
@@ -784,8 +814,11 @@ function Favorites(props) {
         }
       }
 
-      const remainingTime = differenceInSeconds(add(parse(event.time,"HH:mm", new Date()), {days: remainingDays}), startOfToday()) -
-        currentTimeAsSeconds;
+      const remainingTime =
+        differenceInSeconds(
+          add(parse(event.time, "HH:mm", new Date()), { days: remainingDays }),
+          startOfToday()
+        ) - currentTimeAsSeconds;
 
       return {
         day: event.day,
@@ -798,7 +831,7 @@ function Favorites(props) {
         time: event.time,
         remainingDays: remainingDays,
         remainingTime: remainingTime,
-        remainingTimeText: formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }), { format: ['days', 'hours', 'minutes'] }),
+        remainingTimeText: formatDistanceStrict(0, remainingTime * 1000),
       };
     }),
     "remainingTime"
