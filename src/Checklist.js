@@ -179,7 +179,7 @@ const newDailies = [
 // ];
 
 const accountDailies = [
-  createData(`Grand Prix`, "grandprix", null, icon_competitive),
+  // createData(`Grand Prix`, "grandprix", null, icon_competitive),
   createData(
     `Adventure Island`,
     "adv",
@@ -191,6 +191,7 @@ const accountDailies = [
   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
   createData(`Anguished Isle`, "anguishedisle", null, icon_anguished),
   createData(`Cradle of the Sea Fermata`, "cradle", null, icon_cradle),
+  createData(`Shower/Sleep`, "sleep"),
 ];
 
 const weeklies = [
