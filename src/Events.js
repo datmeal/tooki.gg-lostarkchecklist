@@ -171,8 +171,7 @@ export default function Events(props) {
                 hoursToSeconds(24) -
                 currentTimeAsSeconds;
           }
-          const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }),{ format: ['hours', 'minutes'] });
-          //const remainingTimeText = formatDuration(intervalToDuration({start: 0, end: remainingTime * 1000}));
+          const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }),{ format: ['days', 'hours', 'minutes'] });
           return {
             category: event.category,
             day: dayName,
@@ -799,7 +798,7 @@ function Favorites(props) {
         time: event.time,
         remainingDays: remainingDays,
         remainingTime: remainingTime,
-        remainingTimeText: formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }), { format: ['hours', 'minutes'] }),
+        remainingTimeText: formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }), { format: ['days', 'hours', 'minutes'] }),
       };
     }),
     "remainingTime"
