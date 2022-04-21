@@ -171,7 +171,7 @@ export default function Events(props) {
                 hoursToSeconds(24) -
                 currentTimeAsSeconds;
           }
-          const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }));
+          const remainingTimeText = formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }),{ format: ['hours', 'minutes'] });
           //const remainingTimeText = formatDuration(intervalToDuration({start: 0, end: remainingTime * 1000}));
           return {
             category: event.category,
@@ -219,8 +219,8 @@ export default function Events(props) {
       setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
 
       // Test Time
-      //setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
-      //setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
+      setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
+      setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
 
     }
 
@@ -799,7 +799,7 @@ function Favorites(props) {
         time: event.time,
         remainingDays: remainingDays,
         remainingTime: remainingTime,
-        remainingTimeText: formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 })),
+        remainingTimeText: formatDuration(intervalToDuration({ start: 0, end: remainingTime * 1000 }), { format: ['hours', 'minutes'] }),
       };
     }),
     "remainingTime"
