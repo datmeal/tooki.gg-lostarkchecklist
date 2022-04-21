@@ -219,8 +219,8 @@ export default function Events(props) {
       setCurrentDay(formatInTimeZone(add(new Date(), { hours: timezone}),"UTC",  'i'));
 
       // Test Time
-      setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
-      setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
+      //setCurrentTime(moment("23:59", "HH:mm").format("HH:mm:ss"));
+      //setCurrentDay(moment("03-25-2022", "MM-DD-YYYY").format("e")); // friday
 
     }
 
