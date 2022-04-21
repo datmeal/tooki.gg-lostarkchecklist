@@ -1,8 +1,15 @@
 import React, { useEffect } from "react";
 import _ from "lodash";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -19,9 +26,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import icon_crystal from "./img/icon_crystal.png";
 import icon_gold from "./img/icon_gold.png";
+import icon_map from "./img/icon_map.png";
 
 export default function Arbitrage(props) {
-  const { siteStore, useStore } = props;
+  const { theme, siteStore, useStore } = props;
   const goldValues = useStore((state) => state.goldValues);
   const updateGV = useStore((state) => state.updateGV);
   const siteSettings = siteStore((state) => state.siteSettings);
@@ -247,40 +255,148 @@ export default function Arbitrage(props) {
     return _.round(profit, 2);
   }
 
+  const secretMapStyle = (props) => css`
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    background: ${props.quality === "legendary"
+      ? "linear-gradient(to right bottom, #392509, #a16305)"
+      : props.quality === "epic"
+      ? "linear-gradient(to right bottom, #2e083b, #8004a9)"
+      : "linear-gradient(to right bottom, #082c3b, #0479a9)"};
+    box-shadow: ${props.quality === "legendary"
+      ? "inset 0 0 2px rgba(243, 147, 3, .5) !important"
+      : props.quality === "epic"
+      ? "inset 0 0 2px rgba(191, 0, 254 , .5) !important"
+      : "inset 0 0 2px rgba(0, 181, 255, .5) !important"};
+  `;
+
+  const SecretMapImage = styled.img`
+    ${secretMapStyle}
+  `;
+
+  function parseTreasureMaps() {}
+
+  const SecretMap = (props) => {
+    const { image, alt, quality } = props;
+    let goldValue = 0;
+    switch (quality) {
+      case "rare":
+        goldValue = goldValues["honorShardS"] + goldValues["solarGrace"];
+        break;
+      case "epic":
+        goldValue =
+          goldValues["honorShardS"] * 2 +
+          goldValues["solarGrace"] +
+          goldValues["solarBlessing"];
+        break;
+      case "legendary":
+        goldValue =
+          goldValues["honorShardS"] * 6 +
+          goldValues["solarGrace"] * 2 +
+          goldValues["solarBlessing"] +
+          goldValues["solarProtection"];
+        break;
+      default:
+        goldValue = 69;
+        break;
+    }
+    return (
+      <ListItem>
+        <ListItemIcon>
+          <SecretMapImage src={image} alt={alt} quality={quality} />
+        </ListItemIcon>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <Typography color={theme.palette[quality]} sx={{ display: "inline" }}>
+            Secret Map
+          </Typography>
+          <Typography sx={{ display: "inline" }}>{goldValue}g</Typography>
+        </Box>
+      </ListItem>
+    );
+  };
+
   return (
     <>
       <Typography component="h1" variant="h4" align="center">
         Mari's Shop Calculator
       </Typography>
-      <Box sx={{ m: 2 }}>
-        <Typography>
-          Set Sale Price of Gold on the "Buy Crystals" tab under Currency
-          Exchange (per 95 Crystals)
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <TextField
-            id="crystal"
-            label="Crystal Price (Gold)"
-            defaultValue={goldValues.crystal}
-            type="number"
-            margin="normal"
-            onBlur={useStore((state) => state.setPrice)}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">g</InputAdornment>,
+      <Grid container spacing={0}>
+        <Grid item xs={8} sx={{ p: 2 }}>
+          <Typography>
+            Set Sale Price of Gold on the "Buy Crystals" tab under Currency
+            Exchange (per 95 Crystals)
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              flexDirection: "column",
             }}
-          />
-        </Box>
-        <Typography color="warning.light">
-          Most items are Bound and cannot directly be resold on the market!
-        </Typography>
-        <Typography>
-          Deposit fee not included in profit calculations (-5% of cost per
-          bundle, minimum 1g rounded up)
-        </Typography>
-        <Typography>
-          Negative "Profit" means Market is cheaper than Mari
-        </Typography>
-      </Box>
+          >
+            <TextField
+              id="crystal"
+              label="Crystal Price (Gold)"
+              defaultValue={goldValues.crystal}
+              type="number"
+              margin="normal"
+              onBlur={useStore((state) => state.setPrice)}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">g</InputAdornment>,
+              }}
+            />
+            <Typography color="warning.light">
+              Most items are Bound and cannot directly be resold on the market!
+            </Typography>
+            <Typography>
+              Deposit fee not included in profit calculations (-5% of cost per
+              bundle, minimum 1g rounded up)
+            </Typography>
+            <Typography>
+              Negative "Profit" means Market is cheaper than Mari
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={4} sx={{ p: 2 }}>
+          <Paper sx={{ p: { xs: 1 } }} variant="outlined">
+            <Typography variant="h6" align="center">
+              Tier 3 Map Prices
+            </Typography>
+            <List>
+              <SecretMap
+                image={icon_map}
+                alt="Secret Map (Legendary)"
+                quality="legendary"
+              />
+              <SecretMap
+                image={icon_map}
+                alt="Secret Map (Epic)"
+                quality="epic"
+              />
+              <SecretMap
+                image={icon_map}
+                alt="Secret Map (Rare)"
+                quality="rare"
+              />
+            </List>
+          </Paper>
+          <Typography>
+            Note: These prices are estimated by prices you set for the
+            appropriate items below.
+          </Typography>
+          <Typography>
+            The calculated items include: Honor Shard Pouch (S), Solar Grace,
+            Solar Blessing, Solar Protection
+          </Typography>
+        </Grid>
+      </Grid>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="prices" size="small">
           <TableHead>

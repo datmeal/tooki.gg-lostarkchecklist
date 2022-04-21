@@ -28,7 +28,7 @@ import Events from "./Events";
 import Arbitrage from "./Arbitrage";
 
 import logo from "./img/logo.png";
-import { format,subHours } from "date-fns";
+import { format, subHours } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 // import "./App.css";
 
@@ -682,11 +682,9 @@ const defaultEventSettings = {
   timezone: -4, // East = 0 (UTC - 4 (- 0))
 };
 
-
-
-const eventsStore = create((set, get) => ({  
-  currentDay: formatInTimeZone(subHours(new Date(), 4), "UTC", 'i'),
-  currentTime: formatInTimeZone(subHours(new Date(), 4), "UTC", 'HH:mm:ss'),
+const eventsStore = create((set, get) => ({
+  currentDay: formatInTimeZone(subHours(new Date(), 4), "UTC", "i"),
+  currentTime: formatInTimeZone(subHours(new Date(), 4), "UTC", "HH:mm:ss"),
   eventList: [],
   eventSettings: defaultEventSettings,
   favorites: [],
@@ -771,6 +769,9 @@ const theme = createTheme({
       default: "#212121",
       paper: "#424242",
     },
+    rare: "#00b5ff",
+    epic: "#bf00fe",
+    legendary: "#f39303",
     una: {
       main: lightGreen[500],
     },
