@@ -298,7 +298,7 @@ export default function Arbitrage(props) {
           goldValues["solarProtection"];
         break;
       default:
-        goldValue = 69;
+        goldValue = 0;
         break;
     }
     return (
@@ -326,6 +326,9 @@ export default function Arbitrage(props) {
     <>
       <Typography component="h1" variant="h4" align="center">
         Mari's Shop Calculator
+      </Typography>
+      <Typography variant="h6" align="center">
+        Last updated: 2022/4/21
       </Typography>
       <Grid container spacing={0}>
         <Grid item xs={8} sx={{ p: 2 }}>
@@ -367,7 +370,7 @@ export default function Arbitrage(props) {
         <Grid item xs={4} sx={{ p: 2 }}>
           <Paper sx={{ p: { xs: 1 } }} variant="outlined">
             <Typography variant="h6" align="center">
-              Tier 3 Map Prices
+              Tier 3 Map Prices (WIP!)
             </Typography>
             <List>
               <SecretMap
