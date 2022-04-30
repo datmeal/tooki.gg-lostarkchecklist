@@ -195,6 +195,7 @@ const accountDailies = [
 ];
 
 const weeklies = [
+  createData(`Chaos Line`, "chaosline", null),
   createData(`Una's Task 1`, "una1", null, icon_una_weekly, "unaW"),
   createData(`Una's Task 2`, "una2", null, icon_una_weekly, "unaW"),
   createData(`Una's Task 3`, "una3", null, icon_una_weekly, "unaW"),
@@ -204,6 +205,13 @@ const weeklies = [
     "Account Weekly - once per roster",
     icon_ghost_ship,
     "ghost"
+  ),
+  createData(
+    `Abyss Raid - Argos`,
+    "abyssraidargos",
+    null,
+    icon_abyss_raid,
+    "abyssR"
   ),
   // createData(`Guardian 1`, "guardian1"),
   // createData(`Guardian 2`, "guardian2"),
@@ -284,13 +292,6 @@ const weeklies = [
     null,
     icon_abyss_dungeon,
     "abyssD"
-  ),
-  createData(
-    `Abyss Raid - Argos`,
-    "abyssraidargos",
-    null,
-    icon_abyss_raid,
-    "abyssR"
   ),
 ];
 
