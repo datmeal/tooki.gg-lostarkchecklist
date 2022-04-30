@@ -1,17 +1,35 @@
 import * as React from "react";
 import _ from "lodash";
+import { Container, Draggable } from "react-smooth-dnd";
 import styled from "@emotion/styled";
-import AddIcon from "@mui/icons-material/Add";
+import Autocomplete from "@mui/material/Autocomplete";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import InfoIcon from "@mui/icons-material/Info";
+import Checkbox from "@mui/material/Checkbox";
+import {
+  amber,
+  blue,
+  indigo,
+  lightGreen,
+  pink,
+  purple,
+  deepPurple,
+  red,
+} from "@mui/material/colors";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import CircularProgress from "@mui/material/CircularProgress";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import SettingsIcon from "@mui/icons-material/Settings";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -22,10 +40,16 @@ import TextField from "@mui/material/TextField";
 import { ThemeProvider } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import InfoIcon from "@mui/icons-material/Info";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import SaveIcon from "@mui/icons-material/Save";
+import SettingsIcon from "@mui/icons-material/Settings";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 // import create from "zustand";
 import CharacterSelect from "./CharacterSelect";
 
@@ -53,8 +77,18 @@ import icon_anguished from "./img/icon_anguished.png";
 import icon_cradle from "./img/icon_cradle.png";
 import { LinearProgress } from "@mui/material";
 
-function createData(name, id, info, icon, color, isRoster, minilvl, maxilvl) {
-  return { name, id, info, icon, color, isRoster, minilvl, maxilvl };
+function createData(
+  name,
+  id,
+  info = null,
+  icon = null,
+  color = null,
+  isRoster = false,
+  isWeekly = false,
+  order = null,
+  isVisible = true
+) {
+  return { name, id, info, icon, color, isRoster, isWeekly, order, isVisible };
 }
 
 // const dailies = {
@@ -63,7 +97,9 @@ function createData(name, id, info, icon, color, isRoster, minilvl, maxilvl) {
 //     icon: icon_guild, // icon image
 //     info: null, // info tooltip on left
 //     name: 'Guild Donation', // display text
+//     order: null, // row order
 //     roster: false, // once per roster (one checkbox)
+//     show: true, // show only on Setting Mode when false
 // }
 
 const dailies = [
@@ -100,45 +136,38 @@ const dailies = [
 //     maxilvl: null,
 // }
 
-const newDailies = [
+const taskData = [
   createData(`Guild Donation`, "guildDonation", null, icon_guild),
-  // createData(`Guild Mission`, "guildMission", null, icon_guild),
-  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
-  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
-  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
-  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
-  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
-  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
-  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
-  createData(
-    `Event Guardian`,
-    "eventguardian",
-    null,
-    icon_guardian,
-    "guardian"
-  ),
+  createData(`Una's Task 1`, "una1", null, icon_una_daily, lightGreen[500]),
+  createData(`Una's Task 2`, "una2", null, icon_una_daily, lightGreen[500]),
+  createData(`Una's Task 3`, "una3", null, icon_una_daily, lightGreen[500]),
+  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, amber[500]),
+  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, amber[500]),
+  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, red[300]),
+  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, red[300]),
+  createData(`Event Guardian`, "eventguardian", null, icon_guardian, red[300]),
   createData(
     `Kalthertz`,
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
   ),
 
-  createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
+  // createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
   createData(
     `Adventure Island`,
     "adv",
     null,
     icon_adventure_island,
-    "adventure",
+    purple[200],
     true
   ),
-  createData(`Field Boss`, "cal", null, icon_field_boss, "guardian", true),
+  createData(`Field Boss`, "cal", null, icon_field_boss, red[300], true),
   createData(
     `Chaos Gate`,
     "chaosgate",
     null,
     icon_chaos_gate,
-    "chaosGate",
+    deepPurple["A100"],
     true
   ),
   createData(
@@ -158,6 +187,8 @@ const newDailies = [
     true
   ),
 ];
+
+console.log("taskData:", taskData);
 
 // const defaultDailyList = [
 //   {
@@ -302,6 +333,15 @@ const weeklyVendors = [
   createData(`PVP`, "vendorPvp", null, icon_coin_of_courage),
 ];
 
+const rapportItems = [
+  "rapport1",
+  "rapport2",
+  "rapport3",
+  "rapport4",
+  "rapport5",
+  "rapport6",
+];
+
 export default function Checklist(props) {
   const { theme, useStore } = props;
 
@@ -324,6 +364,8 @@ export default function Checklist(props) {
 
   // normal hooks
   const [characterEditMode, toggleCharacterEditMode] = React.useState(false);
+  const [dailyEditMode, toggleDailyEditMode] = React.useState(false);
+  const [tasks, setTasks] = React.useState(taskData);
   // const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
   // const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
   // const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
@@ -476,9 +518,9 @@ export default function Checklist(props) {
             checked={siteSettings.dailyTaskStatus[charData.id][row.id]}
             sx={
               row.color && {
-                color: theme.palette[row.color]["main"],
+                color: row.color,
                 "&.Mui-checked": {
-                  color: theme.palette[row.color]["main"],
+                  color: row.color,
                 },
               }
             }
@@ -491,9 +533,9 @@ export default function Checklist(props) {
         checked={siteSettings.dailyTaskStatus[charData.id][row.id]}
         sx={
           row.color && {
-            color: theme.palette[row.color]["main"],
+            color: row.color,
             "&.Mui-checked": {
-              color: theme.palette[row.color]["main"],
+              color: row.color,
             },
           }
         }
@@ -532,7 +574,7 @@ export default function Checklist(props) {
                         toggleCharacterEditMode(!characterEditMode);
                       }}
                     >
-                      <SettingsIcon />
+                      {characterEditMode ? <SaveIcon /> : <SettingsIcon />}
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -587,13 +629,19 @@ export default function Checklist(props) {
               </TableCell>
               <TableCell colSpan={siteSettings.roster.length + 2}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography
-                    variant="h6"
-                    component="p"
-                    sx={{ padding: 2, paddingLeft: 0 }}
-                  >
+                  <Typography variant="h6" component="p" sx={{ padding: 0 }}>
                     Daily Tasks
                   </Typography>
+                  <Tooltip title="Toggle task edit mode">
+                    <IconButton
+                      onClick={() => {
+                        toggleDailyEditMode(!dailyEditMode);
+                      }}
+                      sx={{ m: 2 }}
+                    >
+                      {dailyEditMode ? <SaveIcon /> : <SettingsIcon />}
+                    </IconButton>
+                  </Tooltip>
                   <Box>
                     <Button
                       color="error"
@@ -611,8 +659,103 @@ export default function Checklist(props) {
                 </Box>
               </TableCell>
             </TableRow>
-            {siteSettings.dailyTasksOpen &&
-              dailies.map((row) => {
+            {siteSettings.dailyTasksOpen && dailyEditMode ? (
+              <TableRow>
+                <TableCell colSpan={siteSettings.roster.length + 2}>
+                  <List>
+                    <Container dragHandleSelector=".drag-handle">
+                      {tasks.map((row) => {
+                        const skip = ["una2", "una3", "chaos2", "guardian2"];
+                        const rename = ["una1", "chaos1", "guardian1"];
+                        if (!skip.includes(row.id)) {
+                          return (
+                            <Draggable key={`drag-item-${row.id}`}>
+                              <ListItem dense>
+                                <ListItemIcon>
+                                  <IconButton>
+                                    <SwapVertIcon className="drag-handle" />
+                                  </IconButton>
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={
+                                    <FormControl
+                                      sx={{
+                                        m: 0,
+                                        mt: 1,
+                                        minWidth: 128,
+                                        width: "100%",
+                                      }}
+                                    >
+                                      {/* <InputLabel id={`character-${charData.id}-label`}>Class</InputLabel> */}
+                                      <TextField
+                                        disableClearable
+                                        fullWidth
+                                        label="Task name"
+                                        value={
+                                          rename.includes(row.id)
+                                            ? row.name.slice(0, -2)
+                                            : row.name
+                                        }
+                                      />
+                                    </FormControl>
+                                    // <Button
+                                    //   sx={{
+                                    //     textTransform: "none",
+                                    //     borderColor: "rgba(255,255,255,0.16)",
+                                    //     display: "flex",
+                                    //     flexDirection: "column",
+                                    //   }}
+                                    //   variant="outlined"
+                                    // >
+                                    //   <Typography
+                                    //     align="center"
+                                    //     color={row.color ? row.color : "#fff"}
+                                    //   >
+                                    //     {rename.includes(row.id)
+                                    //       ? row.name.slice(0, -2)
+                                    //       : row.name}
+                                    //   </Typography>
+                                    // </Button>
+                                  }
+                                  sx={{ flexGrow: 0, mr: 2 }}
+                                />
+                                <ListItemIcon>
+                                  <Tooltip title="Show/Hide task">
+                                    <IconButton>
+                                      <VisibilityIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </ListItemIcon>
+                                <FormControlLabel
+                                  control={<Checkbox />}
+                                  label="Roster-wide"
+                                />
+                                <ListItemIcon>
+                                  <Tooltip title="Delete task forever">
+                                    <IconButton>
+                                      <DeleteForeverIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </ListItemIcon>
+                              </ListItem>
+                              {/* <TableRow key={row.id}>
+                          <TableCell></TableCell>
+                          <TableCell colSpan={siteSettings.roster.length + 2}>
+                            <Typography>{row.name}</Typography>
+                          </TableCell>
+                        </TableRow> */}
+                            </Draggable>
+                          );
+                        } else {
+                          return null;
+                        }
+                      })}
+                    </Container>
+                  </List>
+                </TableCell>
+              </TableRow>
+            ) : (
+              tasks.map((row) => {
                 // console.log(row);
                 return (
                   <React.Fragment key={`daily_component_${row.id}`}>
@@ -624,11 +767,7 @@ export default function Checklist(props) {
                           </IconButton>
                         </TableCell>
                         <TableCell sx={{ width: "1px" }}>
-                          <Typography
-                            color={
-                              row.color && theme.palette[row.color]["main"]
-                            }
-                          >
+                          <Typography color={row.color ? row.color : "#fff"}>
                             Una's Tasks Rest Bonus
                           </Typography>
                         </TableCell>
@@ -691,11 +830,7 @@ export default function Checklist(props) {
                           </IconButton>
                         </TableCell>
                         <TableCell sx={{ width: "1px" }}>
-                          <Typography
-                            color={
-                              row.color && theme.palette[row.color]["main"]
-                            }
-                          >
+                          <Typography color={row.color ? row.color : "#fff"}>
                             Chaos Rest Bonus
                           </Typography>
                         </TableCell>
@@ -758,11 +893,7 @@ export default function Checklist(props) {
                           </IconButton>
                         </TableCell>
                         <TableCell sx={{ width: "1px" }}>
-                          <Typography
-                            color={
-                              row.color && theme.palette[row.color]["main"]
-                            }
-                          >
+                          <Typography color={row.color ? row.color : "#fff"}>
                             Guardian Raid Rest Bonus
                           </Typography>
                         </TableCell>
@@ -832,9 +963,7 @@ export default function Checklist(props) {
                         )}
                       </TableCell>
                       <TableCell sx={{ width: "1px" }}>
-                        <Typography
-                          color={row.color && theme.palette[row.color]["main"]}
-                        >
+                        <Typography color={row.color ? row.color : "#fff"}>
                           {row.name}
                         </Typography>
                       </TableCell>
@@ -870,10 +999,9 @@ export default function Checklist(props) {
                                     }
                                     sx={
                                       row.color && {
-                                        color: theme.palette[row.color]["main"],
+                                        color: row.color,
                                         "&.Mui-checked": {
-                                          color:
-                                            theme.palette[row.color]["main"],
+                                          color: row.color,
                                         },
                                       }
                                     }
@@ -897,9 +1025,9 @@ export default function Checklist(props) {
                               checked={false}
                               sx={
                                 row.color && {
-                                  color: theme.palette[row.color]["main"],
+                                  color: row.color,
                                   "&.Mui-checked": {
-                                    color: theme.palette[row.color]["main"],
+                                    color: row.color,
                                   },
                                 }
                               }
@@ -912,7 +1040,8 @@ export default function Checklist(props) {
                     </TableRow>
                   </React.Fragment>
                 );
-              })}
+              })
+            )}
             <TableRow>
               <TableCell>
                 <IconButton
@@ -930,8 +1059,8 @@ export default function Checklist(props) {
               <TableCell
                 colSpan={
                   siteSettings.accountDailiesOpen
-                    ? 2
-                    : siteSettings.roster.length + 1
+                    ? 1
+                    : siteSettings.roster.length + 2
                 }
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -940,15 +1069,12 @@ export default function Checklist(props) {
                     component="p"
                     sx={{ padding: 2, paddingLeft: 0 }}
                   >
-                    Account Dailies
+                    Rapport
                   </Typography>
                 </Box>
               </TableCell>
               {siteSettings.accountDailiesOpen && (
                 <>
-                  <TableCell>
-                    <Typography>Rapport Name</Typography>
-                  </TableCell>
                   <TableCell colSpan={2}>
                     <Typography align="center">Song</Typography>
                   </TableCell>
@@ -960,6 +1086,65 @@ export default function Checklist(props) {
               )}
             </TableRow>
             {siteSettings.accountDailiesOpen &&
+              rapportItems.map((row, index) => {
+                console.log(row, index);
+                const rapportItem = rosterStatus[`rapport${index + 1}`];
+                return (
+                  <TableRow hover role="checkbox" key={row}>
+                    <TableCell>
+                      <IconButton size="small">
+                        <IconImage src={icon_rapport} />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell sx={{ minWidth: 200, width: "1px" }}>
+                      <Box>
+                        <TextField
+                          id={`rapport${index + 1}_name`}
+                          label="NPC"
+                          defaultValue={rapportItem.name}
+                          type="string"
+                          margin="normal"
+                          onBlur={(e) => {
+                            setRapportName(
+                              `rapport${index + 1}`,
+                              e.target.value
+                            );
+                          }}
+                        />
+                      </Box>
+                    </TableCell>
+                    {["song1", "song2", "emote1", "emote2"].map((item) => (
+                      <TableCell
+                        padding="checkbox"
+                        key={`rapport${index + 1}_${item}`}
+                        colSpan={1}
+                      >
+                        <Button
+                          onClick={() =>
+                            toggleRapportStatus(`rapport${index + 1}`, item)
+                          }
+                          fullWidth
+                          variant={"text"}
+                        >
+                          <Checkbox
+                            color="primary"
+                            checked={rapportItem[item]}
+                            sx={{
+                              color: theme.palette["rapport"]["main"],
+                              "&.Mui-checked": {
+                                color: theme.palette["rapport"]["main"],
+                              },
+                            }}
+                            disableRipple
+                          />
+                        </Button>
+                      </TableCell>
+                    ))}
+                    <TableCell colSpan={siteSettings.roster.length - 5} />
+                  </TableRow>
+                );
+              })}
+            {/* {siteSettings.accountDailiesOpen &&
               accountDailies.map((row, index) => {
                 const rapportItem = rosterStatus[`rapport${index + 1}`];
                 return (
@@ -980,7 +1165,7 @@ export default function Checklist(props) {
                     </TableCell>
                     <TableCell>
                       <Typography
-                        color={row.color && theme.palette[row.color]["main"]}
+                        color={row.color && row.color}
                       >
                         {row.name}
                       </Typography>
@@ -1002,9 +1187,9 @@ export default function Checklist(props) {
                           checked={rosterStatus[row.id]}
                           sx={
                             row.color && {
-                              color: theme.palette[row.color]["main"],
+                              color: row.color,
                               "&.Mui-checked": {
-                                color: theme.palette[row.color]["main"],
+                                color: row.color,
                               },
                             }
                           }
@@ -1070,7 +1255,7 @@ export default function Checklist(props) {
                     )}
                   </TableRow>
                 );
-              })}
+              })} */}
             <TableRow>
               <TableCell>
                 <IconButton
@@ -1124,9 +1309,7 @@ export default function Checklist(props) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Typography
-                      color={row.color && theme.palette[row.color]["main"]}
-                    >
+                    <Typography color={row.color ? row.color : "#fff"}>
                       {row.name}
                     </Typography>
                   </TableCell>
@@ -1152,9 +1335,9 @@ export default function Checklist(props) {
                             checked={charData.weeklies[row.id]}
                             sx={
                               row.color && {
-                                color: theme.palette[row.color]["main"],
+                                color: row.color,
                                 "&.Mui-checked": {
-                                  color: theme.palette[row.color]["main"],
+                                  color: row.color,
                                 },
                               }
                             }
@@ -1211,9 +1394,7 @@ export default function Checklist(props) {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Typography
-                      color={row.color && theme.palette[row.color]["main"]}
-                    >
+                    <Typography color={row.color ? row.color : "#fff"}>
                       {row.name}
                     </Typography>
                   </TableCell>
@@ -1240,9 +1421,9 @@ export default function Checklist(props) {
                             disableRipple
                             sx={
                               row.color && {
-                                color: theme.palette[row.color]["main"],
+                                color: row.color,
                                 "&.Mui-checked": {
-                                  color: theme.palette[row.color]["main"],
+                                  color: row.color,
                                 },
                               }
                             }
