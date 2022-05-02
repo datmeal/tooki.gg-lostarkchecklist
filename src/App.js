@@ -1033,7 +1033,7 @@ function App() {
               <Typography
                 variant="subtitle2"
                 sx={{ transform: "rotate(5deg)", fontSize: 11 }}
-                color="secondary"
+                color="chaos.main"
               >
                 Custom tasks coming soon
                 <br /> Mari's shop calcs are currently a little off. Sorry!
