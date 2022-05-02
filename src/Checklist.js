@@ -2,6 +2,7 @@ import * as React from "react";
 import _ from "lodash";
 import { Container, Draggable } from "react-smooth-dnd";
 import styled from "@emotion/styled";
+import { arrayMoveImmutable, arrayMoveMutable } from "array-move";
 import Autocomplete from "@mui/material/Autocomplete";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
@@ -81,14 +82,14 @@ function createData(
   name,
   id,
   info = null,
+  custom = false,
   icon = null,
   color = null,
   isRoster = false,
-  isWeekly = false,
   order = null,
   isVisible = true
 ) {
-  return { name, id, info, icon, color, isRoster, isWeekly, order, isVisible };
+  return { name, id, info, custom, icon, color, isRoster, order, isVisible };
 }
 
 // const dailies = {
@@ -102,29 +103,59 @@ function createData(
 //     show: true, // show only on Setting Mode when false
 // }
 
-const dailies = [
-  createData(`Guild Donation`, "guildDonation", null, icon_guild),
-  // createData(`Guild Mission`, "guildMission", null, icon_guild),
-  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
-  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
-  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
-  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
-  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
-  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
-  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
-  createData(
-    `Event Guardian`,
-    "eventguardian",
-    null,
-    icon_guardian,
-    "guardian"
-  ),
-  createData(
-    `Kalthertz`,
-    "kalthertz",
-    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
-  ),
-];
+// const dailies = [
+//   createData(`Guild Donation`, "guildDonation", null, false, icon_guild),
+//   // createData(`Guild Mission`, "guildMission", null, false, icon_guild),
+//   createData(`Una's Task 1`, "una1", null, false, icon_una_daily, "una"),
+//   createData(`Una's Task 2`, "una2", null, false, icon_una_daily, "una"),
+//   createData(`Una's Task 3`, "una3", null, false, icon_una_daily, "una"),
+//   createData(
+//     `Chaos Dungeon 1`,
+//     "chaos1",
+//     null,
+//     false,
+//     icon_chaos_dungeon,
+//     "chaos"
+//   ),
+//   createData(
+//     `Chaos Dungeon 2`,
+//     "chaos2",
+//     null,
+//     false,
+//     icon_chaos_dungeon,
+//     "chaos"
+//   ),
+//   createData(
+//     `Guardian Raid 1`,
+//     "guardian1",
+//     null,
+//     false,
+//     icon_guardian,
+//     "guardian"
+//   ),
+//   createData(
+//     `Guardian Raid 2`,
+//     "guardian2",
+//     null,
+//     false,
+//     icon_guardian,
+//     "guardian"
+//   ),
+//   createData(
+//     `Event Guardian`,
+//     "eventguardian",
+//     null,
+//     true,
+//     icon_guardian,
+//     "guardian"
+//   ),
+//   createData(
+//     `Kalthertz`,
+//     "kalthertz",
+//     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task",
+//     true // custom, deletable/hideable
+//   ),
+// ];
 
 // const dailies = {
 //     id: 'guildDonation', // id
@@ -137,19 +168,76 @@ const dailies = [
 // }
 
 const taskData = [
-  createData(`Guild Donation`, "guildDonation", null, icon_guild),
-  createData(`Una's Task 1`, "una1", null, icon_una_daily, lightGreen[500]),
-  createData(`Una's Task 2`, "una2", null, icon_una_daily, lightGreen[500]),
-  createData(`Una's Task 3`, "una3", null, icon_una_daily, lightGreen[500]),
-  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, amber[500]),
-  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, amber[500]),
-  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, red[300]),
-  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, red[300]),
-  createData(`Event Guardian`, "eventguardian", null, icon_guardian, red[300]),
+  createData(`Guild Donations`, "guildDonation", null, false, icon_guild),
+  createData(
+    `Una's Task 1`,
+    "una1",
+    null,
+    false,
+    icon_una_daily,
+    lightGreen[500]
+  ),
+  // createData(
+  //   `Una's Task 2`,
+  //   "una2",
+  //   null,
+  //   false,
+  //   icon_una_daily,
+  //   lightGreen[500]
+  // ),
+  // createData(
+  //   `Una's Task 3`,
+  //   "una3",
+  //   null,
+  //   false,
+  //   icon_una_daily,
+  //   lightGreen[500]
+  // ),
+  createData(
+    `Chaos Dungeon 1`,
+    "chaos1",
+    null,
+    false,
+    icon_chaos_dungeon,
+    amber[500]
+  ),
+  // createData(
+  //   `Chaos Dungeon 2`,
+  //   "chaos2",
+  //   null,
+  //   false,
+  //   icon_chaos_dungeon,
+  //   amber[500]
+  // ),
+  createData(
+    `Guardian Raid 1`,
+    "guardian1",
+    null,
+    false,
+    icon_guardian,
+    red[300]
+  ),
+  // createData(
+  //   `Guardian Raid 2`,
+  //   "guardian2",
+  //   null,
+  //   false,
+  //   icon_guardian,
+  //   red[300]
+  // ),
+  createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    true,
+    icon_guardian,
+    red[300]
+  ),
   createData(
     `Kalthertz`,
     "kalthertz",
-    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
+    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task",
+    true
   ),
 
   // createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
@@ -157,15 +245,17 @@ const taskData = [
     `Adventure Island`,
     "adv",
     null,
+    false,
     icon_adventure_island,
     purple[200],
     true
   ),
-  createData(`Field Boss`, "cal", null, icon_field_boss, red[300], true),
+  createData(`Field Boss`, "cal", null, false, icon_field_boss, red[300], true),
   createData(
     `Chaos Gate`,
     "chaosgate",
     null,
+    false,
     icon_chaos_gate,
     deepPurple["A100"],
     true
@@ -174,17 +264,19 @@ const taskData = [
     `Anguished Isle`,
     "anguishedisle",
     null,
+    true,
     icon_anguished,
     null,
-    true
+    false
   ),
   createData(
     `Cradle of the Sea Fermata`,
     "cradle",
     null,
+    true,
     icon_cradle,
     null,
-    true
+    false
   ),
 ];
 
@@ -209,30 +301,31 @@ console.log("taskData:", taskData);
 //   },
 // ];
 
-const accountDailies = [
-  // createData(`Grand Prix`, "grandprix", null, icon_competitive),
-  createData(
-    `Adventure Island`,
-    "adv",
-    null,
-    icon_adventure_island,
-    "adventure"
-  ),
-  createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
-  createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
-  createData(`Anguished Isle`, "anguishedisle", null, icon_anguished),
-  createData(`Cradle of the Sea Fermata`, "cradle", null, icon_cradle),
-  createData(`Shower/Sleep`, "sleep"),
-];
+// const accountDailies = [
+//   // createData(`Grand Prix`, "grandprix", null, icon_competitive),
+//   createData(
+//     `Adventure Island`,
+//     "adv",
+//     null,
+//     icon_adventure_island,
+//     "adventure"
+//   ),
+//   createData(`Field Boss`, "cal", null, icon_field_boss, "guardian"),
+//   createData(`Chaos Gate`, "chaosgate", null, icon_chaos_gate, "chaosGate"),
+//   createData(`Anguished Isle`, "anguishedisle", null, icon_anguished),
+//   createData(`Cradle of the Sea Fermata`, "cradle", null, icon_cradle),
+//   createData(`Shower/Sleep`, "sleep"),
+// ];
 
 const weeklies = [
-  createData(`Una's Task 1`, "una1", null, icon_una_weekly, "unaW"),
-  createData(`Una's Task 2`, "una2", null, icon_una_weekly, "unaW"),
-  createData(`Una's Task 3`, "una3", null, icon_una_weekly, "unaW"),
+  createData(`Una's Task 1`, "una1", null, false, icon_una_weekly, "unaW"),
+  createData(`Una's Task 2`, "una2", null, false, icon_una_weekly, "unaW"),
+  createData(`Una's Task 3`, "una3", null, false, icon_una_weekly, "unaW"),
   createData(
     `Ghostship`,
     "ghostship1",
     "Account Weekly - once per roster",
+    false,
     icon_ghost_ship,
     "ghost"
   ),
@@ -240,72 +333,18 @@ const weeklies = [
   // createData(`Guardian 2`, "guardian2"),
   // createData(`Guardian 3`, "guardian3"),
   createData(
-    `[340] Vern 1-1`,
-    "abyssdemonbeastcanyon",
+    `Abyss Raid - Argos`,
+    "abyssraidargos",
     null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[340] Vern 1-2`,
-    "abyssnecromancer",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[460] Rohendel 2-1`,
-    "abysstwistedwarlord",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[460] Rohendel 2-2`,
-    "abysshildebrandt",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[840] Yorn 3-1`,
-    "abyssroadofsorrow",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[840] Yorn 3-2`,
-    "abyssforgottenforge",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[960] Feiton 4-1`,
-    "abyssoblivionsea",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[960] Feiton 4-2`,
-    "abyssperilousabyss",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
-  ),
-  createData(
-    `[960] Feiton 4-3`,
-    "abyssunderwatersanctuary",
-    null,
-    icon_abyss_dungeon,
-    "abyssD"
+    false,
+    icon_abyss_raid,
+    "abyssR"
   ),
   createData(
     `[1325] Punika 5-1`,
     "abyssdistraughtforest",
     null,
+    false,
     icon_abyss_dungeon,
     "abyssD"
   ),
@@ -313,15 +352,81 @@ const weeklies = [
     `[1340] Punika 5-2`,
     "abyssrottingglade",
     null,
+    false,
     icon_abyss_dungeon,
     "abyssD"
   ),
   createData(
-    `Abyss Raid - Argos`,
-    "abyssraidargos",
+    `[960] Feiton 4-1`,
+    "abyssoblivionsea",
     null,
-    icon_abyss_raid,
-    "abyssR"
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[960] Feiton 4-2`,
+    "abyssperilousabyss",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[960] Feiton 4-3`,
+    "abyssunderwatersanctuary",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[840] Yorn 3-1`,
+    "abyssroadofsorrow",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[840] Yorn 3-2`,
+    "abyssforgottenforge",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[460] Rohendel 2-1`,
+    "abysstwistedwarlord",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[460] Rohendel 2-2`,
+    "abysshildebrandt",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[340] Vern 1-1`,
+    "abyssdemonbeastcanyon",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[340] Vern 1-2`,
+    "abyssnecromancer",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
   ),
 ];
 
@@ -451,6 +556,113 @@ export default function Checklist(props) {
     toggleAccountDaily(id);
   }
 
+  function getChildPayload(index) {
+    return tasks[index];
+  }
+
+  function onDrop({ removedIndex, addedIndex, payload }) {
+    console.log(removedIndex, addedIndex, payload, tasks[removedIndex]);
+    // setTasks(
+    //   ([tasks[removedIndex], tasks[addedIndex]] = [
+    //     tasks[addedIndex],
+    //     tasks[removedIndex],
+    //   ])
+    // );
+    // let newTasks = _.reduce(
+    //   tasks,
+    //   (result, task) => {
+    //     if (!["chaos1",
+    //     "chaos2",
+    //     "guardian1",
+    //     "guardian2",
+    //     "una1",
+    //     "una2",
+    //     "una3",].includes(task.id)) {
+    //       result.push(task);
+    //     }
+    //     return result;
+    //   },
+    //   []
+    // );
+    // console.log(newTasks);
+    let newTasks = _.cloneDeep(tasks);
+
+    // if (["chaos1", "guardian1"].includes(tasks[removedIndex]["id"])) {
+    //   console.log("move CG to");
+    //   if (removedIndex > addedIndex) {
+    //     arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    //     arrayMoveMutable(newTasks, removedIndex + 1, addedIndex + 1);
+    //   } else {
+    //     if (["una1"].includes(tasks[addedIndex]["id"])) {
+    //       console.log("moving c/g under una");
+    //       arrayMoveMutable(newTasks, addedIndex, removedIndex);
+    //       arrayMoveMutable(newTasks, addedIndex + 1, removedIndex + 1);
+    //       arrayMoveMutable(newTasks, addedIndex + 2, removedIndex + 2);
+    //     } else if (["chaos1", "guardian1"].includes(tasks[addedIndex]["id"])) {
+    //       arrayMoveMutable(newTasks, addedIndex, removedIndex);
+    //       arrayMoveMutable(newTasks, addedIndex + 1, removedIndex + 1);
+    //     } else {
+    //       arrayMoveMutable(newTasks, addedIndex, removedIndex);
+    //     }
+    //   }
+    // } else if (["una1"].includes(tasks[removedIndex]["id"])) {
+    //   console.log("move una to");
+
+    //   if (removedIndex > addedIndex) {
+    //     arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    //     arrayMoveMutable(newTasks, removedIndex + 1, addedIndex + 1);
+    //     arrayMoveMutable(newTasks, removedIndex + 2, addedIndex + 2);
+    //   } else {
+    //     if (["chaos1", "guardian1"].includes(tasks[addedIndex]["id"])) {
+    //       console.log("moving una under chaos or guardian");
+    //       arrayMoveMutable(newTasks, addedIndex, removedIndex);
+    //       arrayMoveMutable(newTasks, addedIndex + 1, removedIndex + 1);
+    //     } else {
+    //       console.log("drag una below something else");
+    //       arrayMoveMutable(newTasks, addedIndex, removedIndex);
+    //     }
+    //   }
+    // } else if (["chaos1", "guardian1"].includes(tasks[addedIndex]["id"])) {
+    //   if (removedIndex > addedIndex) {
+    //     arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    //   } else {
+    //     arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    //     arrayMoveMutable(newTasks, removedIndex + 1, addedIndex + 1);
+    //   }
+    // } else if (["una1"].includes(tasks[addedIndex]["id"])) {
+    //   if (removedIndex > addedIndex) {
+    //     arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    //   } else {
+    //     arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    //     arrayMoveMutable(newTasks, removedIndex + 1, addedIndex + 1);
+    //     arrayMoveMutable(newTasks, removedIndex + 2, addedIndex + 2);
+    //   }
+    // }
+    // // 3, 0
+    // // 4, 1
+    // // 5, 2
+    // else {
+    //   arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    // }
+    arrayMoveMutable(newTasks, removedIndex, addedIndex);
+    setTasks(newTasks);
+    console.log(newTasks);
+  }
+
+  function toggleVisibility(taskName) {
+    let newTasks = _.cloneDeep(tasks);
+    setTasks(
+      newTasks.map((item) =>
+        item.id === taskName
+          ? {
+              ...item,
+              isVisible: !item.isVisible,
+            }
+          : item
+      )
+    );
+  }
+
   const IconImage = styled.img`
     display: inline-flex;
     width: 24px;
@@ -541,6 +753,137 @@ export default function Checklist(props) {
         }
         disableRipple
       />
+    );
+  };
+
+  const renderTaskRows = (row) => {
+    if (row.id === "una1") {
+      const unaTasks = [
+        row,
+        {
+          ...row,
+          id: "una2",
+          name: `Una's Task 2`,
+        },
+        {
+          ...row,
+          id: "una3",
+          name: `Una's Task 3`,
+        },
+      ];
+      return _.map(unaTasks, (task) => renderTaskRow(task));
+    } else if (row.id === "chaos1") {
+      const chaosTasks = [
+        row,
+        {
+          ...row,
+          id: "chaos2",
+          name: `Chaos Dungeon 2`,
+        },
+      ];
+      return _.map(chaosTasks, (task) => renderTaskRow(task));
+    } else if (row.id === "guardian1") {
+      const guardianTasks = [
+        row,
+        {
+          ...row,
+          id: "guardian2",
+          name: `Guardian Raid 2`,
+        },
+      ];
+      return _.map(guardianTasks, (task) => renderTaskRow(task));
+    } else {
+      return renderTaskRow(row);
+    }
+  };
+
+  const renderTaskRow = (row) => {
+    return (
+      <TableRow
+        hover
+        role="checkbox"
+        key={row.id}
+        sx={!row.isVisible && { display: "none" }}
+      >
+        <TableCell sx={{ width: "1px" }}>
+          {row.info && (
+            <Tooltip title={row.info}>
+              <IconButton size="small">{row.info && <InfoIcon />}</IconButton>
+            </Tooltip>
+          )}
+          {row.icon && (
+            <IconButton size="small">
+              <IconImage src={row.icon} alt={row.name} />
+            </IconButton>
+          )}
+        </TableCell>
+        <TableCell sx={{ width: "1px" }}>
+          <Typography color={row.color ? row.color : "#fff"}>
+            {row.name}
+          </Typography>
+        </TableCell>
+        {!row.isRoster ? (
+          siteSettings.roster.map((charData) => {
+            return (
+              <TableCell padding="checkbox" key={`dailies-${charData.id}`}>
+                <Button
+                  onClick={() => {
+                    handleDailyStatus(row.id, charData.id, charData);
+                  }}
+                  fullWidth
+                  variant={"text"}
+                >
+                  {_.some(
+                    ["una1", "una2", "una3"],
+                    (item) => item === row.id
+                  ) ? (
+                    renderUnaTask(row, charData)
+                  ) : (
+                    <Checkbox
+                      checked={
+                        siteSettings.dailyTaskStatus[charData.id][row.id]
+                      }
+                      sx={
+                        row.color && {
+                          color: row.color,
+                          "&.Mui-checked": {
+                            color: row.color,
+                          },
+                        }
+                      }
+                      disableRipple
+                    />
+                  )}
+                </Button>
+              </TableCell>
+            );
+          })
+        ) : (
+          <TableCell padding="checkbox" key={`dailies-${row.id}`}>
+            <Button
+              onClick={() => {
+                handleDailyStatus(row.id);
+              }}
+              fullWidth
+              variant={"text"}
+            >
+              <Checkbox
+                checked={false}
+                sx={
+                  row.color && {
+                    color: row.color,
+                    "&.Mui-checked": {
+                      color: row.color,
+                    },
+                  }
+                }
+                disableRipple
+              />
+            </Button>
+          </TableCell>
+        )}
+        <TableCell />
+      </TableRow>
     );
   };
 
@@ -663,21 +1006,40 @@ export default function Checklist(props) {
               <TableRow>
                 <TableCell colSpan={siteSettings.roster.length + 2}>
                   <List>
-                    <Container dragHandleSelector=".drag-handle">
+                    <Container
+                      dragHandleSelector=".drag-handle"
+                      lockAxis="y"
+                      onDrop={onDrop}
+                      getChildPayload={getChildPayload}
+                    >
                       {tasks.map((row) => {
-                        const skip = ["una2", "una3", "chaos2", "guardian2"];
                         const rename = ["una1", "chaos1", "guardian1"];
-                        if (!skip.includes(row.id)) {
-                          return (
-                            <Draggable key={`drag-item-${row.id}`}>
-                              <ListItem dense>
-                                <ListItemIcon>
-                                  <IconButton>
-                                    <SwapVertIcon className="drag-handle" />
-                                  </IconButton>
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary={
+                        const staticTasks = [
+                          "guildDonation",
+                          "una1",
+                          "chaos1",
+                          "guardian1",
+                          "adv",
+                          "cal",
+                          "chaosgate",
+                        ];
+                        return (
+                          <Draggable key={`drag-item-${row.id}`}>
+                            <ListItem dense>
+                              <ListItemIcon>
+                                <IconButton>
+                                  <SwapVertIcon className="drag-handle" />
+                                </IconButton>
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={
+                                  staticTasks.includes(row.id) ? (
+                                    <Typography>
+                                      {rename.includes(row.id)
+                                        ? row.name.slice(0, -2)
+                                        : row.name}
+                                    </Typography>
+                                  ) : (
                                     <FormControl
                                       sx={{
                                         m: 0,
@@ -688,7 +1050,6 @@ export default function Checklist(props) {
                                     >
                                       {/* <InputLabel id={`character-${charData.id}-label`}>Class</InputLabel> */}
                                       <TextField
-                                        disableClearable
                                         fullWidth
                                         label="Task name"
                                         value={
@@ -698,69 +1059,71 @@ export default function Checklist(props) {
                                         }
                                       />
                                     </FormControl>
-                                    // <Button
-                                    //   sx={{
-                                    //     textTransform: "none",
-                                    //     borderColor: "rgba(255,255,255,0.16)",
-                                    //     display: "flex",
-                                    //     flexDirection: "column",
-                                    //   }}
-                                    //   variant="outlined"
-                                    // >
-                                    //   <Typography
-                                    //     align="center"
-                                    //     color={row.color ? row.color : "#fff"}
-                                    //   >
-                                    //     {rename.includes(row.id)
-                                    //       ? row.name.slice(0, -2)
-                                    //       : row.name}
-                                    //   </Typography>
-                                    // </Button>
-                                  }
-                                  sx={{ flexGrow: 0, mr: 2 }}
-                                />
-                                <ListItemIcon>
-                                  <Tooltip title="Show/Hide task">
-                                    <IconButton>
+                                  )
+                                }
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  flexGrow: 0,
+                                  mr: 2,
+                                  height: 80,
+                                  width: 240,
+                                }}
+                              />
+                              <ListItemIcon>
+                                <Tooltip title="Show/Hide task">
+                                  <IconButton
+                                    onClick={() => toggleVisibility(row.id)}
+                                    color={
+                                      row.isVisible ? "primary" : "secondary"
+                                    }
+                                  >
+                                    {row.isVisible ? (
                                       <VisibilityIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                </ListItemIcon>
-                                <FormControlLabel
-                                  control={<Checkbox />}
-                                  label="Roster-wide"
-                                />
-                                <ListItemIcon>
-                                  <Tooltip title="Delete task forever">
-                                    <IconButton>
-                                      <DeleteForeverIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                </ListItemIcon>
-                              </ListItem>
-                              {/* <TableRow key={row.id}>
-                          <TableCell></TableCell>
-                          <TableCell colSpan={siteSettings.roster.length + 2}>
-                            <Typography>{row.name}</Typography>
-                          </TableCell>
-                        </TableRow> */}
-                            </Draggable>
-                          );
-                        } else {
-                          return null;
-                        }
+                                    ) : (
+                                      <VisibilityOffIcon />
+                                    )}
+                                  </IconButton>
+                                </Tooltip>
+                              </ListItemIcon>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    disabled={staticTasks.includes(row.id)}
+                                    checked={row.isRoster}
+                                  />
+                                }
+                                label="Roster-wide"
+                              />
+                              <ListItemIcon>
+                                <Tooltip title="Delete task forever">
+                                  <IconButton
+                                    color="error"
+                                    disabled={staticTasks.includes(row.id)}
+                                  >
+                                    <DeleteForeverIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </ListItemIcon>
+                            </ListItem>
+                          </Draggable>
+                        );
                       })}
                     </Container>
                   </List>
                 </TableCell>
               </TableRow>
             ) : (
+              siteSettings.dailyTasksOpen &&
               tasks.map((row) => {
                 // console.log(row);
                 return (
                   <React.Fragment key={`daily_component_${row.id}`}>
                     {row.id === "una1" && siteSettings.useRestUna && (
-                      <TableRow key={"unas_rested_row"}>
+                      <TableRow
+                        key={"unas_rested_row"}
+                        sx={!row.isVisible && { display: "none" }}
+                      >
                         <TableCell>
                           <IconButton size="small">
                             <IconImage src={row.icon} alt={row.name} />
@@ -947,97 +1310,7 @@ export default function Checklist(props) {
                         <TableCell />
                       </TableRow>
                     )}
-                    <TableRow hover role="checkbox" key={row.id}>
-                      <TableCell sx={{ width: "1px" }}>
-                        {row.info && (
-                          <Tooltip title={row.info}>
-                            <IconButton size="small">
-                              {row.info && <InfoIcon />}
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        {row.icon && (
-                          <IconButton size="small">
-                            <IconImage src={row.icon} alt={row.name} />
-                          </IconButton>
-                        )}
-                      </TableCell>
-                      <TableCell sx={{ width: "1px" }}>
-                        <Typography color={row.color ? row.color : "#fff"}>
-                          {row.name}
-                        </Typography>
-                      </TableCell>
-                      {!row.isRoster ? (
-                        siteSettings.roster.map((charData) => {
-                          return (
-                            <TableCell
-                              padding="checkbox"
-                              key={`dailies-${charData.id}`}
-                            >
-                              <Button
-                                onClick={() => {
-                                  handleDailyStatus(
-                                    row.id,
-                                    charData.id,
-                                    charData
-                                  );
-                                }}
-                                fullWidth
-                                variant={"text"}
-                              >
-                                {_.some(
-                                  ["una1", "una2", "una3"],
-                                  (item) => item === row.id
-                                ) ? (
-                                  renderUnaTask(row, charData)
-                                ) : (
-                                  <Checkbox
-                                    checked={
-                                      siteSettings.dailyTaskStatus[charData.id][
-                                        row.id
-                                      ]
-                                    }
-                                    sx={
-                                      row.color && {
-                                        color: row.color,
-                                        "&.Mui-checked": {
-                                          color: row.color,
-                                        },
-                                      }
-                                    }
-                                    disableRipple
-                                  />
-                                )}
-                              </Button>
-                            </TableCell>
-                          );
-                        })
-                      ) : (
-                        <TableCell padding="checkbox" key={`dailies-${row.id}`}>
-                          <Button
-                            onClick={() => {
-                              handleDailyStatus(row.id);
-                            }}
-                            fullWidth
-                            variant={"text"}
-                          >
-                            <Checkbox
-                              checked={false}
-                              sx={
-                                row.color && {
-                                  color: row.color,
-                                  "&.Mui-checked": {
-                                    color: row.color,
-                                  },
-                                }
-                              }
-                              disableRipple
-                            />
-                          </Button>
-                        </TableCell>
-                      )}
-                      <TableCell />
-                    </TableRow>
+                    {renderTaskRows(row)}
                   </React.Fragment>
                 );
               })
