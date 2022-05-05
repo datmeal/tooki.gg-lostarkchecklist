@@ -1035,8 +1035,7 @@ function App() {
                 sx={{ transform: "rotate(5deg)", fontSize: 11 }}
                 color="chaos.main"
               >
-                Custom tasks coming soon
-                <br /> Mari's shop calcs are currently a little off. Sorry!
+                Custom tasks coming soon!
               </Typography>
             </Box>
           </Grid>
