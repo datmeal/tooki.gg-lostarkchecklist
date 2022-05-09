@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/static/js/main.d37da085.js",
+    "main.js": "/static/js/main.127f915b.js",
     "static/js/787.8d6bb516.chunk.js": "/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/static/media/moake.fc4e652f9a54ec87dc0c.png",
@@ -45,10 +45,10 @@
     "static/media/forpe.webp": "/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/index.html",
-    "main.d37da085.js.map": "/static/js/main.d37da085.js.map",
+    "main.127f915b.js.map": "/static/js/main.127f915b.js.map",
     "787.8d6bb516.chunk.js.map": "/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.d37da085.js"
+    "static/js/main.127f915b.js"
   ]
 }
