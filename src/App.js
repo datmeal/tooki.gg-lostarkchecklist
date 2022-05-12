@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import _ from "lodash";
+import { format, subHours } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import styled from "@emotion/styled";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -27,10 +29,271 @@ import Checklist from "./Checklist";
 import Events from "./Events";
 import Arbitrage from "./Arbitrage";
 
+// Image / Color Stuff
+import icon_guild from "./img/icon_guild.png";
+import icon_una_daily from "./img/icon_una_daily.png";
+import icon_una_weekly from "./img/icon_una_weekly.png";
+import icon_chaos_dungeon from "./img/icon_chaos_dungeon.png";
+import icon_guardian from "./img/icon_guardian.png";
+import icon_adventure_island from "./img/icon_adventure_island.png";
+import icon_chaos_gate from "./img/icon_chaos_gate.png";
+import icon_field_boss from "./img/icon_field_boss.png";
+import icon_ghost_ship from "./img/icon_ghost_ship.png";
+import icon_rapport from "./img/icon_rapport.png";
+import icon_tower from "./img/icon_tower.png";
+import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
+import icon_abyss_raid from "./img/icon_abyss_raid.png";
+import icon_grandprix from "./img/events/grandprix.webp";
+import icon_bloodstone from "./img/icon_bloodstone.png";
+import icon_pirate_coin from "./img/icon_pirate_coin.png";
+import icon_rift_pieces from "./img/icon_rift_pieces.png";
+import icon_coin_of_courage from "./img/icon_coin_of_courage.png";
+import icon_competitive from "./img/icon_competitive.png";
+import icon_anguished from "./img/icon_anguished.png";
+import icon_cradle from "./img/icon_cradle.png";
 import logo from "./img/logo.png";
-import { format, subHours } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+
 // import "./App.css";
+
+function createData(
+  name,
+  id,
+  info = null,
+  custom = false,
+  icon = null,
+  color = null,
+  isRoster = false,
+  order = null,
+  isVisible = true
+) {
+  return { name, id, info, custom, icon, color, isRoster, order, isVisible };
+}
+
+const dailyTaskData = [
+  createData(`Guild Donations`, "guildDonation", null, false, icon_guild),
+  createData(
+    `Una's Task 1`,
+    "una1",
+    null,
+    false,
+    icon_una_daily,
+    lightGreen[500]
+  ),
+  // createData(
+  //   `Una's Task 2`,
+  //   "una2",
+  //   null,
+  //   false,
+  //   icon_una_daily,
+  //   lightGreen[500]
+  // ),
+  // createData(
+  //   `Una's Task 3`,
+  //   "una3",
+  //   null,
+  //   false,
+  //   icon_una_daily,
+  //   lightGreen[500]
+  // ),
+  createData(
+    `Chaos Dungeon 1`,
+    "chaos1",
+    null,
+    false,
+    icon_chaos_dungeon,
+    amber[500]
+  ),
+  // createData(
+  //   `Chaos Dungeon 2`,
+  //   "chaos2",
+  //   null,
+  //   false,
+  //   icon_chaos_dungeon,
+  //   amber[500]
+  // ),
+  createData(
+    `Guardian Raid 1`,
+    "guardian1",
+    null,
+    false,
+    icon_guardian,
+    red[300]
+  ),
+  // createData(
+  //   `Guardian Raid 2`,
+  //   "guardian2",
+  //   null,
+  //   false,
+  //   icon_guardian,
+  //   red[300]
+  // ),
+  createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    true,
+    icon_guardian,
+    red[300]
+  ),
+  createData(
+    `Kalthertz`,
+    "kalthertz",
+    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task",
+    true
+  ),
+
+  // createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
+  createData(
+    `Adventure Island`,
+    "adv",
+    null,
+    false,
+    icon_adventure_island,
+    purple[200],
+    true
+  ),
+  createData(`Field Boss`, "cal", null, false, icon_field_boss, red[300], true),
+  createData(
+    `Chaos Gate`,
+    "chaosgate",
+    null,
+    false,
+    icon_chaos_gate,
+    deepPurple["A100"],
+    true
+  ),
+  createData(
+    `Anguished Isle`,
+    "anguishedisle",
+    null,
+    true,
+    icon_anguished,
+    null,
+    false
+  ),
+  createData(
+    `Cradle of the Sea Fermata`,
+    "cradle",
+    null,
+    true,
+    icon_cradle,
+    null,
+    false
+  ),
+];
+
+const weeklyTaskData = [
+  createData(`Una's Task 1`, "una1", null, false, icon_una_weekly, "unaW"),
+  createData(`Una's Task 2`, "una2", null, false, icon_una_weekly, "unaW"),
+  createData(`Una's Task 3`, "una3", null, false, icon_una_weekly, "unaW"),
+  createData(
+    `Ghostship`,
+    "ghostship1",
+    "Account Weekly - once per roster",
+    false,
+    icon_ghost_ship,
+    "ghost"
+  ),
+  // createData(`Guardian 1`, "guardian1"),
+  // createData(`Guardian 2`, "guardian2"),
+  // createData(`Guardian 3`, "guardian3"),
+  createData(
+    `Abyss Raid - Argos`,
+    "abyssraidargos",
+    null,
+    false,
+    icon_abyss_raid,
+    "abyssR"
+  ),
+  createData(
+    `[1325] Punika 5-1`,
+    "abyssdistraughtforest",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[1340] Punika 5-2`,
+    "abyssrottingglade",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[960] Feiton 4-1`,
+    "abyssoblivionsea",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[960] Feiton 4-2`,
+    "abyssperilousabyss",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[960] Feiton 4-3`,
+    "abyssunderwatersanctuary",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[840] Yorn 3-1`,
+    "abyssroadofsorrow",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[840] Yorn 3-2`,
+    "abyssforgottenforge",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[460] Rohendel 2-1`,
+    "abysstwistedwarlord",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[460] Rohendel 2-2`,
+    "abysshildebrandt",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[340] Vern 1-1`,
+    "abyssdemonbeastcanyon",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+  createData(
+    `[340] Vern 1-2`,
+    "abyssnecromancer",
+    null,
+    false,
+    icon_abyss_dungeon,
+    "abyssD"
+  ),
+];
 
 const defaultValues = {
   siteSettings: {
@@ -44,6 +307,23 @@ const defaultValues = {
     useRestUna: false,
     roster: [],
     dailyTaskStatus: {},
+    rosterTaskStatus: {},
+    taskSettings: {
+      daily: [],
+      weekly: [],
+    },
+    weeklyTaskStatus: {},
+  },
+  customTask: {
+    color: null,
+    custom: true,
+    icon: null,
+    id: "",
+    info: null,
+    isRoster: false,
+    isVisible: true,
+    name: "",
+    order: null,
   },
   una: {
     name: "",
@@ -53,7 +333,7 @@ const defaultValues = {
   },
   character: {
     id: "",
-    name: "",
+    name: "Name/Class",
     ilvl: 0,
     rest_chaos: 0,
     rest_chaos_temp: 0,
@@ -91,6 +371,8 @@ const defaultValues = {
     eventguardian: false,
     kalthertz: false,
     guildDonation: false,
+    anguishedisle: false,
+    cradle: false,
   },
   weeklies: {
     una1: false,
@@ -195,9 +477,25 @@ const useStore = create((set, get) => ({
         }),
         dailyTaskStatus: {
           ...state.siteSettings.dailyTaskStatus,
-          [id]: {
-            ...defaultValues.dailies,
-          },
+          [id]: state.siteSettings.taskSettings.daily.reduce(
+            (obj, key) => {
+              obj[key.id] = false;
+              return obj;
+            },
+            {
+              una2: false,
+              una3: false,
+              chaos2: false,
+              guardian2: false,
+            }
+          ),
+        },
+        weeklyTaskStatus: {
+          ...state.siteSettings.weeklyTaskStatus,
+          [id]: state.siteSettings.taskSettings.weekly.reduce((obj, key) => {
+            obj[key.id] = false;
+            return obj;
+          }, {}),
         },
       },
       // eventually will migrate this data as well
@@ -209,6 +507,81 @@ const useStore = create((set, get) => ({
     }));
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
+  },
+  setDailyTaskSettings: (dailyTasks) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        taskSettings: {
+          ...state.siteSettings.taskSettings,
+          daily: dailyTasks,
+        },
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  addDailyTask: () => {
+    const id = Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+    // setTasks(
+    //   newTasks.concat(createData(`New Task`, id, null, true, null, null, false))
+    // );
+    const newTask = {
+      ...defaultValues.customTask,
+      id,
+      name: "New Task",
+    };
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        taskSettings: {
+          ...state.siteSettings.taskSettings,
+          daily: state.siteSettings.taskSettings.daily.concat(newTask),
+        },
+        dailyTaskStatus: Object.keys(state.siteSettings.dailyTaskStatus).reduce(
+          (obj, key) => {
+            state.siteSettings.dailyTaskStatus[key][id] = false;
+            obj[key] = state.siteSettings.dailyTaskStatus[key];
+            return obj;
+          },
+          {}
+        ),
+        // dailyTaskStatus: _.map(state.siteSettings.dailyTaskStatus, (item) => [item.id]: item),
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  addWeeklyTask: () => {
+    const id = Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+    // setTasks(
+    //   newTasks.concat(createData(`New Task`, id, null, true, null, null, false))
+    // );
+    const newTask = {
+      ...defaultValues.customTask,
+      id,
+      name: "New Task",
+    };
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        taskSettings: {
+          ...state.siteSettings.taskSettings,
+          weekly: state.siteSettings.taskSettings.weekly.concat(newTask),
+        },
+        weeklyTaskStatus: Object.keys(
+          state.siteSettings.weeklyTaskStatus
+        ).reduce((obj, key) => {
+          state.siteSettings.weeklyTaskStatus[key][id] = false;
+          obj[key] = state.siteSettings.weeklyTaskStatus[key];
+          return obj;
+        }, {}),
+        // weeklyTaskStatus: _.map(state.siteSettings.weeklyTaskStatus, (item) => [item.id]: item),
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   removeCharacter: (id) => {
     set((state) => ({
@@ -280,7 +653,32 @@ const useStore = create((set, get) => ({
       siteSettings: {
         ...state.siteSettings,
         roster: updatedRoster,
-        dailyTaskStatus: updatedDailyTaskStatus,
+        // dailyTaskStatus: updatedDailyTaskStatus,
+        dailyTaskStatus: Object.keys(state.siteSettings.dailyTaskStatus).reduce(
+          (obj, key) => {
+            obj[key] = Object.keys(
+              state.siteSettings.dailyTaskStatus[key]
+            ).reduce((result, task) => {
+              return { ...result, [task]: false };
+            }, {});
+            return obj;
+          },
+          {}
+        ),
+        rosterTaskStatus: _.reduce(
+          state.siteSettings.taskSettings.daily.reduce((result, task) => {
+            // filter down to an array of legitimate ids(isRoster)
+            if (task.isRoster) {
+              result.push(task.id);
+            }
+            return result;
+          }, []),
+          (result, item) => {
+            result[item] = false;
+            return result;
+          },
+          state.siteSettings.rosterTaskStatus
+        ),
       },
       taskStatus: state.taskStatus.map((item) => ({
         ...item,
@@ -320,14 +718,61 @@ const useStore = create((set, get) => ({
   },
   resetWeeklyTasks: () => {
     set((state) => ({
-      taskStatus: state.taskStatus.map((item) => ({
-        ...item,
-        weeklies: defaultValues.weeklies,
-        weeklyVendors: defaultValues.weeklyVendors,
-      })),
+      siteSettings: {
+        ...state.siteSettings,
+        // time for the boosy-mcboose double-reduce
+        // it's my code and I can write what I want to
+        rosterTaskStatus: _.reduce(
+          state.siteSettings.taskSettings.weekly.reduce((result, task) => {
+            // filter down to an array of legitimate ids(isRoster)
+            if (task.isRoster) {
+              result.push(task.id);
+            }
+            return result;
+          }, []),
+          (result, item) => {
+            result[item] = false;
+            return result;
+          },
+          state.siteSettings.rosterTaskStatus
+        ),
+        weeklyTaskStatus: Object.keys(
+          state.siteSettings.weeklyTaskStatus
+        ).reduce((obj, key) => {
+          obj[key] = Object.keys(
+            state.siteSettings.weeklyTaskStatus[key]
+          ).reduce((result, task) => {
+            return { ...result, [task]: false };
+          }, {});
+          return obj;
+        }, {}),
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
-    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  setDailyTasks: (dailyTasks) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        taskSettings: {
+          ...state.siteSettings.taskSettings,
+          daily: dailyTasks,
+        },
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  setWeeklyTasks: (weeklyTasks) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        taskSettings: {
+          ...state.siteSettings.taskSettings,
+          weekly: weeklyTasks,
+        },
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   setTabValue: (value) =>
     set((state) => ({
@@ -357,53 +802,76 @@ const useStore = create((set, get) => ({
             [task]: !state.siteSettings.dailyTaskStatus[id][task],
           },
         },
-        // dailyTaskStatus: state.siteSettings.dailyTaskStatus.reduce((result, char) => {
-
-        //   if (char.id === id) {
-        //     const newDailies = {
-        //       ...char.dailies,
-        //       [task]: !char.dailies[task],
-        //     };
-        //     char.dailies = newDailies;
-        //   }
-        //   result.push(char);
-        //   return result;
-        // }, {})
-        // roster: {
-        //   ...state.siteSettings.roster,
-
-        // }
-        //   state.taskStatus.map((item) =>
-        //   item.id === id
-        //     ? {
-        //         ...item,
-        //         dailies: {
-        //           ...item.dailies,
-        //           [task]: !item.dailies[task],
-        //         },
-        //       }
-        //     : item
-        // )
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  createRosterStatus: (taskId) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        rosterTaskStatus: {
+          ...state.siteSettings.rosterTaskStatus,
+          [taskId]: false,
+        },
+      },
+    }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  toggleRosterStatus: (taskId) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        rosterTaskStatus: {
+          ...state.siteSettings.rosterTaskStatus,
+          [taskId]: !state.siteSettings.rosterTaskStatus[taskId],
+        },
       },
     }));
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   toggleWeeklyStatus: (task, id) => {
+    console.log("toggleWeeklyStatus", task, id);
     set((state) => ({
-      taskStatus: state.taskStatus.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              weeklies: {
-                ...item.weeklies,
-                [task]: !item.weeklies[task],
-              },
-            }
-          : item
-      ),
+      siteSettings: {
+        ...state.siteSettings,
+        weeklyTaskStatus: {
+          ...state.siteSettings.weeklyTaskStatus,
+          [id]: {
+            ...state.siteSettings.weeklyTaskStatus[id],
+            [task]: !state.siteSettings.weeklyTaskStatus[id][task],
+          },
+        },
+      },
     }));
-    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
-    localStorage.setItem("rosterStatus", JSON.stringify(get().rosterStatus));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+  },
+  deleteTask: (taskId) => {
+    set((state) => ({
+      siteSettings: {
+        ...state.siteSettings,
+        taskSettings: {
+          daily: state.siteSettings.taskSettings.daily.reduce(
+            (result, task) => {
+              if (task.id !== taskId) {
+                result.push(task);
+              }
+              return result;
+            },
+            []
+          ),
+          weekly: state.siteSettings.taskSettings.weekly.reduce(
+            (result, task) => {
+              if (task.id !== taskId) {
+                result.push(task);
+              }
+              return result;
+            },
+            []
+          ),
+        },
+      },
+    }));
   },
   toggleWeeklyVendorStatus: (task, id) => {
     set((state) => ({
@@ -517,6 +985,24 @@ const useStore = create((set, get) => ({
     dailyTaskStatus: {
       0: defaultValues.dailies,
     },
+    weeklyTaskStatus: {
+      0: defaultValues.weeklies,
+    },
+    rosterTaskStatus: dailyTaskData.reduce((result, task) => {
+      if (task.isRoster) {
+        result[task.id] = false;
+      }
+      return result;
+    }, {}),
+    taskSettings: {
+      daily: dailyTaskData,
+      weekly: weeklyTaskData,
+    },
+  },
+  taskSettings: {
+    // dont use this
+    daily: [],
+    weekly: [],
   },
   taskStatus: [
     {
@@ -830,6 +1316,7 @@ function App() {
     const localTaskStatus = localStorage.getItem("taskStatus");
     const parsedLocalTasks = JSON.parse(localTaskStatus);
     const localRosterStatus = localStorage.getItem("rosterStatus");
+    const parsedRosterStatus = JSON.parse(localRosterStatus);
     const localEventSettings = localStorage.getItem("eventSettings");
 
     const defaultUna = {
@@ -839,6 +1326,8 @@ function App() {
       require: 0,
     };
 
+    // console.log(dailyTaskData);
+
     if (localSiteSettings) {
       let updatedSettings = { ...defaultValues.siteSettings };
       _.each(parsedSiteSettings, (value, settingName) => {
@@ -846,6 +1335,7 @@ function App() {
       });
       // new roster data format, get the old format and replace contents if necessary
       if (localTaskStatus && !_.has(parsedSiteSettings, "roster")) {
+        console.log("parsed:", parsedSiteSettings);
         // converting old localStorage data to new format
         const oldRoster = _.reduce(
           parsedLocalTasks,
@@ -890,8 +1380,23 @@ function App() {
           },
           {}
         );
+        const updatedWeeklyTaskStatus = _.reduce(
+          parsedLocalTasks,
+          (result, char) => {
+            const weeklyStatus = {
+              [char.id]: char.weeklies,
+            };
+            result = {
+              ...result,
+              ...weeklyStatus,
+            };
+            return result;
+          },
+          {}
+        );
         // console.log(updatedDailyTaskStatus);
         updatedSettings.dailyTaskStatus = updatedDailyTaskStatus;
+        updatedSettings.weeklyTaskStatus = updatedWeeklyTaskStatus;
       } else {
         // Already on new format
         const updatedDailyTaskStatus = _.reduce(
@@ -911,8 +1416,74 @@ function App() {
         );
         // console.log(updatedDailyTaskStatus);
         updatedSettings.dailyTaskStatus = updatedDailyTaskStatus;
+
+        if (_.has(parsedSiteSettings, "weeklyTaskStatus")) {
+          updatedSettings.weeklyTaskStatus = parsedSiteSettings.roster.reduce(
+            (result, char) => {
+              const weeklyStatus = {
+                [char.id]: parsedSiteSettings.weeklyTaskStatus[char.id],
+              };
+              result = {
+                ...result,
+                ...weeklyStatus,
+              };
+              return result;
+            },
+            {}
+          );
+        } else {
+          // grab from taskStatus localStorage
+          updatedSettings.weeklyTaskStatus = parsedLocalTasks.reduce(
+            (result, char) => {
+              const weeklyStatus = {
+                [char.id]: char.weeklies,
+              };
+              result = {
+                ...result,
+                ...weeklyStatus,
+              };
+              return result;
+            },
+            {}
+          );
+        }
+      }
+      if (_.isEmpty(parsedSiteSettings.rosterTaskStatus)) {
+        updatedSettings.rosterTaskStatus = _.reduce(
+          parsedRosterStatus,
+          (result, task, name) => {
+            if (
+              [
+                "grandprix",
+                "adv",
+                "cal",
+                "chaosgate",
+                "anguishedisle",
+                "cradle",
+              ].includes(name)
+            ) {
+              result[name] = task;
+            }
+            return result;
+          },
+          {}
+        );
+      }
+      if (
+        !_.has(parsedSiteSettings.taskSettings, "daily") ||
+        parsedSiteSettings.taskSettings.daily.length === 0
+      ) {
+        updatedSettings.taskSettings.daily = dailyTaskData;
+      }
+      if (
+        !_.has(parsedSiteSettings.taskSettings, "weekly") ||
+        parsedSiteSettings.taskSettings.weekly.length === 0
+      ) {
+        updatedSettings.taskSettings.weekly = weeklyTaskData;
       }
       updateSiteSettings(updatedSettings);
+    } else {
+      // first time loading page / no siteSettings
     }
     if (localTaskStatus) {
       if (_.has(parsedLocalTasks[0], "weeklyVendors")) {
