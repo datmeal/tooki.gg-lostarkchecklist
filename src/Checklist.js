@@ -92,6 +92,127 @@ function createData(
   return { name, id, info, custom, icon, color, isRoster, order, isVisible };
 }
 
+// const dailies = {
+//     id: 'guildDonation', // id
+//     checked: false, // checkbox status
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     roster: false, // once per roster (one checkbox)
+// }
+
+const dailies = [
+  createData(`Guild Donation`, "guildDonation", null, icon_guild),
+  // createData(`Guild Mission`, "guildMission", null, icon_guild),
+  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
+  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
+  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
+  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
+  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
+  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
+  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
+  createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    icon_guardian,
+    "guardian"
+  ),
+  createData(
+    `Kalthertz`,
+    "kalthertz",
+    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
+  ),
+];
+
+// const dailies = {
+//     id: 'guildDonation', // id
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     isRoster: false, // once per roster (one checkbox)
+//     minilvl: null,
+//     maxilvl: null,
+// }
+
+const newDailies = [
+  createData(`Guild Donation`, "guildDonation", null, icon_guild),
+  // createData(`Guild Mission`, "guildMission", null, icon_guild),
+  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
+  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
+  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
+  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
+  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
+  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
+  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
+  createData(
+    `Event Guardian`,
+    "eventguardian",
+    null,
+    icon_guardian,
+    "guardian"
+  ),
+  createData(
+    `Kalthertz`,
+    "kalthertz",
+    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
+  ),
+
+  createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
+  createData(
+    `Adventure Island`,
+    "adv",
+    null,
+    icon_adventure_island,
+    "adventure",
+    true
+  ),
+  createData(`Field Boss`, "cal", null, icon_field_boss, "guardian", true),
+  createData(
+    `Chaos Gate`,
+    "chaosgate",
+    null,
+    icon_chaos_gate,
+    "chaosGate",
+    true
+  ),
+  createData(
+    `Anguished Isle`,
+    "anguishedisle",
+    null,
+    icon_anguished,
+    null,
+    true
+  ),
+  createData(
+    `Cradle of the Sea Fermata`,
+    "cradle",
+    null,
+    icon_cradle,
+    null,
+    true
+  ),
+];
+
+// const defaultDailyList = [
+//   {
+//     id: 'guildDonation', // id
+//     checked: false, // checkbox status
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     roster: false, // once per roster (one checkbox)
+//   },
+//   {
+//     id: 'guildDonation', // id
+//     checked: false, // checkbox status
+//     icon: icon_guild, // icon image
+//     info: null, // info tooltip on left
+//     name: 'Guild Donation', // display text
+//     roster: false, // once per roster (one checkbox)
+//   },
+// ];
+
 const weeklyVendors = [
   createData(`Guild`, "vendorGuild", null, icon_bloodstone),
   createData(`Pirate`, "vendorPirate", null, icon_pirate_coin),
@@ -563,9 +684,6 @@ export default function Checklist(props) {
       </TableRow>
     );
   };
-
-  const tasks = siteSettings.taskSettings.daily;
-  const weeklies = siteSettings.taskSettings.weekly;
 
   return (
     <ThemeProvider theme={theme}>
@@ -1305,7 +1423,7 @@ export default function Checklist(props) {
                       onDrop={onWeeklyDrop}
                       getChildPayload={getChildPayload}
                     >
-                      {weeklies.map((row) => {
+                      {siteSettings.taskSettings.weekly.map((row) => {
                         const staticTasks = [
                           "una1",
                           "una2",
@@ -1432,7 +1550,9 @@ export default function Checklist(props) {
               </TableRow>
             ) : (
               siteSettings.weeklyTasksOpen &&
-              weeklies.map((row) => renderTaskRow(row, "weekly"))
+              siteSettings.taskSettings.weekly.map((row) =>
+                renderTaskRow(row, "weekly")
+              )
             )}
             <TableRow>
               <TableCell>

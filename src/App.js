@@ -1591,10 +1591,24 @@ function App() {
             paddingTop: 1,
           }}
         >
-          <Grid item md={4} sm={6} xs={12}>
-            <Logo>
-              <img src={logo} alt="tooki.gg - Lost Ark Tools" />
-            </Logo>
+          <Grid item sm={6} xs={12}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Logo>
+                <img src={logo} alt="tooki.gg - Lost Ark Tools" />
+              </Logo>
+              <Typography
+                variant="subtitle2"
+                sx={{ transform: "rotate(5deg)", fontSize: 11 }}
+                color="chaos.main"
+              >
+                Custom tasks coming soon!
+              </Typography>
+            </Box>
           </Grid>
           <Grid item>
             <Tabs
