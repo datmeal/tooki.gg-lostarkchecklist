@@ -832,7 +832,6 @@ const useStore = create((set, get) => ({
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   toggleWeeklyStatus: (task, id) => {
-    console.log("toggleWeeklyStatus", task, id);
     set((state) => ({
       siteSettings: {
         ...state.siteSettings,
