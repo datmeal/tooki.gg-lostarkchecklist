@@ -23,6 +23,7 @@ import {
   deepPurple,
   red,
 } from "@mui/material/colors";
+import SettingsIcon from "@mui/icons-material/Settings";
 import create from "zustand";
 
 import Checklist from "./Checklist";
@@ -1603,10 +1604,16 @@ function App() {
               </Logo>
               <Typography
                 variant="subtitle2"
-                sx={{ transform: "rotate(5deg)", fontSize: 11 }}
+                sx={{
+                  transform: "rotate(5deg)",
+                  fontSize: 11,
+                  verticalAlign: "top",
+                }}
                 color="chaos.main"
               >
-                Custom tasks coming soon!
+                Tasks may now be customized by clicking <SettingsIcon />
+                <br />
+                Now hide those pesky abyss dungeons
               </Typography>
             </Box>
           </Grid>
