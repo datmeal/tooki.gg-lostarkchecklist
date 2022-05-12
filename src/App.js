@@ -1614,6 +1614,8 @@ function App() {
                 Tasks may now be customized by clicking <SettingsIcon />
                 <br />
                 Now hide those pesky abyss dungeons
+                <br />
+                Please report any problems!
               </Typography>
             </Box>
           </Grid>
