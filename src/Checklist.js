@@ -55,27 +55,12 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CharacterSelect from "./CharacterSelect";
 
 // Image / Color Stuff
-import icon_guild from "./img/icon_guild.png";
-import icon_una_daily from "./img/icon_una_daily.png";
-import icon_una_weekly from "./img/icon_una_weekly.png";
 import icon_chaos_dungeon from "./img/icon_chaos_dungeon.png";
-import icon_guardian from "./img/icon_guardian.png";
-import icon_adventure_island from "./img/icon_adventure_island.png";
-import icon_chaos_gate from "./img/icon_chaos_gate.png";
-import icon_field_boss from "./img/icon_field_boss.png";
-import icon_ghost_ship from "./img/icon_ghost_ship.png";
 import icon_rapport from "./img/icon_rapport.png";
-import icon_tower from "./img/icon_tower.png";
-import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
-import icon_abyss_raid from "./img/icon_abyss_raid.png";
-import icon_grandprix from "./img/events/grandprix.webp";
 import icon_bloodstone from "./img/icon_bloodstone.png";
 import icon_pirate_coin from "./img/icon_pirate_coin.png";
 import icon_rift_pieces from "./img/icon_rift_pieces.png";
 import icon_coin_of_courage from "./img/icon_coin_of_courage.png";
-import icon_competitive from "./img/icon_competitive.png";
-import icon_anguished from "./img/icon_anguished.png";
-import icon_cradle from "./img/icon_cradle.png";
 import { LinearProgress } from "@mui/material";
 
 function createData(
@@ -92,133 +77,12 @@ function createData(
   return { name, id, info, custom, icon, color, isRoster, order, isVisible };
 }
 
-// const dailies = {
-//     id: 'guildDonation', // id
-//     checked: false, // checkbox status
-//     icon: icon_guild, // icon image
-//     info: null, // info tooltip on left
-//     name: 'Guild Donation', // display text
-//     roster: false, // once per roster (one checkbox)
-// }
-
-const dailies = [
-  createData(`Guild Donation`, "guildDonation", null, icon_guild),
-  // createData(`Guild Mission`, "guildMission", null, icon_guild),
-  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
-  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
-  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
-  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
-  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
-  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
-  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
-  createData(
-    `Event Guardian`,
-    "eventguardian",
-    null,
-    icon_guardian,
-    "guardian"
-  ),
-  createData(
-    `Kalthertz`,
-    "kalthertz",
-    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
-  ),
-];
-
-// const dailies = {
-//     id: 'guildDonation', // id
-//     icon: icon_guild, // icon image
-//     info: null, // info tooltip on left
-//     name: 'Guild Donation', // display text
-//     isRoster: false, // once per roster (one checkbox)
-//     minilvl: null,
-//     maxilvl: null,
-// }
-
-const newDailies = [
-  createData(`Guild Donation`, "guildDonation", null, icon_guild),
-  // createData(`Guild Mission`, "guildMission", null, icon_guild),
-  createData(`Una's Task 1`, "una1", null, icon_una_daily, "una"),
-  createData(`Una's Task 2`, "una2", null, icon_una_daily, "una"),
-  createData(`Una's Task 3`, "una3", null, icon_una_daily, "una"),
-  createData(`Chaos Dungeon 1`, "chaos1", null, icon_chaos_dungeon, "chaos"),
-  createData(`Chaos Dungeon 2`, "chaos2", null, icon_chaos_dungeon, "chaos"),
-  createData(`Guardian Raid 1`, "guardian1", null, icon_guardian, "guardian"),
-  createData(`Guardian Raid 2`, "guardian2", null, icon_guardian, "guardian"),
-  createData(
-    `Event Guardian`,
-    "eventguardian",
-    null,
-    icon_guardian,
-    "guardian"
-  ),
-  createData(
-    `Kalthertz`,
-    "kalthertz",
-    "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task"
-  ),
-
-  createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
-  createData(
-    `Adventure Island`,
-    "adv",
-    null,
-    icon_adventure_island,
-    "adventure",
-    true
-  ),
-  createData(`Field Boss`, "cal", null, icon_field_boss, "guardian", true),
-  createData(
-    `Chaos Gate`,
-    "chaosgate",
-    null,
-    icon_chaos_gate,
-    "chaosGate",
-    true
-  ),
-  createData(
-    `Anguished Isle`,
-    "anguishedisle",
-    null,
-    icon_anguished,
-    null,
-    true
-  ),
-  createData(
-    `Cradle of the Sea Fermata`,
-    "cradle",
-    null,
-    icon_cradle,
-    null,
-    true
-  ),
-];
-
-// const defaultDailyList = [
-//   {
-//     id: 'guildDonation', // id
-//     checked: false, // checkbox status
-//     icon: icon_guild, // icon image
-//     info: null, // info tooltip on left
-//     name: 'Guild Donation', // display text
-//     roster: false, // once per roster (one checkbox)
-//   },
-//   {
-//     id: 'guildDonation', // id
-//     checked: false, // checkbox status
-//     icon: icon_guild, // icon image
-//     info: null, // info tooltip on left
-//     name: 'Guild Donation', // display text
-//     roster: false, // once per roster (one checkbox)
-//   },
-// ];
-
 const weeklyVendors = [
-  createData(`Guild`, "vendorGuild", null, icon_bloodstone),
-  createData(`Pirate`, "vendorPirate", null, icon_pirate_coin),
-  createData(`Rift Piece`, "vendorRift", null, icon_rift_pieces),
-  createData(`Endless Chaos`, "vendorChaos", null, icon_chaos_dungeon),
-  createData(`PVP`, "vendorPvp", null, icon_coin_of_courage),
+  createData(`Guild`, "vendorGuild", null, false, icon_bloodstone),
+  createData(`Pirate`, "vendorPirate", null, false, icon_pirate_coin),
+  createData(`Rift Piece`, "vendorRift", null, false, icon_rift_pieces),
+  createData(`Endless Chaos`, "vendorChaos", null, false, icon_chaos_dungeon),
+  createData(`PVP`, "vendorPvp", null, false, icon_coin_of_courage),
 ];
 
 const rapportItems = [

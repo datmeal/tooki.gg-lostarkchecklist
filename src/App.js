@@ -748,8 +748,22 @@ const useStore = create((set, get) => ({
           return obj;
         }, {}),
       },
+      taskStatus: state.taskStatus.reduce((result, char) => {
+        char.weeklyVendors = Object.keys(char.weeklyVendors).reduce(
+          (result, task) => {
+            return {
+              ...result,
+              [task]: false,
+            };
+          },
+          {}
+        );
+        result.push(char);
+        return result;
+      }, []),
     }));
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
+    localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
   },
   setDailyTasks: (dailyTasks) => {
     set((state) => ({
