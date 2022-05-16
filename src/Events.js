@@ -298,6 +298,7 @@ export default function Events(props) {
             currentDay={currentDay}
             useStore={useStore}
             rosterStatus={rosterStatus}
+            taskStore={taskStore}
           />
           {/* <TodoList /> */}
         </Grid>
@@ -645,7 +646,10 @@ function TimerItem(props) {
 }
 
 const FilterList = React.memo((props) => {
-  const { currentDay, rosterStatus, useStore } = props;
+  const { currentDay, useStore, taskStore } = props;
+  const rosterTaskStatus = taskStore(
+    (state) => state.siteSettings.rosterTaskStatus
+  );
   // console.log("renderList");
   return (
     <List sx={{ p: 0 }}>
@@ -654,21 +658,21 @@ const FilterList = React.memo((props) => {
         title="Fever"
         currentDay={currentDay}
         useStore={useStore}
-        disabled={rosterStatus.grandprix}
+        disabled={rosterTaskStatus.grandprix}
       />
       <FilterCategory
         category="adventure"
         title="Adventure Island"
         currentDay={currentDay}
         useStore={useStore}
-        disabled={rosterStatus.adv}
+        disabled={rosterTaskStatus.adv}
       />
       <FilterCategory
         category="chaos"
         title="Chaos Gate"
         currentDay={currentDay}
         useStore={useStore}
-        disabled={rosterStatus.chaosgate}
+        disabled={rosterTaskStatus.chaosgate}
       />
       <FilterCategory
         category="ghostship"
@@ -681,7 +685,7 @@ const FilterList = React.memo((props) => {
         title="Field Boss"
         currentDay={currentDay}
         useStore={useStore}
-        disabled={rosterStatus.cal}
+        disabled={rosterTaskStatus.cal}
       />
       <FilterCategory
         category="islands"

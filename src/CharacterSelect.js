@@ -27,7 +27,9 @@ import Typography from "@mui/material/Typography";
 
 const classes = [
   { label: "None", id: 0 },
+  { label: "Arcana", id: 19 },
   { label: "Artillerist", id: 1 },
+  { label: "Artist", id: 22 },
   { label: "Bard", id: 2 },
   { label: "Berserker", id: 3 },
   { label: "Deadeye", id: 4 },
@@ -37,13 +39,15 @@ const classes = [
   { label: "Gunlancer", id: 6 },
   { label: "Gunslinger", id: 7 },
   { label: "Paladin", id: 8 },
+  { label: "Reaper", id: 21 },
+  { label: "Scouter", id: 20 },
   { label: "Scrapper", id: 9 },
   { label: "Shadowhunter", id: 10 },
   { label: "Sharpshooter", id: 11 },
   { label: "Sorceress", id: 12 },
   { label: "Soulfist", id: 13 },
   { label: "Striker", id: 14 },
-  // { label: "Summoner", id: 15 },
+  { label: "Summoner", id: 15 },
   { label: "Wardancer", id: 16 },
 ];
 
