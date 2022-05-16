@@ -51,7 +51,9 @@ export default function Events(props) {
     startOfToday()
   );
   const currentDay = useStore((state) => state.currentDay); // a number 0-6
-  const rosterStatus = taskStore((state) => state.rosterStatus);
+  const rosterStatus = taskStore(
+    (state) => state.siteSettings.rosterTaskStatus
+  );
   const filter = useStore((state) => state.eventSettings.filter);
   // const offset = useStore((state) => state.eventSettings.offset); // add to offset AGS shenanigans, DST
   const timezone = useStore((state) => state.eventSettings.timezone);
