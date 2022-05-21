@@ -36,6 +36,7 @@ import icon_una_daily from "./img/icon_una_daily.png";
 import icon_una_weekly from "./img/icon_una_weekly.png";
 import icon_chaos_dungeon from "./img/icon_chaos_dungeon.png";
 import icon_guardian from "./img/icon_guardian.png";
+import icon_gvg from "./img/icon_gvg.png";
 import icon_adventure_island from "./img/icon_adventure_island.png";
 import icon_chaos_gate from "./img/icon_chaos_gate.png";
 import icon_field_boss from "./img/icon_field_boss.png";
@@ -43,7 +44,9 @@ import icon_ghost_ship from "./img/icon_ghost_ship.png";
 import icon_rapport from "./img/icon_rapport.png";
 import icon_tower from "./img/icon_tower.png";
 import icon_abyss_dungeon from "./img/icon_abyss_dungeon.png";
+import icon_challenge_abyss_dungeon from "./img/icon_challenge_abyss_dungeon.png";
 import icon_abyss_raid from "./img/icon_abyss_raid.png";
+import icon_legion_raid from "./img/icon_legion_raid.png";
 import icon_grandprix from "./img/events/grandprix.webp";
 import icon_bloodstone from "./img/icon_bloodstone.png";
 import icon_pirate_coin from "./img/icon_pirate_coin.png";
@@ -134,7 +137,10 @@ const dailyTaskData = [
     null,
     true,
     icon_guardian,
-    red[300]
+    red[300],
+    false,
+    null,
+    false
   ),
   createData(
     `Kalthertz`,
@@ -170,7 +176,7 @@ const dailyTaskData = [
     true,
     icon_anguished,
     null,
-    false
+    true
   ),
   createData(
     `Cradle of the Sea Fermata`,
@@ -179,25 +185,52 @@ const dailyTaskData = [
     true,
     icon_cradle,
     null,
+    true
+  ),
+  createData(
+    `Festival's Success`,
+    "festivalssuccess",
+    null,
+    true,
+    icon_adventure_island,
+    null,
     false
   ),
 ];
 
 const weeklyTaskData = [
   createData(`Una's Task 1`, "una1", null, false, icon_una_weekly, "unaW"),
-  createData(`Una's Task 2`, "una2", null, false, icon_una_weekly, "unaW"),
-  createData(`Una's Task 3`, "una3", null, false, icon_una_weekly, "unaW"),
+  // createData(`Una's Task 2`, "una2", null, false, icon_una_weekly, "unaW"),
+  // createData(`Una's Task 3`, "una3", null, false, icon_una_weekly, "unaW"),
+  createData(
+    `Guardian Challenge 1`,
+    "guardian1",
+    null,
+    false,
+    icon_guardian,
+    red[300]
+  ),
   createData(
     `Ghostship`,
     "ghostship1",
-    "Account Weekly - once per roster",
+    null,
     false,
     icon_ghost_ship,
-    "ghost"
+    "ghost",
+    true
   ),
+  createData(`GvG / Guild Boss`, "gvg", null, false, icon_gvg, null, true),
   // createData(`Guardian 1`, "guardian1"),
   // createData(`Guardian 2`, "guardian2"),
   // createData(`Guardian 3`, "guardian3"),
+  createData(
+    `Legion Raid - Valtan`,
+    "legionraidvaltan",
+    null,
+    false,
+    icon_legion_raid,
+    "abyssR"
+  ),
   createData(
     `Abyss Raid - Argos`,
     "abyssraidargos",
@@ -205,6 +238,14 @@ const weeklyTaskData = [
     false,
     icon_abyss_raid,
     "abyssR"
+  ),
+  createData(
+    `Challenge Abyss Dungeon`,
+    "challengeabyssdungeon",
+    null,
+    false,
+    icon_challenge_abyss_dungeon,
+    "abyssD"
   ),
   createData(
     `[1325] Punika 5-1`,
@@ -394,6 +435,7 @@ const defaultValues = {
     abyssdistraughtforest: false,
     abyssrottingglade: false,
     abyssraidargos: false,
+    legionraidvaltan: false,
     ghostship1: false,
   },
   weeklyVendors: {
@@ -493,10 +535,18 @@ const useStore = create((set, get) => ({
         },
         weeklyTaskStatus: {
           ...state.siteSettings.weeklyTaskStatus,
-          [id]: state.siteSettings.taskSettings.weekly.reduce((obj, key) => {
-            obj[key.id] = false;
-            return obj;
-          }, {}),
+          [id]: state.siteSettings.taskSettings.weekly.reduce(
+            (obj, key) => {
+              obj[key.id] = false;
+              return obj;
+            },
+            {
+              una2: false,
+              una3: false,
+              guardian2: false,
+              guardian3: false,
+            }
+          ),
         },
       },
       // eventually will migrate this data as well
@@ -766,24 +816,34 @@ const useStore = create((set, get) => ({
     localStorage.setItem("taskStatus", JSON.stringify(get().taskStatus));
   },
   setDailyTasks: (dailyTasks) => {
+    const orderedTasks = dailyTasks.reduce((result, task, index) => {
+      task.order = index;
+      result.push(task);
+      return result;
+    }, []);
     set((state) => ({
       siteSettings: {
         ...state.siteSettings,
         taskSettings: {
           ...state.siteSettings.taskSettings,
-          daily: dailyTasks,
+          daily: orderedTasks,
         },
       },
     }));
     localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   setWeeklyTasks: (weeklyTasks) => {
+    const orderedTasks = weeklyTasks.reduce((result, task, index) => {
+      task.order = index;
+      result.push(task);
+      return result;
+    }, []);
     set((state) => ({
       siteSettings: {
         ...state.siteSettings,
         taskSettings: {
           ...state.siteSettings.taskSettings,
-          weekly: weeklyTasks,
+          weekly: orderedTasks,
         },
       },
     }));
@@ -886,6 +946,7 @@ const useStore = create((set, get) => ({
         },
       },
     }));
+    localStorage.setItem("siteSettings", JSON.stringify(get().siteSettings));
   },
   toggleWeeklyVendorStatus: (task, id) => {
     set((state) => ({
@@ -1488,12 +1549,76 @@ function App() {
         parsedSiteSettings.taskSettings.daily.length === 0
       ) {
         updatedSettings.taskSettings.daily = dailyTaskData;
+      } else {
+        const customSettings = parsedSiteSettings.taskSettings.daily.reduce(
+          (result, task) => {
+            const defaultItem = _.find(
+              dailyTaskData,
+              (item) => item.id === task.id
+            );
+            if (task.custom || !_.isEqual(task, defaultItem)) {
+              result.push(task);
+            }
+
+            return result;
+          },
+          []
+        );
+        // console.log("custom settings:", customSettings);
+        updatedSettings.taskSettings.daily = _.sortBy(
+          dailyTaskData.reduce((result, task) => {
+            const customTask = _.find(customSettings, (item) => {
+              return task.id === item.id;
+            });
+            if (customTask) {
+              result.push(customTask);
+            } else {
+              result.push(task);
+            }
+            return result;
+          }, []),
+          "order"
+        );
       }
       if (
         !_.has(parsedSiteSettings.taskSettings, "weekly") ||
         parsedSiteSettings.taskSettings.weekly.length === 0
       ) {
         updatedSettings.taskSettings.weekly = weeklyTaskData;
+      } else {
+        const customSettings = parsedSiteSettings.taskSettings.weekly.reduce(
+          (result, task) => {
+            const defaultItem = _.find(
+              weeklyTaskData,
+              (item) => item.id === task.id
+            );
+            if (task.custom || !_.isEqual(task, defaultItem)) {
+              result.push(task);
+            }
+
+            return result;
+          },
+          []
+        );
+        updatedSettings.taskSettings.weekly = _.sortBy(
+          weeklyTaskData.reduce((result, task) => {
+            const customTask = _.find(customSettings, (item) => {
+              return task.id === item.id;
+            });
+            if (customTask) {
+              // patching out ghostship problems
+              if (customTask.id === "ghostship1") {
+                customTask.info = null;
+                customTask.isRoster = true;
+              }
+              result.push(customTask);
+            } else {
+              result.push(task);
+            }
+            return result;
+          }, []),
+          "order"
+        );
       }
       updateSiteSettings(updatedSettings);
     } else {
