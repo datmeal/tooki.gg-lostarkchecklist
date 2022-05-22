@@ -74,14 +74,25 @@ function createData(
 }
 
 const dailyTaskData = [
-  createData(`Guild Donations`, "guildDonation", null, false, icon_guild),
+  createData(
+    `Guild Donations`,
+    "guildDonation",
+    null,
+    false,
+    icon_guild,
+    null,
+    false,
+    0
+  ),
   createData(
     `Una's Task 1`,
     "una1",
     null,
     false,
     icon_una_daily,
-    lightGreen[500]
+    lightGreen[500],
+    false,
+    1
   ),
   // createData(
   //   `Una's Task 2`,
@@ -105,7 +116,9 @@ const dailyTaskData = [
     null,
     false,
     icon_chaos_dungeon,
-    amber[500]
+    amber[500],
+    false,
+    2
   ),
   // createData(
   //   `Chaos Dungeon 2`,
@@ -121,7 +134,9 @@ const dailyTaskData = [
     null,
     false,
     icon_guardian,
-    red[300]
+    red[300],
+    false,
+    3
   ),
   // createData(
   //   `Guardian Raid 2`,
@@ -139,14 +154,17 @@ const dailyTaskData = [
     icon_guardian,
     red[300],
     false,
-    null,
+    4,
     false
   ),
   createData(
     `Kalthertz`,
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task",
-    true
+    true,
+    null,
+    false,
+    5
   ),
 
   // createData(`Grand Prix`, "grandprix", null, icon_competitive, null, true),
@@ -157,9 +175,19 @@ const dailyTaskData = [
     false,
     icon_adventure_island,
     purple[200],
-    true
+    true,
+    6
   ),
-  createData(`Field Boss`, "cal", null, false, icon_field_boss, red[300], true),
+  createData(
+    `Field Boss`,
+    "cal",
+    null,
+    false,
+    icon_field_boss,
+    red[300],
+    true,
+    7
+  ),
   createData(
     `Chaos Gate`,
     "chaosgate",
@@ -167,7 +195,8 @@ const dailyTaskData = [
     false,
     icon_chaos_gate,
     deepPurple["A100"],
-    true
+    true,
+    8
   ),
   createData(
     `Anguished Isle`,
@@ -176,7 +205,8 @@ const dailyTaskData = [
     true,
     icon_anguished,
     null,
-    true
+    true,
+    9
   ),
   createData(
     `Cradle of the Sea Fermata`,
@@ -185,7 +215,8 @@ const dailyTaskData = [
     true,
     icon_cradle,
     null,
-    true
+    true,
+    10
   ),
   createData(
     `Festival's Success`,
@@ -194,12 +225,22 @@ const dailyTaskData = [
     true,
     icon_adventure_island,
     null,
-    false
+    false,
+    11
   ),
 ];
 
 const weeklyTaskData = [
-  createData(`Una's Task 1`, "una1", null, false, icon_una_weekly, "unaW"),
+  createData(
+    `Una's Task 1`,
+    "una1",
+    null,
+    false,
+    icon_una_weekly,
+    "unaW",
+    false,
+    0
+  ),
   // createData(`Una's Task 2`, "una2", null, false, icon_una_weekly, "unaW"),
   // createData(`Una's Task 3`, "una3", null, false, icon_una_weekly, "unaW"),
   createData(
@@ -208,7 +249,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_guardian,
-    red[300]
+    red[300],
+    false,
+    1
   ),
   createData(
     `Ghostship`,
@@ -217,7 +260,8 @@ const weeklyTaskData = [
     false,
     icon_ghost_ship,
     "ghost",
-    true
+    true,
+    2
   ),
   createData(`GvG / Guild Boss`, "gvg", null, false, icon_gvg, null, true),
   // createData(`Guardian 1`, "guardian1"),
@@ -229,7 +273,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_legion_raid,
-    "abyssR"
+    "abyssR",
+    false,
+    3
   ),
   createData(
     `Abyss Raid - Argos`,
@@ -237,7 +283,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_raid,
-    "abyssR"
+    "abyssR",
+    false,
+    4
   ),
   createData(
     `Challenge Abyss Dungeon`,
@@ -245,7 +293,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_challenge_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    5
   ),
   createData(
     `[1325] Punika 5-1`,
@@ -253,7 +303,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    6
   ),
   createData(
     `[1340] Punika 5-2`,
@@ -261,7 +313,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    7
   ),
   createData(
     `[960] Feiton 4-1`,
@@ -269,7 +323,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    8
   ),
   createData(
     `[960] Feiton 4-2`,
@@ -277,7 +333,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    9
   ),
   createData(
     `[960] Feiton 4-3`,
@@ -285,7 +343,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    10
   ),
   createData(
     `[840] Yorn 3-1`,
@@ -293,7 +353,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    11
   ),
   createData(
     `[840] Yorn 3-2`,
@@ -301,7 +363,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    12
   ),
   createData(
     `[460] Rohendel 2-1`,
@@ -309,7 +373,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    13
   ),
   createData(
     `[460] Rohendel 2-2`,
@@ -317,7 +383,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    14
   ),
   createData(
     `[340] Vern 1-1`,
@@ -325,7 +393,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    15
   ),
   createData(
     `[340] Vern 1-2`,
@@ -333,7 +403,9 @@ const weeklyTaskData = [
     null,
     false,
     icon_abyss_dungeon,
-    "abyssD"
+    "abyssD",
+    false,
+    16
   ),
 ];
 
@@ -353,6 +425,7 @@ const defaultValues = {
     taskSettings: {
       daily: [],
       weekly: [],
+      weeklyVendor: [],
     },
     weeklyTaskStatus: {},
   },
@@ -1063,12 +1136,14 @@ const useStore = create((set, get) => ({
     weeklyTaskStatus: {
       0: defaultValues.weeklies,
     },
-    rosterTaskStatus: dailyTaskData.reduce((result, task) => {
-      if (task.isRoster) {
-        result[task.id] = false;
-      }
-      return result;
-    }, {}),
+    rosterTaskStatus: dailyTaskData
+      .concat(weeklyTaskData)
+      .reduce((result, task) => {
+        if (task.isRoster) {
+          result[task.id] = false;
+        }
+        return result;
+      }, {}),
     taskSettings: {
       daily: dailyTaskData,
       weekly: weeklyTaskData,
@@ -1564,21 +1639,22 @@ function App() {
           },
           []
         );
-        // console.log("custom settings:", customSettings);
-        updatedSettings.taskSettings.daily = _.sortBy(
-          dailyTaskData.reduce((result, task) => {
-            const customTask = _.find(customSettings, (item) => {
-              return task.id === item.id;
-            });
-            if (customTask) {
-              result.push(customTask);
-            } else {
-              result.push(task);
-            }
-            return result;
-          }, []),
-          "order"
-        );
+        // console.log("daily:", dailyTaskData);
+        // delete default task data if custom exists
+        let updatedDailyTasks = dailyTaskData.reduce((result, task) => {
+          const customTaskExists = customSettings.find(
+            (customTask) => customTask.id === task.id
+          );
+          if (!customTaskExists) {
+            result.push(task);
+          }
+          return result;
+        }, []);
+        // add customized tasks
+        _.each(customSettings, (task) => {
+          updatedDailyTasks.push(task);
+        });
+        updatedSettings.taskSettings.daily = updatedDailyTasks;
       }
       if (
         !_.has(parsedSiteSettings.taskSettings, "weekly") ||
@@ -1592,7 +1668,14 @@ function App() {
               weeklyTaskData,
               (item) => item.id === task.id
             );
-            if (task.custom || !_.isEqual(task, defaultItem)) {
+            const isOldGhostship =
+              task.id === "ghostship1" && !_.isEmpty(task.info);
+            if (
+              task.custom ||
+              !_.isEqual(task, defaultItem) ||
+              !["una2", "una3"].includes(task.id) ||
+              !isOldGhostship
+            ) {
               result.push(task);
             }
 
@@ -1600,25 +1683,30 @@ function App() {
           },
           []
         );
-        updatedSettings.taskSettings.weekly = _.sortBy(
-          weeklyTaskData.reduce((result, task) => {
-            const customTask = _.find(customSettings, (item) => {
-              return task.id === item.id;
-            });
-            if (customTask) {
-              // patching out ghostship problems
-              if (customTask.id === "ghostship1") {
-                customTask.info = null;
-                customTask.isRoster = true;
-              }
-              result.push(customTask);
-            } else {
-              result.push(task);
-            }
-            return result;
-          }, []),
-          "order"
-        );
+        // delete default task data if custom exists
+        // console.log("weeklyTaskData", weeklyTaskData);
+        let updatedWeeklyTasks = weeklyTaskData.reduce((result, task) => {
+          const customTaskExists = customSettings.find(
+            (customTask) => customTask.id === task.id
+          );
+          if (!customTaskExists) {
+            result.push(task);
+          }
+          return result;
+        }, []);
+        // add customized tasks
+        _.each(customSettings, (task) => {
+          if (task.id === "ghostship1") {
+            // removing the roster note, it is superfluous
+            task.info = null;
+            task.isRoster = true;
+          }
+          // removing 2 and 3, they are merging with 1
+          if (!["una2", "una3"].includes(task.id)) {
+            updatedWeeklyTasks.push(task);
+          }
+        });
+        updatedSettings.taskSettings.weekly = updatedWeeklyTasks;
       }
       updateSiteSettings(updatedSettings);
     } else {

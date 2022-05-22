@@ -809,7 +809,11 @@ export default function Checklist(props) {
                                   />
                                 }
                                 label="Roster-wide"
-                                onClick={() => toggleTaskRoster(row.id)}
+                                onClick={() => {
+                                  if (!staticTasks.includes(row.id)) {
+                                    toggleTaskRoster(row.id);
+                                  }
+                                }}
                               />
                               <ListItemIcon>
                                 {staticTasks.includes(row.id) ? (
@@ -1334,7 +1338,10 @@ export default function Checklist(props) {
                           // "una3",
                           "guardian1",
                           "ghostship1",
+                          "gvg",
+                          "legionraidvaltan",
                           "abyssraidargos",
+                          "challengeabyssdungeon",
                           "abyssdistraughtforest",
                           "abyssrottingglade",
                           "abyssoblivionsea",
@@ -1422,7 +1429,11 @@ export default function Checklist(props) {
                                   />
                                 }
                                 label="Roster-wide"
-                                onClick={() => toggleWeeklyTaskRoster(row.id)}
+                                onClick={() => {
+                                  if (!staticTasks.includes(row.id)) {
+                                    toggleWeeklyTaskRoster(row.id);
+                                  }
+                                }}
                               />
                               <ListItemIcon>
                                 {staticTasks.includes(row.id) ? (
