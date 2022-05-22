@@ -1,10 +1,12 @@
 {
   "files": {
-    "main.js": "/static/js/main.07a6205d.js",
+    "main.js": "/static/js/main.c6ea757a.js",
     "static/js/787.8d6bb516.chunk.js": "/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/static/media/moake.fc4e652f9a54ec87dc0c.png",
+    "static/media/icon_gvg.png": "/static/media/icon_gvg.13e457ffdf6284647505.png",
     "static/media/icon_competitive.png": "/static/media/icon_competitive.cbd501eba41e5aca2f6a.png",
+    "static/media/icon_challenge_abyss_dungeon.png": "/static/media/icon_challenge_abyss_dungeon.adf8084e0d9d6332524d.png",
     "static/media/deathshold.png": "/static/media/deathshold.1f8507f0d6ecdc6e68c7.png",
     "static/media/harvestlordincarnate.png": "/static/media/harvestlordincarnate.2e8541a3dc857949726b.png",
     "static/media/brealeos.png": "/static/media/brealeos.6208ece23b41251b2db5.png",
@@ -45,10 +47,10 @@
     "static/media/forpe.webp": "/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/index.html",
-    "main.07a6205d.js.map": "/static/js/main.07a6205d.js.map",
+    "main.c6ea757a.js.map": "/static/js/main.c6ea757a.js.map",
     "787.8d6bb516.chunk.js.map": "/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.07a6205d.js"
+    "static/js/main.c6ea757a.js"
   ]
 }
