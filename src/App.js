@@ -1837,9 +1837,7 @@ function App() {
                 }}
                 color="chaos.main"
               >
-                Tasks may now be customized by clicking <SettingsIcon />
-                <br />
-                Now hide those pesky abyss dungeons
+                May Update content has been added.
                 <br />
                 Please report any problems!
               </Typography>
