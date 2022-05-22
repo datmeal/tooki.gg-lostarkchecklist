@@ -56,6 +56,7 @@ import CharacterSelect from "./CharacterSelect";
 
 // Image / Color Stuff
 import icon_chaos_dungeon from "./img/icon_chaos_dungeon.png";
+import icon_grandprix from "./img/events/grandprix.webp";
 import icon_rapport from "./img/icon_rapport.png";
 import icon_bloodstone from "./img/icon_bloodstone.png";
 import icon_pirate_coin from "./img/icon_pirate_coin.png";
@@ -78,6 +79,7 @@ function createData(
 }
 
 const weeklyVendors = [
+  createData(`Wild Wing Event`, "vendorWildWing", null, false, icon_grandprix),
   createData(`Guild`, "vendorGuild", null, false, icon_bloodstone),
   createData(`Pirate`, "vendorPirate", null, false, icon_pirate_coin),
   createData(`Rift Piece`, "vendorRift", null, false, icon_rift_pieces),
@@ -412,44 +414,81 @@ export default function Checklist(props) {
     );
   };
 
-  const renderTaskRows = (row) => {
-    if (row.id === "una1") {
-      const unaTasks = [
-        row,
-        {
-          ...row,
-          id: "una2",
-          name: `Una's Task 2`,
-        },
-        {
-          ...row,
-          id: "una3",
-          name: `Una's Task 3`,
-        },
-      ];
-      return _.map(unaTasks, (task) => renderTaskRow(task));
-    } else if (row.id === "chaos1") {
-      const chaosTasks = [
-        row,
-        {
-          ...row,
-          id: "chaos2",
-          name: `Chaos Dungeon 2`,
-        },
-      ];
-      return _.map(chaosTasks, (task) => renderTaskRow(task));
-    } else if (row.id === "guardian1") {
-      const guardianTasks = [
-        row,
-        {
-          ...row,
-          id: "guardian2",
-          name: `Guardian Raid 2`,
-        },
-      ];
-      return _.map(guardianTasks, (task) => renderTaskRow(task));
-    } else {
-      return renderTaskRow(row);
+  const renderTaskRows = (row, type = "daily") => {
+    if (type === "daily") {
+      switch (row.id) {
+        case "una1":
+          const unaTasks = [
+            row,
+            {
+              ...row,
+              id: "una2",
+              name: `Una's Task 2`,
+            },
+            {
+              ...row,
+              id: "una3",
+              name: `Una's Task 3`,
+            },
+          ];
+          return _.map(unaTasks, (task) => renderTaskRow(task));
+        case "chaos1":
+          const chaosTasks = [
+            row,
+            {
+              ...row,
+              id: "chaos2",
+              name: `Chaos Dungeon 2`,
+            },
+          ];
+          return _.map(chaosTasks, (task) => renderTaskRow(task));
+        case "guardian1":
+          const guardianTasks = [
+            row,
+            {
+              ...row,
+              id: "guardian2",
+              name: `Guardian Raid 2`,
+            },
+          ];
+          return _.map(guardianTasks, (task) => renderTaskRow(task));
+        default:
+          return renderTaskRow(row);
+      }
+    }
+    if (type === "weekly") {
+      switch (row.id) {
+        case "una1":
+          const unaTasks = [
+            row,
+            {
+              ...row,
+              id: "una2",
+              name: `Una's Task 2`,
+            },
+            {
+              ...row,
+              id: "una3",
+              name: `Una's Task 3`,
+            },
+          ];
+          return _.map(unaTasks, (task) => renderTaskRow(task, "weekly"));
+        case "guardian1":
+          const guardianChallengeTasks = [
+            row,
+            { ...row, id: "guardian2", name: `Guardian Challenge 2` },
+            {
+              ...row,
+              id: "guardian3",
+              name: `Guardian Challenge 3`,
+            },
+          ];
+          return _.map(guardianChallengeTasks, (task) =>
+            renderTaskRow(task, "weekly")
+          );
+        default:
+          return renderTaskRow(row, "weekly");
+      }
     }
   };
 
@@ -544,7 +583,7 @@ export default function Checklist(props) {
             </Button>
           </TableCell>
         )}
-        <TableCell />
+        <TableCell colSpan={siteSettings.roster.length} />
       </TableRow>
     );
   };
@@ -770,7 +809,11 @@ export default function Checklist(props) {
                                   />
                                 }
                                 label="Roster-wide"
-                                onClick={() => toggleTaskRoster(row.id)}
+                                onClick={() => {
+                                  if (!staticTasks.includes(row.id)) {
+                                    toggleTaskRoster(row.id);
+                                  }
+                                }}
                               />
                               <ListItemIcon>
                                 {staticTasks.includes(row.id) ? (
@@ -1008,7 +1051,7 @@ export default function Checklist(props) {
                           <TableCell />
                         </TableRow>
                       )}
-                    {renderTaskRows(row)}
+                    {renderTaskRows(row, "daily")}
                   </React.Fragment>
                 );
               })
@@ -1288,12 +1331,17 @@ export default function Checklist(props) {
                       getChildPayload={getChildPayload}
                     >
                       {siteSettings.taskSettings.weekly.map((row) => {
+                        const rename = ["una1", "guardian1"];
                         const staticTasks = [
                           "una1",
-                          "una2",
-                          "una3",
+                          // "una2",
+                          // "una3",
+                          "guardian1",
                           "ghostship1",
+                          "gvg",
+                          "legionraidvaltan",
                           "abyssraidargos",
+                          "challengeabyssdungeon",
                           "abyssdistraughtforest",
                           "abyssrottingglade",
                           "abyssoblivionsea",
@@ -1331,7 +1379,11 @@ export default function Checklist(props) {
                                       <TextField
                                         fullWidth
                                         label="Task name"
-                                        defaultValue={row.name}
+                                        defaultValue={
+                                          rename.includes(row.id)
+                                            ? row.name.slice(0, -2)
+                                            : row.name
+                                        }
                                         onChange={(event) => {
                                           changeWeeklyTaskName(
                                             row.id,
@@ -1377,7 +1429,11 @@ export default function Checklist(props) {
                                   />
                                 }
                                 label="Roster-wide"
-                                onClick={() => toggleWeeklyTaskRoster(row.id)}
+                                onClick={() => {
+                                  if (!staticTasks.includes(row.id)) {
+                                    toggleWeeklyTaskRoster(row.id);
+                                  }
+                                }}
                               />
                               <ListItemIcon>
                                 {staticTasks.includes(row.id) ? (
@@ -1414,9 +1470,13 @@ export default function Checklist(props) {
               </TableRow>
             ) : (
               siteSettings.weeklyTasksOpen &&
-              siteSettings.taskSettings.weekly.map((row) =>
-                renderTaskRow(row, "weekly")
-              )
+              siteSettings.taskSettings.weekly.map((row) => {
+                return (
+                  <React.Fragment key={`weekly_component_${row.id}`}>
+                    {renderTaskRows(row, "weekly")}
+                  </React.Fragment>
+                );
+              })
             )}
             <TableRow>
               <TableCell>
