@@ -250,7 +250,7 @@ const weeklyTaskData = [
     false,
     icon_guardian,
     red[300],
-    false,
+    true,
     1
   ),
   createData(
@@ -1699,6 +1699,10 @@ function App() {
           if (task.id === "ghostship1") {
             // removing the roster note, it is superfluous
             task.info = null;
+            task.isRoster = true;
+          }
+          // hotfix guardian challenge to be roster only
+          if (task.id === "guardian1" && !task.isRoster) {
             task.isRoster = true;
           }
           // removing 2 and 3, they are merging with 1
