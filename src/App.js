@@ -493,9 +493,6 @@ const defaultValues = {
     una1: false,
     una2: false,
     una3: false,
-    guardian1: false,
-    guardian2: false,
-    guardian3: false,
     abyssdemonbeastcanyon: false,
     abyssnecromancer: false,
     abysstwistedwarlord: false,
@@ -511,6 +508,7 @@ const defaultValues = {
     legionraidvaltan: false,
     ghostship1: false,
   },
+  rosterTaskStatus: {}, // generated later by finding isRoster inside daily/weekly list
   weeklyVendors: {
     vendorGuild: false,
     vendorPirate: false,
@@ -525,6 +523,9 @@ const defaultValues = {
     chaosgate: false,
     anguishedisle: false,
     cradle: false,
+    guardian1: false,
+    guardian2: false,
+    guardian3: false,
     rapport1: {
       name: "Beatrice",
       song1: false,
@@ -1140,6 +1141,10 @@ const useStore = create((set, get) => ({
       .concat(weeklyTaskData)
       .reduce((result, task) => {
         if (task.isRoster) {
+          if (task.id === "guardian1") {
+            result["guardian2"] = false;
+            result["guardian3"] = false;
+          }
           result[task.id] = false;
         }
         return result;
@@ -1610,6 +1615,10 @@ function App() {
                 "chaosgate",
                 "anguishedisle",
                 "cradle",
+                "guardian1",
+                "guardian2",
+                "guardian3",
+                "gvg",
               ].includes(name)
             ) {
               result[name] = task;
@@ -1702,7 +1711,10 @@ function App() {
             task.isRoster = true;
           }
           // hotfix guardian challenge to be roster only
-          if (task.id === "guardian1" && !task.isRoster) {
+          if (
+            ["guardian1", "guardian2", "guardian3"].includes(task.id) &&
+            !task.isRoster
+          ) {
             task.isRoster = true;
           }
           // removing 2 and 3, they are merging with 1
