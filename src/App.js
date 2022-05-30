@@ -3,6 +3,8 @@ import _ from "lodash";
 import { format, subHours } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import styled from "@emotion/styled";
+import Icon from "@mdi/react";
+import { mdiDiscord, mdiGithub } from "@mdi/js";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -1893,11 +1895,21 @@ function App() {
         >
           <Typography align="center">
             Lost Ark Game content and assets are trademarks of Smilegate RPG,
-            Inc. Please send any feedback to Salty#1961 on Discord or{" "}
-            <Link href="https://github.com/datmeal/lostarkchecklist/issues">
-              here
+            Inc. Got any feedback or feature ideas? Let me know on{" "}
+            <Link
+              href="https://discordapp.com/users/193720395323539456"
+              style={{ verticalAlign: "middle" }}
+            >
+              <Icon path={mdiDiscord} size={1.2} color="#5865f2" />
             </Link>{" "}
-            on Github!
+            or{" "}
+            <Link
+              href="https://github.com/datmeal/lostarkchecklist/issues"
+              style={{ verticalAlign: "middle" }}
+            >
+              <Icon path={mdiGithub} size={1.2} color="white" />
+            </Link>{" "}
+            !
           </Typography>
         </Box>
       </Container>

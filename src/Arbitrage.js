@@ -314,7 +314,7 @@ export default function Arbitrage(props) {
           }}
         >
           <Typography color={theme.palette[quality]} sx={{ display: "inline" }}>
-            Secret Map
+            Secret Map{quality === "legendary" && "(1300)"}
           </Typography>
           <Typography sx={{ display: "inline" }}>{goldValue}g</Typography>
         </Box>
