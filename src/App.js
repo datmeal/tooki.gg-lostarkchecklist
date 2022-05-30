@@ -1899,6 +1899,8 @@ function App() {
             <Link
               href="https://discordapp.com/users/193720395323539456"
               style={{ verticalAlign: "middle" }}
+              target="_blank"
+              rel="noopener"
             >
               <Icon path={mdiDiscord} size={1.2} color="#5865f2" />
             </Link>{" "}
@@ -1906,6 +1908,8 @@ function App() {
             <Link
               href="https://github.com/datmeal/lostarkchecklist/issues"
               style={{ verticalAlign: "middle" }}
+              target="_blank"
+              rel="noopener"
             >
               <Icon path={mdiGithub} size={1.2} color="white" />
             </Link>{" "}
