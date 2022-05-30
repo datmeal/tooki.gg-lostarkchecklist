@@ -5,6 +5,7 @@ import { formatInTimeZone } from "date-fns-tz";
 import styled from "@emotion/styled";
 import Icon from "@mdi/react";
 import { mdiDiscord, mdiGithub } from "@mdi/js";
+import AppBar from "@mui/material/AppBar";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -13,7 +14,9 @@ import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
+import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   amber,
@@ -58,6 +61,7 @@ import icon_competitive from "./img/icon_competitive.png";
 import icon_anguished from "./img/icon_anguished.png";
 import icon_cradle from "./img/icon_cradle.png";
 import logo from "./img/logo.png";
+import { SportsRugbySharp } from "@mui/icons-material";
 
 // import "./App.css";
 
@@ -1409,8 +1413,9 @@ const theme = createTheme({
       main: "#f48fb1",
     },
     background: {
-      default: "#212121",
-      paper: "#424242",
+      default: "#0f0f0f",
+      paper: "#181818",
+      appbar: "#202020",
     },
     rare: "#00b5ff",
     epic: "#bf00fe",
@@ -1822,58 +1827,104 @@ function App() {
     }
   `;
 
+  const desktop = useMediaQuery(theme.breakpoints.up("sm"));
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container component="main" sx={{ my: 0 }} maxWidth="xl">
-        <Grid
-          container
-          spacing={1}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingTop: 1,
-          }}
-        >
-          <Grid item sm={6} xs={12}>
-            <Box
+      {desktop && (
+        <AppBar sx={{ background: theme.palette.background.appbar }}>
+          <Toolbar variant="dense" sx={{ minHeight: 56 }}>
+            <Logo>
+              <img src={logo} alt="tooki.gg - Lost Ark Tools" />
+            </Logo>
+            <Typography
+              variant="subtitle2"
               sx={{
-                display: "flex",
-                alignItems: "center",
+                transform: "rotate(3deg)",
+                fontSize: 11,
+                verticalAlign: "top",
               }}
+              color="chaos.main"
             >
-              <Logo>
-                <img src={logo} alt="tooki.gg - Lost Ark Tools" />
-              </Logo>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  transform: "rotate(5deg)",
-                  fontSize: 11,
-                  verticalAlign: "top",
-                }}
-                color="chaos.main"
-              >
-                May Update content has been added.
-                <br />
-                Please report any problems!
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item>
+              May Update content has been added.
+              <br />
+              Please report any problems!
+            </Typography>
             <Tabs
               value={tabValue}
               onChange={handleTabChange}
               aria-label="Navigation"
-              sx={{ justifyContent: "flex-end" }}
+              sx={{ justifyContent: "flex-end", marginLeft: "auto" }}
             >
               <Tab label="Checklist" {...tabProps(0)} />
               <Tab label="Events" {...tabProps(1)} />
               <Tab label="Mari's Shop" {...tabProps(2)} />
             </Tabs>
+          </Toolbar>
+        </AppBar>
+      )}
+
+      <Container
+        component="main"
+        sx={{
+          marginTop: desktop ? "56px" : 0,
+          marginBottom: 0,
+        }}
+        maxWidth="xl"
+        disableGutters={desktop}
+      >
+        {!desktop && (
+          <Grid
+            container
+            spacing={1}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingTop: 1,
+            }}
+          >
+            <Grid item sm={6} xs={12}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Logo>
+                  <img src={logo} alt="tooki.gg - Lost Ark Tools" />
+                </Logo>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    transform: "rotate(5deg)",
+                    fontSize: 11,
+                    verticalAlign: "top",
+                  }}
+                  color="chaos.main"
+                >
+                  May Update content has been added.
+                  <br />
+                  Please report any problems!
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label="Navigation"
+                sx={{ justifyContent: "flex-end" }}
+              >
+                <Tab label="Checklist" {...tabProps(0)} />
+                <Tab label="Events" {...tabProps(1)} />
+                <Tab label="Mari's Shop" {...tabProps(2)} />
+              </Tabs>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
+
         <TabPanel value={tabValue} index={0} noPadding>
           <Checklist useStore={useStore} theme={theme} />
         </TabPanel>
