@@ -156,7 +156,7 @@ const dailyTaskData = [
     `Event Guardian`,
     "eventguardian",
     null,
-    true,
+    false,
     icon_guardian,
     red[300],
     false,
@@ -167,7 +167,8 @@ const dailyTaskData = [
     `Kalthertz`,
     "kalthertz",
     "Buy $900 Males / $600 Females / $300 if you are impatient like me for Una's Daily Task",
-    true,
+    false,
+    null,
     null,
     false,
     5
@@ -208,7 +209,7 @@ const dailyTaskData = [
     `Anguished Isle`,
     "anguishedisle",
     null,
-    true,
+    false,
     icon_anguished,
     null,
     true,
@@ -218,7 +219,7 @@ const dailyTaskData = [
     `Cradle of the Sea Fermata`,
     "cradle",
     null,
-    true,
+    false,
     icon_cradle,
     null,
     true,
@@ -228,7 +229,7 @@ const dailyTaskData = [
     `Festival's Success`,
     "festivalssuccess",
     null,
-    true,
+    false,
     icon_adventure_island,
     null,
     false,
@@ -1670,6 +1671,19 @@ function App() {
         }, []);
         // add customized tasks
         _.each(customSettings, (task) => {
+          // hotfix some tasks to not be considered 'custom' tasks
+          if (
+            [
+              "kalthertz",
+              "eventguardian",
+              "anguishedisle",
+              "cradle",
+              "festivalssuccess",
+            ].includes(task.id) &&
+            task.custom
+          ) {
+            task.custom = false;
+          }
           updatedDailyTasks.push(task);
         });
         updatedSettings.taskSettings.daily = updatedDailyTasks;
