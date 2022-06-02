@@ -484,6 +484,33 @@ export default function CharacterSelect(props) {
     toggleSiteSetting(rest[type]);
   }
 
+  function handleUnasTaskName(task, event, obj) {
+    const taskObj = _.find(unasTasks, (task) => task.label === obj);
+    if (taskObj) {
+      setTempCharacter({
+        ...tempCharacter,
+        [task]: {
+          ...tempCharacter[task],
+          name: taskObj.label,
+          require: taskObj.require,
+          location: taskObj.location,
+        },
+      });
+    } else {
+      const taskName = _.isUndefined(event.target.value)
+        ? ""
+        : event.target.value;
+      setTempCharacter({
+        ...tempCharacter,
+        [task]: {
+          ...tempCharacter[task],
+          name: taskName,
+          location: "",
+        },
+      });
+    }
+  }
+
   const IconImage = styled.img`
     display: inline-flex;
     width: 24px;
@@ -504,6 +531,7 @@ export default function CharacterSelect(props) {
   return (
     <ThemeProvider theme={theme}>
       {characterEditMode ? (
+        // currently unused
         <>
           <Box sx={{ textAlign: "center" }}>
             {/* <Tooltip title="Delete character" placement="top">
@@ -976,31 +1004,11 @@ export default function CharacterSelect(props) {
                                     label={`Quest Name`}
                                   />
                                 )}
+                                onBlur={(event, obj) => {
+                                  handleUnasTaskName(task, event, obj);
+                                }}
                                 onChange={(event, obj) => {
-                                  const taskObj = _.find(
-                                    unasTasks,
-                                    (task) => task.label === obj
-                                  );
-                                  if (taskObj) {
-                                    setTempCharacter({
-                                      ...tempCharacter,
-                                      [task]: {
-                                        ...tempCharacter[task],
-                                        name: taskObj.label,
-                                        require: taskObj.require,
-                                        location: taskObj.location,
-                                      },
-                                    });
-                                  } else {
-                                    setTempCharacter({
-                                      ...tempCharacter,
-                                      [task]: {
-                                        ...tempCharacter[task],
-                                        name: obj,
-                                        location: "",
-                                      },
-                                    });
-                                  }
+                                  handleUnasTaskName(task, event, obj);
                                 }}
                                 clearOnEscape
                                 fullWidth
