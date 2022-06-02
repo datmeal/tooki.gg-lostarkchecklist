@@ -127,6 +127,7 @@ export default function Checklist(props) {
   const [characterEditMode, toggleCharacterEditMode] = React.useState(false);
   const [dailyEditMode, toggleDailyEditMode] = React.useState(false);
   const [weeklyEditMode, toggleWeeklyEditMode] = React.useState(false);
+  const [rapportEditMode, toggleRapportEditMode] = React.useState(false);
   // const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
   // const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
   // const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
@@ -1083,6 +1084,20 @@ export default function Checklist(props) {
                   >
                     Rapport
                   </Typography>
+                  {!characterEditMode && (
+                    <>
+                      <Tooltip title="Toggle rapport edit mode">
+                        <IconButton
+                          onClick={() => {
+                            toggleRapportEditMode(!rapportEditMode);
+                          }}
+                          sx={{ m: 2 }}
+                        >
+                          {rapportEditMode ? <SaveIcon /> : <SettingsIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  )}
                 </Box>
               </TableCell>
               {siteSettings.accountDailiesOpen && (
@@ -1093,7 +1108,7 @@ export default function Checklist(props) {
                   <TableCell colSpan={2}>
                     <Typography align="center">Emote</Typography>
                   </TableCell>
-                  <TableCell colSpan={siteSettings.roster.length - 4} />
+                  <TableCell colSpan={siteSettings.roster.length - 3} />
                 </>
               )}
             </TableRow>
@@ -1109,19 +1124,23 @@ export default function Checklist(props) {
                     </TableCell>
                     <TableCell sx={{ minWidth: 200, width: "1px" }}>
                       <Box>
-                        <TextField
-                          id={`rapport${index + 1}_name`}
-                          label="NPC"
-                          defaultValue={rapportItem.name}
-                          type="string"
-                          margin="normal"
-                          onBlur={(e) => {
-                            setRapportName(
-                              `rapport${index + 1}`,
-                              e.target.value
-                            );
-                          }}
-                        />
+                        {rapportEditMode ? (
+                          <TextField
+                            id={`rapport${index + 1}_name`}
+                            label="NPC"
+                            defaultValue={rapportItem.name}
+                            type="string"
+                            margin="normal"
+                            onBlur={(e) => {
+                              setRapportName(
+                                `rapport${index + 1}`,
+                                e.target.value
+                              );
+                            }}
+                          />
+                        ) : (
+                          <Typography>{rapportItem.name}</Typography>
+                        )}
                       </Box>
                     </TableCell>
                     {["song1", "song2", "emote1", "emote2"].map((item) => (
@@ -1151,7 +1170,7 @@ export default function Checklist(props) {
                         </Button>
                       </TableCell>
                     ))}
-                    <TableCell colSpan={siteSettings.roster.length - 5} />
+                    <TableCell colSpan={siteSettings.roster.length - 3} />
                   </TableRow>
                 );
               })}
