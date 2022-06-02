@@ -506,7 +506,7 @@ export default function CharacterSelect(props) {
       {characterEditMode ? (
         <>
           <Box sx={{ textAlign: "center" }}>
-            <Tooltip title="Delete character" placement="top">
+            {/* <Tooltip title="Delete character" placement="top">
               <IconButton
                 onClick={() => {
                   //removeCharacter(charData.id);
@@ -516,7 +516,7 @@ export default function CharacterSelect(props) {
               >
                 <DeleteForeverIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <FormControl sx={{ m: 0, mt: 1, minWidth: 128, width: "100%" }}>
               {/* <InputLabel id={`character-${charData.id}-label`}>Class</InputLabel> */}
               <Autocomplete
@@ -686,6 +686,9 @@ export default function CharacterSelect(props) {
                   }}
                 >
                   <Typography>Item Level</Typography>
+                  <Typography color="rgba(255,255,255,0.5)" variant="subtitle2">
+                    Enter '0' to hide
+                  </Typography>
                   <TextField
                     id={`ilvl_${charData.id}`}
                     label="Item Level"
@@ -717,9 +720,6 @@ export default function CharacterSelect(props) {
                   }}
                 >
                   <Typography>Cube Tickets</Typography>
-                  <Typography color="rgba(255,255,255,0.5)" variant="subtitle2">
-                    Enter '0' to hide
-                  </Typography>
                   <TextField
                     id={`ilvl_${charData.id}`}
                     label="Tickets"
@@ -751,9 +751,6 @@ export default function CharacterSelect(props) {
                   }}
                 >
                   <Typography>Boss Rush Tickets</Typography>
-                  <Typography color="rgba(255,255,255,0.5)" variant="subtitle2">
-                    Enter '0' to hide
-                  </Typography>
                   <TextField
                     id={`ilvl_${charData.id}`}
                     label="Tickets"
@@ -1102,6 +1099,14 @@ export default function CharacterSelect(props) {
               </List>
             </DialogContent>
             <DialogActions>
+              <Button
+                onClick={() => handleOpenDeleteDialog()}
+                color="error"
+                variant="contained"
+              >
+                Delete Character
+              </Button>
+              <div style={{ flex: "1 0 0" }} />
               <Button onClick={handleCloseEditDialog}>Cancel</Button>
               <Button
                 onClick={() => {
@@ -1112,6 +1117,32 @@ export default function CharacterSelect(props) {
                 variant="contained"
               >
                 Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            open={openDeleteDialog}
+            onClose={handleCloseDeleteDialog}
+            aria-labelledby="Delete Character"
+            aria-describedby="Confirm deleting character"
+          >
+            <DialogContent>
+              <DialogContentText>
+                Delete {characterName.length ? characterName : "this character"}{" "}
+                forever? This cannot be undone!
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  removeCharacter(charData.id);
+                }}
+                autoFocus
+                color="error"
+                variant="outlined"
+              >
+                Delete
               </Button>
             </DialogActions>
           </Dialog>

@@ -612,7 +612,7 @@ export default function Checklist(props) {
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography sx={{ mr: 2 }}>Characters</Typography>
-                  {!dailyEditMode && !weeklyEditMode && (
+                  {/* {!dailyEditMode && !weeklyEditMode && (
                     <Tooltip title="Toggle roster edit mode">
                       <IconButton
                         onClick={() => {
@@ -622,7 +622,7 @@ export default function Checklist(props) {
                         {characterEditMode ? <SaveIcon /> : <SettingsIcon />}
                       </IconButton>
                     </Tooltip>
-                  )}
+                  )} */}
                 </Box>
               </TableCell>
               {siteSettings.roster.map((charData) => (
@@ -643,18 +643,16 @@ export default function Checklist(props) {
                   backgroundColor: theme.palette.background.paper,
                 }}
               >
-                {characterEditMode && (
-                  <Tooltip title="Add new character">
-                    <Button
-                      onClick={() => addCharacter()}
-                      variant="text"
-                      sx={{ color: "#fff" }}
-                      size="large"
-                    >
-                      <AddIcon />
-                    </Button>
-                  </Tooltip>
-                )}
+                <Tooltip title="Add new character">
+                  <Button
+                    onClick={() => addCharacter()}
+                    variant="text"
+                    sx={{ color: "#fff" }}
+                    size="large"
+                  >
+                    <AddIcon />
+                  </Button>
+                </Tooltip>
               </TableCell>
             </TableRow>
           </TableHead>
