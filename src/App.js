@@ -454,6 +454,8 @@ const defaultValues = {
   },
   character: {
     id: "",
+    bossrushTickets: 0,
+    cubeTickets: 0,
     name: "Name/Class",
     ilvl: 0,
     rest_chaos: 0,
