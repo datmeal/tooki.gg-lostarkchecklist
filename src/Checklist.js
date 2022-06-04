@@ -591,7 +591,7 @@ export default function Checklist(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <TableContainer sx={{ maxHeight: "calc(100vh - 126px)" }}>
+      <TableContainer sx={{ maxHeight: "calc(100vh - 142px)" }}>
         <Table
           stickyHeader
           size="small"

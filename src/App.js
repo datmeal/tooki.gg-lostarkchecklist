@@ -861,6 +861,10 @@ const useStore = create((set, get) => ({
             // filter down to an array of legitimate ids(isRoster)
             if (task.isRoster) {
               result.push(task.id);
+              if (task.id === "guardian1") {
+                result.push("guardian2");
+                result.push("guardian3");
+              }
             }
             return result;
           }, []),
@@ -1417,8 +1421,8 @@ const theme = createTheme({
     },
     background: {
       default: "#0f0f0f",
-      paper: "#181818",
-      appbar: "#202020",
+      paper: "#303030",
+      appbar: "#303030",
     },
     rare: "#00b5ff",
     epic: "#bf00fe",
@@ -1863,9 +1867,7 @@ function App() {
               }}
               color="chaos.main"
             >
-              May Update content has been added.
-              <br />
-              Please report any problems!
+              where tooki?
             </Typography>
             <Tabs
               value={tabValue}
@@ -1884,7 +1886,7 @@ function App() {
       <Container
         component="main"
         sx={{
-          marginTop: desktop ? "56px" : 0,
+          marginTop: desktop ? "72px" : 0,
           marginBottom: 0,
         }}
         maxWidth="xl"
