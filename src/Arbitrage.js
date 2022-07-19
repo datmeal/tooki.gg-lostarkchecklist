@@ -81,6 +81,7 @@ export default function Arbitrage(props) {
     createData(`Harmony Shard Pouch (M)`, "harmonyShardM", 1, 15, true),
     createData(`Life Shard Pouch (S)`, "lifeShardS", 1, 20, true),
     createData(`Honor Shard Pouch (S)`, "honorShardS", 1, 20, true),
+    createData(`Honor Shard Pouch (L)`, "honorShardL", 1, 20, true),
     createData(`Harmony Leapstone (Bound)`, "harmonyLeapstone", 1, 30, true),
     createData(`Life Leapstone (Bound)`, "lifeLeapstone", 1, 40, true),
     createData(`Honor Leapstone (Bound)`, "honorLeapstone", 1, 20, true),
@@ -91,11 +92,11 @@ export default function Arbitrage(props) {
       5,
       true
     ),
-    createData(`Star's Breath (Bound)`, "starsBreath", 1, 15, true),
+    createData(`Star's Breath (Bound)`, "starsBreath", 1, 20, true),
     createData(`Moon's Breath (Bound)`, "moonsBreath", 1, 10, true),
     createData(`Solar Grace (Bound)`, "solarGrace", 1, 40, true),
     createData(`Solar Blessing (Bound)`, "solarBlessing", 1, 30, true),
-    createData(`Solar Protection (Bound)`, "solarProtection", 1, 8, true),
+    createData(`Solar Protection (Bound)`, "solarProtection", 1, 25, true),
     createData(`Caldarr Fusion Material (Bound)`, "caldarrFusion", 1, 15, true),
     createData(
       `Basic Oreha Fusion Material (Bound)`,
@@ -168,15 +169,16 @@ export default function Arbitrage(props) {
     harmonyShardM: 141 / 15,
     lifeShardS: 75 / 20,
     honorShardS: 112 / 20,
+    honorShardL: 291 / 20,
     harmonyLeapstone: 30 / 30,
     lifeLeapstone: 56 / 40,
     honorLeapstone: 40 / 20,
     greatHonorLeapstone: 50 / 5,
-    starsBreath: 30 / 15,
+    starsBreath: 24 / 20,
     moonsBreath: 30 / 10,
     solarGrace: 160 / 40,
     solarBlessing: 300 / 30,
-    solarProtection: 360 / 8,
+    solarProtection: 750 / 25,
     caldarrFusion: 60 / 15,
     basicOrehaFusion: 72 / 20,
     simpleOrehaFusion: 54 / 20,
@@ -210,6 +212,7 @@ export default function Arbitrage(props) {
     "destructionStoneCrystal",
     "guardianStoneCrystal",
     "honorShardS",
+    "honorShardL",
     "honorLeapstone",
     "greatHonorLeapstone",
     "solarGrace",
@@ -587,16 +590,24 @@ export default function Arbitrage(props) {
         <TableCell align="right">{crystalValues[itemId]}c</TableCell> */}
         <TableCell align="right">
           <Typography color={profit(itemId) >= 0 ? "success.light" : "error"}>
-            {profit(itemId)}g
+            {profit(itemId) ? `${profit(itemId)}g` : "⬅️ Input Price"}
           </Typography>
         </TableCell>
         <TableCell align="right">
           <Typography color={profit(itemId) >= 0 ? "success.light" : "error"}>
-            {_.round(profit(itemId) * (mariAmount / bundle), 2)}g
+            {profit(itemId)
+              ? `${_.round(profit(itemId) * (mariAmount / bundle), 2)}g`
+              : "⬅️ Input Price"}
           </Typography>
         </TableCell>
         <TableCell>
-          <Typography>{profit(itemId) >= 0 ? "Mari" : "Market"}</Typography>
+          <Typography>
+            {profit(itemId)
+              ? profit(itemId) >= 0
+                ? "Mari"
+                : "Market"
+              : "⬅️ Input Price"}
+          </Typography>
         </TableCell>
       </TableRow>
     );
