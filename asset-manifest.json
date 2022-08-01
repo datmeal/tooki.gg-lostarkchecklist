@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/static/js/main.8276b557.js",
+    "main.js": "/static/js/main.4a551c2f.js",
     "static/js/787.8d6bb516.chunk.js": "/static/js/787.8d6bb516.chunk.js",
     "static/media/icon_guild.png": "/static/media/icon_guild.56a979091d7bb456a794.png",
     "static/media/moake.png": "/static/media/moake.fc4e652f9a54ec87dc0c.png",
@@ -28,6 +28,7 @@
     "static/media/sailingcoop.webp": "/static/media/sailingcoop.85eea9ee01c83780077d.webp",
     "static/media/harmony.webp": "/static/media/harmony.13e26caa16b229c5954d.webp",
     "static/media/grandprix.webp": "/static/media/grandprix.f146b305cc3f9b8e5007.webp",
+    "static/media/island_icon_120.webp": "/static/media/island_icon_120.d512212a280b8fb42a8f.webp",
     "static/media/phantomwing.webp": "/static/media/phantomwing.5949adc5f724fd9446d4.webp",
     "static/media/opportunity.webp": "/static/media/opportunity.d665699c07a2b1d9b3aa.webp",
     "static/media/lushreed.webp": "/static/media/lushreed.a2afdbcf344bebd2cce0.webp",
@@ -47,10 +48,10 @@
     "static/media/forpe.webp": "/static/media/forpe.3af697edf39f82c1a454.webp",
     "static/media/alakkir.webp": "/static/media/alakkir.5f27cb12efdcf567f6af.webp",
     "index.html": "/index.html",
-    "main.8276b557.js.map": "/static/js/main.8276b557.js.map",
+    "main.4a551c2f.js.map": "/static/js/main.4a551c2f.js.map",
     "787.8d6bb516.chunk.js.map": "/static/js/787.8d6bb516.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.8276b557.js"
+    "static/js/main.4a551c2f.js"
   ]
 }
