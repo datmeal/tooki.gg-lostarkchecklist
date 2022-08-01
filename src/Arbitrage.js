@@ -112,6 +112,7 @@ export default function Arbitrage(props) {
       20,
       true
     ),
+    createData(`Tailoring: Applied Mending`, "bookMending", 1, 4, true),
     createData(
       `Major HP Potion (Healing Battle Item Chest [5])`,
       "healingBattleChestMajor",
@@ -182,6 +183,7 @@ export default function Arbitrage(props) {
     caldarrFusion: 60 / 15,
     basicOrehaFusion: 72 / 20,
     simpleOrehaFusion: 54 / 20,
+    bookMending: 260 / 4,
     healingBattleChest: 25 / 15,
     healingBattleChestMajor: 25 / 50,
     offensiveBattleChestDestruction: 25 / 25,
@@ -221,6 +223,7 @@ export default function Arbitrage(props) {
     "basicOrehaFusion",
     "simpleOrehaFusion",
     "t3gem",
+    "bookMending",
   ];
   const miscList = [
     "healingBattleChest",

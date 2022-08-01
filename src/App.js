@@ -1209,6 +1209,7 @@ const defaultGoldPrices = {
   caldarrFusion: 5,
   basicOrehaFusion: 9,
   simpleOrehaFusion: 9,
+  bookMending: 60,
   healingBattleChest: 17, // Elemental HP Potion taken from chest
   healingBattleChestMajor: 7, // blue HP potion
   buffBattleChestAwakening: 24,
