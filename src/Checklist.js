@@ -79,7 +79,7 @@ function createData(
 }
 
 const weeklyVendors = [
-  createData(`Wild Wing Event`, "vendorWildWing", null, false, icon_grandprix),
+  createData(`Event`, "vendorWildWing", null, false, icon_grandprix),
   createData(`Guild`, "vendorGuild", null, false, icon_bloodstone),
   createData(`Pirate`, "vendorPirate", null, false, icon_pirate_coin),
   createData(`Rift Piece`, "vendorRift", null, false, icon_rift_pieces),
