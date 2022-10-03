@@ -47,7 +47,7 @@ const classes = [
   { label: "Gunslinger", id: 7 },
   { label: "Paladin", id: 8 },
   { label: "Reaper", id: 21 },
-  { label: "Scouter", id: 20 },
+  { label: "Machinist", id: 20 },
   { label: "Scrapper", id: 9 },
   { label: "Shadowhunter", id: 10 },
   { label: "Sharpshooter", id: 11 },
