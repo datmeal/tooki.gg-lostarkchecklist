@@ -79,7 +79,7 @@ function createData(
 }
 
 const weeklyVendors = [
-  createData(`Wild Wing Event`, "vendorWildWing", null, false, icon_grandprix),
+  createData(`Event`, "vendorWildWing", null, false, icon_grandprix),
   createData(`Guild`, "vendorGuild", null, false, icon_bloodstone),
   createData(`Pirate`, "vendorPirate", null, false, icon_pirate_coin),
   createData(`Rift Piece`, "vendorRift", null, false, icon_rift_pieces),
@@ -127,6 +127,7 @@ export default function Checklist(props) {
   const [characterEditMode, toggleCharacterEditMode] = React.useState(false);
   const [dailyEditMode, toggleDailyEditMode] = React.useState(false);
   const [weeklyEditMode, toggleWeeklyEditMode] = React.useState(false);
+  const [rapportEditMode, toggleRapportEditMode] = React.useState(false);
   // const [openDailyTasks, setOpenDailyTasks] = React.useState(false);
   // const [openDailyAccount, setOpenDailyAccount] = React.useState(false);
   // const [openWeeklyTasks, setOpenWeeklyTasks] = React.useState(false);
@@ -590,7 +591,7 @@ export default function Checklist(props) {
 
   return (
     <ThemeProvider theme={theme}>
-      <TableContainer sx={{ maxHeight: "calc(100vh - 132px)" }}>
+      <TableContainer sx={{ maxHeight: "calc(100vh - 142px)" }}>
         <Table
           stickyHeader
           size="small"
@@ -612,7 +613,7 @@ export default function Checklist(props) {
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography sx={{ mr: 2 }}>Characters</Typography>
-                  {!dailyEditMode && !weeklyEditMode && (
+                  {/* {!dailyEditMode && !weeklyEditMode && (
                     <Tooltip title="Toggle roster edit mode">
                       <IconButton
                         onClick={() => {
@@ -622,7 +623,7 @@ export default function Checklist(props) {
                         {characterEditMode ? <SaveIcon /> : <SettingsIcon />}
                       </IconButton>
                     </Tooltip>
-                  )}
+                  )} */}
                 </Box>
               </TableCell>
               {siteSettings.roster.map((charData) => (
@@ -643,18 +644,16 @@ export default function Checklist(props) {
                   backgroundColor: theme.palette.background.paper,
                 }}
               >
-                {characterEditMode && (
-                  <Tooltip title="Add new character">
-                    <Button
-                      onClick={() => addCharacter()}
-                      variant="text"
-                      sx={{ color: "#fff" }}
-                      size="large"
-                    >
-                      <AddIcon />
-                    </Button>
-                  </Tooltip>
-                )}
+                <Tooltip title="Add new character">
+                  <Button
+                    onClick={() => addCharacter()}
+                    variant="text"
+                    sx={{ color: "#fff" }}
+                    size="large"
+                  >
+                    <AddIcon />
+                  </Button>
+                </Tooltip>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -728,6 +727,11 @@ export default function Checklist(props) {
                           "una1",
                           "chaos1",
                           "guardian1",
+                          "kalthertz",
+                          "eventguardian",
+                          "anguishedisle",
+                          "cradle",
+                          "festivalssuccess",
                           "adv",
                           "cal",
                           "chaosgate",
@@ -1085,6 +1089,20 @@ export default function Checklist(props) {
                   >
                     Rapport
                   </Typography>
+                  {!characterEditMode && (
+                    <>
+                      <Tooltip title="Toggle rapport edit mode">
+                        <IconButton
+                          onClick={() => {
+                            toggleRapportEditMode(!rapportEditMode);
+                          }}
+                          sx={{ m: 2 }}
+                        >
+                          {rapportEditMode ? <SaveIcon /> : <SettingsIcon />}
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  )}
                 </Box>
               </TableCell>
               {siteSettings.accountDailiesOpen && (
@@ -1095,7 +1113,7 @@ export default function Checklist(props) {
                   <TableCell colSpan={2}>
                     <Typography align="center">Emote</Typography>
                   </TableCell>
-                  <TableCell colSpan={siteSettings.roster.length - 4} />
+                  <TableCell colSpan={siteSettings.roster.length - 3} />
                 </>
               )}
             </TableRow>
@@ -1111,19 +1129,23 @@ export default function Checklist(props) {
                     </TableCell>
                     <TableCell sx={{ minWidth: 200, width: "1px" }}>
                       <Box>
-                        <TextField
-                          id={`rapport${index + 1}_name`}
-                          label="NPC"
-                          defaultValue={rapportItem.name}
-                          type="string"
-                          margin="normal"
-                          onBlur={(e) => {
-                            setRapportName(
-                              `rapport${index + 1}`,
-                              e.target.value
-                            );
-                          }}
-                        />
+                        {rapportEditMode ? (
+                          <TextField
+                            id={`rapport${index + 1}_name`}
+                            label="NPC"
+                            defaultValue={rapportItem.name}
+                            type="string"
+                            margin="normal"
+                            onBlur={(e) => {
+                              setRapportName(
+                                `rapport${index + 1}`,
+                                e.target.value
+                              );
+                            }}
+                          />
+                        ) : (
+                          <Typography>{rapportItem.name}</Typography>
+                        )}
                       </Box>
                     </TableCell>
                     {["song1", "song2", "emote1", "emote2"].map((item) => (
@@ -1153,7 +1175,7 @@ export default function Checklist(props) {
                         </Button>
                       </TableCell>
                     ))}
-                    <TableCell colSpan={siteSettings.roster.length - 5} />
+                    <TableCell colSpan={siteSettings.roster.length - 3} />
                   </TableRow>
                 );
               })}

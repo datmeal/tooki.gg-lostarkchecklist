@@ -1,5 +1,6 @@
 import * as React from "react";
 import _ from "lodash";
+import styled from "@emotion/styled";
 import Accordion from "@mui/material/Accordion";
 import AccordionActions from "@mui/material/AccordionActions";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -12,18 +13,24 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Divider from "@mui/material/Divider";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 import { ThemeProvider } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+
+import icon_cube from "./img/icon_cube.png";
+import icon_bossrush from "./img/icon_bossrush.png";
 
 const classes = [
   { label: "None", id: 0 },
@@ -40,7 +47,7 @@ const classes = [
   { label: "Gunslinger", id: 7 },
   { label: "Paladin", id: 8 },
   { label: "Reaper", id: 21 },
-  { label: "Scouter", id: 20 },
+  { label: "Machinist", id: 20 },
   { label: "Scrapper", id: 9 },
   { label: "Shadowhunter", id: 10 },
   { label: "Sharpshooter", id: 11 },
@@ -477,12 +484,57 @@ export default function CharacterSelect(props) {
     toggleSiteSetting(rest[type]);
   }
 
+  function handleUnasTaskName(task, event, obj) {
+    const taskObj = _.find(unasTasks, (task) => task.label === obj);
+    if (taskObj) {
+      setTempCharacter({
+        ...tempCharacter,
+        [task]: {
+          ...tempCharacter[task],
+          name: taskObj.label,
+          require: taskObj.require,
+          location: taskObj.location,
+        },
+      });
+    } else {
+      const taskName = _.isUndefined(event.target.value)
+        ? ""
+        : event.target.value;
+      setTempCharacter({
+        ...tempCharacter,
+        [task]: {
+          ...tempCharacter[task],
+          name: taskName,
+          location: "",
+        },
+      });
+    }
+  }
+
+  const IconImage = styled.img`
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+  `;
+
+  const TicketItem = styled.span(({ theme }) => ({
+    // backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: 0,
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  }));
+
   return (
     <ThemeProvider theme={theme}>
       {characterEditMode ? (
+        // currently unused
         <>
           <Box sx={{ textAlign: "center" }}>
-            <Tooltip title="Delete character" placement="top">
+            {/* <Tooltip title="Delete character" placement="top">
               <IconButton
                 onClick={() => {
                   //removeCharacter(charData.id);
@@ -492,7 +544,7 @@ export default function CharacterSelect(props) {
               >
                 <DeleteForeverIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <FormControl sx={{ m: 0, mt: 1, minWidth: 128, width: "100%" }}>
               {/* <InputLabel id={`character-${charData.id}-label`}>Class</InputLabel> */}
               <Autocomplete
@@ -567,6 +619,46 @@ export default function CharacterSelect(props) {
                 {charData.ilvl}
               </Typography>
             )}
+            {(charData.cubeTickets > 0 || charData.bossrushTickets > 0) && (
+              <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+              >
+                {charData.cubeTickets > 0 && (
+                  <TicketItem>
+                    <Typography
+                      align="center"
+                      color="rgba(255,255,255,0.5)"
+                      variant="subtitle2"
+                    >
+                      {charData.cubeTickets}
+                    </Typography>
+                    <IconImage
+                      src={icon_cube}
+                      alt="Cube Tickets"
+                      style={{ marginLeft: 4 }}
+                    />
+                  </TicketItem>
+                )}
+                {charData.bossrushTickets > 0 && (
+                  <TicketItem>
+                    <Typography
+                      align="center"
+                      color="rgba(255,255,255,0.5)"
+                      variant="subtitle2"
+                    >
+                      {charData.bossrushTickets}
+                    </Typography>
+                    <IconImage
+                      src={icon_bossrush}
+                      alt="Boss Rush Tickets"
+                      style={{ marginLeft: 4 }}
+                    />
+                  </TicketItem>
+                )}
+              </Stack>
+            )}
           </Button>
           <Dialog
             open={openEditDialog}
@@ -621,7 +713,10 @@ export default function CharacterSelect(props) {
                     alignItems: "center",
                   }}
                 >
-                  <Typography>Item Level (WIP)</Typography>
+                  <Typography>Item Level</Typography>
+                  <Typography color="rgba(255,255,255,0.5)" variant="subtitle2">
+                    Enter '0' to hide
+                  </Typography>
                   <TextField
                     id={`ilvl_${charData.id}`}
                     label="Item Level"
@@ -640,6 +735,68 @@ export default function CharacterSelect(props) {
                       setTempCharacter({
                         ...tempCharacter,
                         ilvl: _.toNumber(event.target.value),
+                      });
+                    }}
+                    sx={{ width: 100 }}
+                  />
+                </ListItem>
+                <ListItem
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography>Cube Tickets</Typography>
+                  <TextField
+                    id={`ilvl_${charData.id}`}
+                    label="Tickets"
+                    type="number"
+                    inputProps={{
+                      min: "0",
+                      max: "99",
+                      maxLength: "6",
+                      step: "1",
+                    }}
+                    value={tempCharacter.cubeTickets}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(event) => {
+                      setTempCharacter({
+                        ...tempCharacter,
+                        cubeTickets: _.toNumber(event.target.value),
+                      });
+                    }}
+                    sx={{ width: 100 }}
+                  />
+                </ListItem>
+                <ListItem
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography>Boss Rush Tickets</Typography>
+                  <TextField
+                    id={`ilvl_${charData.id}`}
+                    label="Tickets"
+                    type="number"
+                    inputProps={{
+                      min: "0",
+                      max: "99",
+                      maxLength: "6",
+                      step: "1",
+                    }}
+                    value={tempCharacter.bossrushTickets}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(event) => {
+                      setTempCharacter({
+                        ...tempCharacter,
+                        bossrushTickets: _.toNumber(event.target.value),
                       });
                     }}
                     sx={{ width: 100 }}
@@ -847,31 +1004,11 @@ export default function CharacterSelect(props) {
                                     label={`Quest Name`}
                                   />
                                 )}
+                                onBlur={(event, obj) => {
+                                  handleUnasTaskName(task, event, obj);
+                                }}
                                 onChange={(event, obj) => {
-                                  const taskObj = _.find(
-                                    unasTasks,
-                                    (task) => task.label === obj
-                                  );
-                                  if (taskObj) {
-                                    setTempCharacter({
-                                      ...tempCharacter,
-                                      [task]: {
-                                        ...tempCharacter[task],
-                                        name: taskObj.label,
-                                        require: taskObj.require,
-                                        location: taskObj.location,
-                                      },
-                                    });
-                                  } else {
-                                    setTempCharacter({
-                                      ...tempCharacter,
-                                      [task]: {
-                                        ...tempCharacter[task],
-                                        name: obj,
-                                        location: "",
-                                      },
-                                    });
-                                  }
+                                  handleUnasTaskName(task, event, obj);
                                 }}
                                 clearOnEscape
                                 fullWidth
@@ -970,6 +1107,14 @@ export default function CharacterSelect(props) {
               </List>
             </DialogContent>
             <DialogActions>
+              <Button
+                onClick={() => handleOpenDeleteDialog()}
+                color="error"
+                variant="contained"
+              >
+                Delete Character
+              </Button>
+              <div style={{ flex: "1 0 0" }} />
               <Button onClick={handleCloseEditDialog}>Cancel</Button>
               <Button
                 onClick={() => {
@@ -980,6 +1125,32 @@ export default function CharacterSelect(props) {
                 variant="contained"
               >
                 Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            open={openDeleteDialog}
+            onClose={handleCloseDeleteDialog}
+            aria-labelledby="Delete Character"
+            aria-describedby="Confirm deleting character"
+          >
+            <DialogContent>
+              <DialogContentText>
+                Delete {characterName.length ? characterName : "this character"}{" "}
+                forever? This cannot be undone!
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  removeCharacter(charData.id);
+                }}
+                autoFocus
+                color="error"
+                variant="outlined"
+              >
+                Delete
               </Button>
             </DialogActions>
           </Dialog>
