@@ -34,6 +34,7 @@ import create from "zustand";
 import Checklist from "./Checklist";
 import Events from "./Events";
 import Arbitrage from "./Arbitrage";
+import AlertDialog from "./AlertDialog";
 
 // Image / Color Stuff
 import icon_guild from "./img/icon_guild.png";
@@ -1986,6 +1987,7 @@ function App() {
             !
           </Typography>
         </Box>
+        <AlertDialog />
       </Container>
     </ThemeProvider>
   );
