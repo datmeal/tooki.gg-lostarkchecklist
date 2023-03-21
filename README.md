@@ -1,39 +1,31 @@
 # tooki.gg
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This site was developed as a pet project for fun, and for my own personal convenience when playing Lost Ark. As I did not want to fill the site with advertisements, I was paying out of my own pocket to keep the site online.
 
-If you're interested in contributing, please clone the 'master' branch, and send me a pull request when you have something to show!
-It uses standard React.js scripts:
+I no longer play the game to know the latest information, and nobody has offered to assist, so unfortunately the site will go offline indefinitely.
 
-### `npm start`
+Thanks to everyone who found my project useful!
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+Diese Seite wurde als Hobbyprojekt aus Spaß und für meine persönliche Bequemlichkeit beim Spielen von Lost Ark entwickelt. Da ich die Seite nicht mit Werbung füllen wollte, habe ich aus eigener Tasche bezahlt, um die Seite online zu halten.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Ich spiele das Spiel nicht mehr, um die neuesten Informationen zu erfahren, und niemand hat mir seine Hilfe angeboten, also wird die Seite leider auf unbestimmte Zeit offline gehen.
 
-### `npm run build`
+Vielen Dank an alle, die mein Projekt nützlich fanden!
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Este site foi desenvolvido como um projecto de estimação para diversão, e para minha própria conveniência pessoal ao jogar Lost Ark. Como não queria encher o site com anúncios, estava a pagar do meu próprio bolso para manter o site online.
 
-### `npm run eject`
+Já não jogo o jogo para saber as últimas informações, e ninguém se ofereceu para ajudar, por isso, infelizmente, o site ficará offline indefinidamente.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Obrigado a todos os que acharam o meu projecto útil!
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Bu site eğlence ve Lost Ark oynarken kendi kişisel rahatlığım için bir evcil hayvan projesi olarak geliştirildi. Siteyi reklamlarla doldurmak istemediğimden, siteyi çevrimiçi tutmak için kendi cebimden ödeme yapıyordum.
+
+Artık en son bilgileri öğrenmek için oyunu oynamıyorum ve kimse yardım etmeyi teklif etmedi, bu yüzden maalesef site süresiz olarak çevrimdışı olacak.
+
+Projemi faydalı bulan herkese teşekkürler!
