@@ -1,5 +1,7 @@
 # tooki.gg
 
+**You can still technically keep using the site forever using this link: https://datmeal.github.io/tooki.gg-lostarkchecklist/**
+
 This site was developed as a pet project for fun, and for my own personal convenience when playing Lost Ark. As I did not want to fill the site with advertisements, I was paying out of my own pocket to keep the site online.
 
 I no longer play the game to know the latest information, and nobody has offered to assist, so unfortunately the site will go offline indefinitely.
